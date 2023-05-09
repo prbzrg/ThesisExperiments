@@ -170,11 +170,11 @@ function makesim(d::Dict)
     obs_y = load(obs_test_fn)["data"]
     obs_y = obs_y[:, :, sel_t_img]
 
-    opt = Optimisers.Lion()
-
     u_init = vec(cstm_fbp(obs_y))
     u_init = standardize(UnitRangeTransform, u_init)
     # u_init = rand(Float32, 362*362)
+
+    opt = Optimisers.Lion()
 
     tst_one = @timed new_ps = train_loop(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
