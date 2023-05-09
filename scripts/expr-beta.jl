@@ -4,9 +4,9 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
-    "nvars" => 2 .^ (0,),
+    "nvars" => 2 ^ 0,
     # "nvars" => 2 .^ (0:3),
-    "n" => 2 .^ (10,),
+    "n" => 2 ^ 10,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta(2, 4),
     "n_hidden_rate" => 2 .^ (0:3),
