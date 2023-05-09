@@ -23,7 +23,7 @@ x = MLUtils.flatten(
 )
 df = DataFrame(transpose(x), :auto)
 
-function makesim(d::Dict)
+function makesim_expr(d::Dict)
     @unpack n_newdata, n_epochs = d
     fulld = copy(d)
 
@@ -87,7 +87,7 @@ end
 
 for (i, d) in enumerate(dicts)
     CUDA.allowscalar() do
-        produce_or_load(makesim, d, datadir("mnist-sims-res"))
+        produce_or_load(makesim_expr, d, datadir("mnist-sims-res"))
     end
 end
 

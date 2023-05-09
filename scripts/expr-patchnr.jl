@@ -106,7 +106,7 @@ function makesim_genflows(d::Dict)
     fulld
 end
 
-function makesim(d::Dict)
+function makesim_expr(d::Dict)
     @unpack p_s, n_epochs, n_iter_rec = d
     d2 = copy(d)
     d3 = copy(d)
@@ -189,7 +189,7 @@ end
 
 for (i, d) in enumerate(dicts)
     CUDA.allowscalar() do
-        produce_or_load(makesim, d, datadir("patchnr-sims"))
+        produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
     end
 end
 
