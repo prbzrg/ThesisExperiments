@@ -12,8 +12,8 @@ MU_AIR = 0.02
 MU_MAX = 3071 * (MU_WATER - MU_AIR) / 1000 + MU_WATER
 
 cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
-# cstm_radon(x) = radon_transform_new_thrd(prep_img_radon(x), range(0, π; length=1000), -256:256)
-# cstm_radon(x) = radon_transform_new_thrd(prep_img_radon(x), range(0, 1; length=1000), -256:256)
+# cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length=1000), -256:256)
+# cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, 1; length=1000), -256:256)
 
 mutable struct PatchNR
     icnf_f::Function
@@ -69,10 +69,10 @@ mutable struct PatchNR
 end
 
 # function recn_loss(app_icnf::PatchNR, x, y)
-#     y = y[:, 1:app_icnf.n_skp:1000]
+#     y = y[:, 1:(app_icnf.n_skp):1000]
 #     N₀ = app_icnf.N₀
 #     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
-#     pt_1st = sum(exp.(-forw)*N₀ + exp.(-y)*N₀ .* (forw .- log(N₀)))
+#     pt_1st = sum(exp.(-forw) * N₀ + exp.(-y) * N₀ .* (forw .- log(N₀)))
 #     pt_2ed = app_icnf.icnf_f(nr_patchs(app_icnf, x))
 #     # pt_2ed = extract_patch_50(app_icnf.icnf_f, reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)), app_icnf.p_s, app_icnf.p_s)
 #     # pt_2ed = mean(app_icnf.icnf_f.(eachcol(nr_patchs(app_icnf, x))))
@@ -80,10 +80,10 @@ end
 # end
 
 # function recn_loss_pt1(app_icnf::PatchNR, x, y)
-#     y = y[:, 1:app_icnf.n_skp:1000]
+#     y = y[:, 1:(app_icnf.n_skp):1000]
 #     N₀ = app_icnf.N₀
 #     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
-#     pt_1st = sum(exp.(-forw)*N₀ + exp.(-y)*N₀ .* (forw .- log(N₀)))
+#     pt_1st = sum(exp.(-forw) * N₀ + exp.(-y) * N₀ .* (forw .- log(N₀)))
 #     pt_1st
 # end
 
@@ -103,7 +103,12 @@ function recn_loss_pt2(app_icnf::PatchNR, x, y)
 end
 
 # function recn_loss_pt2(app_icnf::PatchNR, x, y)
-#     app_icnf.λ * extract_patch_50(app_icnf.icnf_f, reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)), app_icnf.p_s, app_icnf.p_s)
+#     app_icnf.λ * extract_patch_50(
+#         app_icnf.icnf_f,
+#         reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)),
+#         app_icnf.p_s,
+#         app_icnf.p_s,
+#     )
 # end
 
 function nr_patchs(app_icnf::PatchNR, x)
