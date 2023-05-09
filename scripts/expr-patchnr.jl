@@ -178,48 +178,9 @@ function makesim(d::Dict)
     opt = Optimisers.Lion()
     n_iter = 10
 
-    # _loss(ps, θ) = recn_loss(ptchnr, ps, obs_y)
-    # function _loss(ps, θ)
-    #     pt1 = recn_loss_pt1(ptchnr, ps, obs_y)
-    #     pt2 = recn_loss_pt2(ptchnr, ps, obs_y)
-    #     pt1 + pt2
-    # end
-    # function _loss_gd(ps_i, ps, θ)
-    #     # pt1 = ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
-    #     # pt1 = ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
-    #     # pt2 = ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
-    #     # pt2 = only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
-    #     # ps_i .= pt1 + pt2
-    #     ps_i .= rand(Float32, 362*362)
-    #     ps_i
-    # end
-
-    # prgr = Progress(n_iter; dt = eps(), desc = "Min for CT: ", showspeed = true)
-    # function _callback(ps, l)
-    #     ProgressMeter.next!(
-    #         prgr;
-    #         showvalues = [
-    #             (:loss_value, l),
-    #             (:last_update, Dates.now()),
-    #         ],
-    #     )
-    #     false
-    # end
-
     u_init = vec(cstm_fbp(obs_y))
     u_init = standardize(UnitRangeTransform, u_init)
     # u_init = rand(Float32, 362*362)
-
-    # optfunc = OptimizationFunction(_loss, Optimization.AutoForwardDiff())
-    # optfunc = OptimizationFunction(_loss, Optimization.AutoReverseDiff())
-    # optfunc = OptimizationFunction(_loss, Optimization.AutoTracker())
-    # optfunc = OptimizationFunction(_loss, Optimization.AutoZygote())
-    # optfunc = OptimizationFunction(_loss, Optimization.AutoFiniteDiff())
-    # optfunc = OptimizationFunction{true}(_loss, grad=_loss_gd)
-    # optfunc = OptimizationFunction(_loss)
-    # optprob = OptimizationProblem(optfunc, u_init)
-    # tst_one = @timed res = solve(optprob, opt; callback = _callback, maxiters=n_iter)
-    # ProgressMeter.finish!(prgr)
 
     tst_one = @timed new_ps = train_loop(u_init, ptchnr, obs_y, opt, n_iter)
     new_img = reshape(new_ps, (362, 362))
@@ -227,7 +188,6 @@ function makesim(d::Dict)
     fulld["a_psnr"] = assess_psnr(new_img, gt_x)
     fulld["a_ssim"] = assess_ssim(new_img, gt_x)
     fulld["a_msssim"] = assess_msssim(new_img, gt_x)
-    # fulld["res_img"] = res.u
     fulld["time_obj"] = tst_one
 
     fulld
