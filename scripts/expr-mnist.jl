@@ -6,85 +6,6 @@ include(scriptsdir("import_pkgs.jl"))
 rs_f(x) = reshape(x, (28, 28, 1, :))
 agg_f(x...) = cat(x...; dims = 3)
 
-lux_mdls = [
-    Lux.Dense(28 * 28 => 28 * 28, tanh),
-    Lux.Chain(
-        rs_f,
-        Lux.Parallel(
-            +,
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Lux.SamePad()),
-        ),
-        Lux.Conv((3, 3), 3 => 1, tanh; pad = Lux.SamePad()),
-        Lux.FlattenLayer(),
-    ),
-    Lux.Chain(
-        rs_f,
-        Lux.Parallel(
-            agg_f,
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Lux.SamePad()),
-            Lux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Lux.SamePad()),
-            # Lux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Lux.SamePad()),
-        ),
-        Lux.Conv((3, 3), 3 * 5 => 1, tanh; pad = Lux.SamePad()),
-        Lux.FlattenLayer(),
-    ),
-]
-flux_mdls = [
-    FluxCompatLayer(Flux.Dense(28 * 28 => 28 * 28, tanh)),
-    FluxCompatLayer(
-        Flux.Chain(
-            rs_f,
-            Flux.Parallel(
-                +,
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
-            ),
-            Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-            MLUtils.flatten,
-        ),
-    ),
-    FluxCompatLayer(
-        Flux.Chain(
-            rs_f,
-            Flux.Parallel(
-                agg_f,
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
-            ),
-            Flux.Conv((3, 3), 3 * 5 => 1, tanh; pad = Flux.SamePad()),
-            MLUtils.flatten,
-        ),
-    ),
-]
-
 allparams = Dict(
     "n_newdata" => 8,
     "n_epochs" => 2,
@@ -109,7 +30,29 @@ function makesim(d::Dict)
     # tspan = convert.(Float32, (0, tspan_end))
     # fulld["tspan"] = tspan
 
-    nn = flux_mdls[2]
+    nn = FluxCompatLayer(
+        Flux.gpu(
+            f32(
+                Flux.Chain(
+                    rs_f,
+                    Flux.Parallel(
+                        +,
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
+                    ),
+                    Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+                    MLUtils.flatten,
+                ),
+            ),
+        ),
+    )
 
     icnf = construct(
         RNODE,
@@ -123,7 +66,6 @@ function makesim(d::Dict)
     model = ICNFModel(
         icnf;
         resource = CUDALibs(),
-        # adtype = Optimization.AutoForwardDiff(),
         optimizers,
         n_epochs,
         # batch_size,

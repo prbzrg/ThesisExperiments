@@ -8,21 +8,24 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
     # "batch_size" => 128,
+    "n_iter_rec" => 16,
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
 
-gt_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
-obs_fn = datadir("lodoct", "observation_test_000.hdf5")
+gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
+gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
+obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
+obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
 function makesim_gendata(d::Dict)
-    @unpack p_s, n_epochs = d
+    @unpack p_s, n_epochs, n_iter_rec = d
     fulld = copy(d)
 
     fulld["p_w"] = p_s
     fulld["p_h"] = p_s
 
-    imgs = load(gt_fn)["data"]
+    imgs = load(gt_train_fn)["data"]
     imgs = reshape(imgs, (362, 362, 1, 128))
 
     ptchs = extract_patch(imgs, p_s, p_s)
@@ -32,7 +35,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs = d
+    @unpack p_s, n_epochs, n_iter_rec = d
     d2 = copy(d)
     fulld = copy(d)
 
@@ -53,16 +56,6 @@ function makesim_genflows(d::Dict)
 
     nvars = p_s * p_s
     fulld["nvars"] = nvars
-    nn2 = FluxCompatLayer(
-        Flux.gpu(
-            f32(
-                Flux.Chain(
-                    Flux.Dense(nvars => nvars * 4, tanh),
-                    Flux.Dense(nvars * 4 => nvars, tanh),
-                ),
-            ),
-        ),
-    )
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
@@ -76,12 +69,12 @@ function makesim_genflows(d::Dict)
                         Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
                         Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
                         Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=4, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=5, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
                     ),
                     Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
                     MLUtils.flatten,
@@ -114,7 +107,7 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim(d::Dict)
-    @unpack p_s, n_epochs = d
+    @unpack p_s, n_epochs, n_iter_rec = d
     d2 = copy(d)
     d3 = copy(d)
     fulld = copy(d)
@@ -137,52 +130,53 @@ function makesim(d::Dict)
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
     nn = FluxCompatLayer(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=4, pad=Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=5, pad=Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
+        Flux.gpu(
+            f32(
+                Flux.Chain(
+                    rs_f,
+                    Flux.Parallel(
+                        +,
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
+                    ),
+                    Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+                    MLUtils.flatten,
                 ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
-                # vec,
             ),
         ),
     )
-    # ) |> f32 |> Flux.gpu |> FluxCompatLayer
     icnf = construct(
         FFJORD,
         nn,
         nvars;
         compute_mode = ZygoteMatrixMode,
-        # array_type = CuArray,
+        array_type = CuArray,
         sol_kwargs,
     )
 
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
-    obs_y = load(obs_fn)["data"]
-    obs_y = obs_y[:, :, 1]
-    gt_x = load(gt_fn)["data"]
-    gt_x = gt_x[:, :, 1]
+    gt_x = load(gt_test_fn)["data"]
+    sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    fulld["sel_t_img"] = sel_t_img
+    gt_x = gt_x[:, :, sel_t_img]
+    obs_y = load(obs_test_fn)["data"]
+    obs_y = obs_y[:, :, sel_t_img]
 
     opt = Optimisers.Lion()
-    n_iter = 10
 
     u_init = vec(cstm_fbp(obs_y))
     u_init = standardize(UnitRangeTransform, u_init)
     # u_init = rand(Float32, 362*362)
 
-    tst_one = @timed new_ps = train_loop(u_init, ptchnr, obs_y, opt, n_iter)
+    tst_one = @timed new_ps = train_loop(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
     fulld["res_img"] = new_img
     fulld["a_psnr"] = assess_psnr(new_img, gt_x)

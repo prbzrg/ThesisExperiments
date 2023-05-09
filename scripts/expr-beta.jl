@@ -43,13 +43,17 @@ function makesim_expr(d::Dict)
     r = data["r"]
 
     # Model
-    nn = Lux.Chain(Lux.Dense(nvars => n_hidden, tanh), Lux.Dense(n_hidden => nvars, tanh))
-    # nn = Lux.Dense(nvars => nvars, tanh)
+    nn = FluxCompatLayer(
+        Flux.Chain(
+            Flux.Dense(nvars => n_hidden, tanh),
+            Flux.Dense(n_hidden => nvars, tanh),
+        ),
+    )
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     # Training
     df = DataFrame(transpose(r), :auto)
-    model = ICNFModel(icnf; optimizers, adtype = Optimization.AutoForwardDiff())
+    model = ICNFModel(icnf; optimizers)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)
