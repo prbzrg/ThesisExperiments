@@ -67,9 +67,9 @@ function makesim_expr(d::Dict)
     # new_data = rand(dist, n)
 
     # Evaluation
-    mad_ = meanad(estimated_pdf, actual_pdf)
-    msd_ = msd(estimated_pdf, actual_pdf)
-    tv_dis = totalvariation(estimated_pdf, actual_pdf) / n
+    mad_ = Distances.meanad(estimated_pdf, actual_pdf)
+    msd_ = Distances.msd(estimated_pdf, actual_pdf)
+    tv_dis = Distances.totalvariation(estimated_pdf, actual_pdf) / n
     fulld["meanad"] = mad_
     fulld["msd"] = msd_
     fulld["totalvariation"] = tv_dis
