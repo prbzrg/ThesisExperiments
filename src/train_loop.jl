@@ -17,17 +17,14 @@ end
 function train_loop(ps, ptchnr, obs_y, opt, n_iter)
     opt_state = Optimisers.setup(opt, ps)
     G = zeros(eltype(ps), length(ps))
-    prgr = Progress(n_iter; dt = eps(), desc = "Min for CT: ", showspeed = true)
+    prgr = Progress(n_iter; dt = eps(Float32), desc = "Min for CT: ", showspeed = true)
     for i in 1:n_iter
         _loss_gd(G, ps, ptchnr, obs_y)
         opt_state, ps = Optimisers.update!(opt_state, ps, G)
         lv = _loss(ps, ptchnr, obs_y)
         ProgressMeter.next!(
             prgr;
-            showvalues = [
-                (:loss_value, lv),
-                (:last_update, Dates.now()),
-            ],
+            showvalues = [(:loss_value, lv), (:last_update, Dates.now())],
         )
     end
     ProgressMeter.finish!(prgr)

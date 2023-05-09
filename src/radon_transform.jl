@@ -39,7 +39,11 @@
 #     P
 # end
 
-function radon_transform_new(I::AbstractMatrix{T}, θ::AbstractRange, t::AbstractRange)::AbstractMatrix{T} where T <: Real
+function radon_transform_new(
+    I::AbstractMatrix{T},
+    θ::AbstractRange,
+    t::AbstractRange,
+)::AbstractMatrix{T} where {T <: Real}
     P = Zygote.Buffer(I, length(t), length(θ))
     I_tp = Zygote.Buffer(I, length(t), length(t))
     I_tp[:, :] = zeros(T, length(t), length(t))
@@ -49,10 +53,10 @@ function radon_transform_new(I::AbstractMatrix{T}, θ::AbstractRange, t::Abstrac
     m_w = round(Int, length(t) / 2 - I_w / 2)
 
     for (i, j) in collect(product(1:I_h, 1:I_w))
-        I_tp[i+m_h, j+m_w] = I[i, j]
+        I_tp[i + m_h, j + m_w] = I[i, j]
     end
     for (k, θₖ) in collect(enumerate(θ))
-        P[:, k] = sum(imrotate(copy(I_tp), θₖ, size(I_tp); fillvalue=zero(T)), dims=2)
+        P[:, k] = sum(imrotate(copy(I_tp), θₖ, size(I_tp); fillvalue = zero(T)); dims = 2)
     end
     # P
     copy(P)
@@ -84,4 +88,4 @@ end
 #     radon_transform_new(I, θ, t)
 # end
 
-prep_img_radon(img) = reverse(img; dims=2) |> rotl90
+prep_img_radon(img) = rotl90(reverse(img; dims = 2))

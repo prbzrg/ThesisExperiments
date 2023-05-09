@@ -11,16 +11,14 @@ makedocs(;
     sitename = "ThesisExperiments",
     # This argument is only so that the sequence of pages in the sidebar is configured
     # By default all markdown files in `docs/src` are expanded and included.
-    pages = [
-        "index.md",
-    ],
+    pages = ["index.md"],
     # Don't worry about what `CI` does in this line.
-    format = Documenter.HTML(prettyurls = CI),
+    format = Documenter.HTML(; prettyurls = CI),
 )
 
 @info "Deploying Documentation"
 if CI
-    deploydocs(
+    deploydocs(;
         # `repo` MUST be set correctly. Once your GitHub name is set
         # the auto-generated documentation will be hosted at:
         # https://prbzrg.github.io/ThesisExperiments/dev/

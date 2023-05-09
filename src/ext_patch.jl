@@ -1,13 +1,18 @@
-function extract_patch(img::AbstractArray{T, 4}, p_w::Integer, p_h::Integer)::AbstractArray{T, 5} where T <: Real
+function extract_patch(
+    img::AbstractArray{T, 4},
+    p_w::Integer,
+    p_h::Integer,
+)::AbstractArray{T, 5} where {T <: Real}
     n_h, n_w, n_c, n_b = size(img)
     n_h -= p_h + 1
     n_w -= p_w + 1
     # out_img = zeros(T, p_h, p_w, n_c, n_h * n_w, n_b)
     out_img = Zygote.Buffer(img, p_h, p_w, n_c, n_h * n_w, n_b)
-    for i_b ∈ 1:n_b
+    for i_b in 1:n_b
         i_pc = 1
-        for i_w ∈ 1:n_w, i_h ∈ 1:n_h
-            out_img[:, :, :, i_pc, i_b] = img[i_h:i_h+p_h-1, i_w:i_w+p_w-1, :, i_b]
+        for i_w in 1:n_w, i_h in 1:n_h
+            out_img[:, :, :, i_pc, i_b] =
+                img[i_h:(i_h + p_h - 1), i_w:(i_w + p_w - 1), :, i_b]
             i_pc += one(i_pc)
         end
     end
