@@ -3,9 +3,14 @@
 nn = Lux.Dense(nvars => nvars, tanh)
 nn = Lux.Chain(Lux.Dense(nvars => n_hidden, tanh), Lux.Dense(n_hidden => nvars, tanh))
 # beta - flux
-nn = FluxCompatLayer(Flux.Dense(nvars => nvars, tanh))
+nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
 nn = FluxCompatLayer(
-    Flux.Chain(Flux.Dense(nvars => n_hidden, tanh), Flux.Dense(n_hidden => nvars, tanh)),
+    f32(
+        Flux.Chain(
+            Flux.Dense(nvars => n_hidden, tanh),
+            Flux.Dense(n_hidden => nvars, tanh),
+        ),
+    ),
 )
 
 # mnist

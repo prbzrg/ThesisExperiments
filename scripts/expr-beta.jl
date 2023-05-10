@@ -8,15 +8,15 @@ allparams = Dict(
     # "nvars" => 2 .^ (0:3),
     "n" => 2^10,
     # "n" => 2 .^ (7, 10, 13),
-    "data_dist" => Beta(2, 4),
+    "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
     "n_hidden_rate" => 2 .^ (0:3),
     "tspan_end" => 2 .^ (0:4),
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
 
-function gen_data(nvars, n, data_dist = Beta(2, 4))
-    rand(data_dist, nvars, n)
+function gen_data(nvars, n, data_dist = Beta{Float32}(2.0f0, 4.0f0))
+    convert.(Float32, rand(data_dist, nvars, n))
 end
 
 function makesim_gendata(d::Dict)
@@ -44,9 +44,11 @@ function makesim_expr(d::Dict)
 
     # Model
     nn = FluxCompatLayer(
-        Flux.Chain(
-            Flux.Dense(nvars => n_hidden, tanh),
-            Flux.Dense(n_hidden => nvars, tanh),
+        f32(
+            Flux.Chain(
+                Flux.Dense(nvars => n_hidden, tanh),
+                Flux.Dense(n_hidden => nvars, tanh),
+            ),
         ),
     )
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
@@ -85,7 +87,7 @@ function makesim_expr(d::Dict)
     p = plot(x -> pdf(data_dist, x), 0, 1; label = "actual")
     # p = plot!(p, hist_data', hist_estimated_pdf; label = "estimated")
     # p = plot!(p, Base.Fix1(pdf, dist), 0, 1; label = "estimated")
-    p = plot!(p, x -> pdf(dist, vcat(x)), 0, 1; label = "estimated")
+    p = plot!(p, x -> pdf(dist, convert.(Float32, vcat(x))), 0, 1; label = "estimated")
     savefig(p, plotsdir("synthetic-sims", savename(d, "png")))
 
     fulld
