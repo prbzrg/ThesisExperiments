@@ -9,8 +9,7 @@ allparams = Dict(
     "n" => 2^10,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
-    "n_hidden_rate" => 2^2,
-    # "n_hidden_rate" => 2 .^ (0:3),
+    "n_hidden_rate" => 2 .^ (0:3),
     "tspan_end" => 2^0,
     # "tspan_end" => 2 .^ (0:4),
 )
