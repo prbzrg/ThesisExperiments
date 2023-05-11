@@ -10,8 +10,7 @@ allparams = Dict(
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
     "n_hidden_rate" => 2 .^ (0:3),
-    "tspan_end" => 2^0,
-    # "tspan_end" => 2 .^ (0:4),
+    "tspan_end" => 2 .^ (0:4),
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
