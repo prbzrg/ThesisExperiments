@@ -19,7 +19,7 @@ obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
 obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
 function makesim_gendata(d::Dict)
-    @unpack p_s, n_epochs, n_iter_rec = d
+    @unpack p_s, = d
     fulld = copy(d)
 
     fulld["p_w"] = p_s
@@ -35,8 +35,8 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs, n_iter_rec = d
-    d2 = copy(d)
+    @unpack p_s, n_epochs = d
+    d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
     # tspan = convert.(Float32, (0, tspan_end))
@@ -60,25 +60,23 @@ function makesim_genflows(d::Dict)
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
     nn = FluxCompatLayer(
-        Flux.gpu(
-            f32(
-                Flux.Chain(
-                    rs_f,
-                    Flux.Parallel(
-                        +,
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                    ),
-                    Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                    MLUtils.flatten,
+        f32(
+            Flux.Chain(
+                rs_f,
+                Flux.Parallel(
+                    +,
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
                 ),
+                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+                MLUtils.flatten,
             ),
         ),
     )
@@ -108,8 +106,8 @@ end
 
 function makesim_expr(d::Dict)
     @unpack p_s, n_epochs, n_iter_rec = d
-    d2 = copy(d)
-    d3 = copy(d)
+    d2 = Dict{String, Any}("p_s" => p_s)
+    d3 = Dict{String, Any}("p_s" => p_s, "n_epochs" => n_epochs)
     fulld = copy(d)
 
     # tspan = convert.(Float32, (0, tspan_end))
@@ -130,25 +128,23 @@ function makesim_expr(d::Dict)
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
     nn = FluxCompatLayer(
-        Flux.gpu(
-            f32(
-                Flux.Chain(
-                    rs_f,
-                    Flux.Parallel(
-                        +,
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                    ),
-                    Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                    MLUtils.flatten,
+        f32(
+            Flux.Chain(
+                rs_f,
+                Flux.Parallel(
+                    +,
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
                 ),
+                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+                MLUtils.flatten,
             ),
         ),
     )

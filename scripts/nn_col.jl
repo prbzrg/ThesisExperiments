@@ -51,50 +51,46 @@ nn = Lux.Chain(
     Lux.FlattenLayer(),
 )
 # mnist - flux
-nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(28 * 28 => 28 * 28, tanh))))
+nn = FluxCompatLayer(f32(Flux.Dense(28 * 28 => 28 * 28, tanh)))
 nn = FluxCompatLayer(
-    Flux.gpu(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
+    f32(
+        Flux.Chain(
+            rs_f,
+            Flux.Parallel(
+                +,
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
             ),
+            Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+            MLUtils.flatten,
         ),
     ),
 )
 nn = FluxCompatLayer(
-    Flux.gpu(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    agg_f,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 * 5 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
+    f32(
+        Flux.Chain(
+            rs_f,
+            Flux.Parallel(
+                agg_f,
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
             ),
+            Flux.Conv((3, 3), 3 * 5 => 1, tanh; pad = Flux.SamePad()),
+            MLUtils.flatten,
         ),
     ),
 )
@@ -121,35 +117,31 @@ nn = Lux.Chain(
 )
 # patchnr - flux
 nn = FluxCompatLayer(
-    Flux.gpu(
-        f32(
-            Flux.Chain(
-                Flux.Dense(nvars => nvars * 4, tanh),
-                Flux.Dense(nvars * 4 => nvars, tanh),
-            ),
+    f32(
+        Flux.Chain(
+            Flux.Dense(nvars => nvars * 4, tanh),
+            Flux.Dense(nvars * 4 => nvars, tanh),
         ),
     ),
 )
 nn = FluxCompatLayer(
-    Flux.gpu(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
+    f32(
+        Flux.Chain(
+            rs_f,
+            Flux.Parallel(
+                +,
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
+                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
             ),
+            Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+            MLUtils.flatten,
         ),
     ),
 )
