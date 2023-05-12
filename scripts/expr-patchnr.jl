@@ -4,7 +4,7 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
-    "p_s" => [8],
+    "p_s" => 8,
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
     # "batch_size" => 128,
