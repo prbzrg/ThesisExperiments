@@ -81,16 +81,9 @@ function makesim_genflows(d::Dict)
         ),
     )
 
-    icnf = construct(
-        RNODE,
-        nn,
-        nvars;
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
+    icnf = construct(RNODE, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
 
-    model = ICNFModel(icnf; resource = CUDALibs(), optimizers, n_epochs)
+    model = ICNFModel(icnf; optimizers, n_epochs)
 
     mach = machine(model, df)
     fit!(mach)
@@ -120,8 +113,6 @@ function makesim_expr(d::Dict)
 
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
     @unpack ps, st = data
-    # ps = Lux.gpu(ps)
-    # st = Lux.gpu(st)
 
     nvars = p_s * p_s
     fulld["nvars"] = nvars
@@ -148,14 +139,7 @@ function makesim_expr(d::Dict)
             ),
         ),
     )
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars;
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
+    icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)

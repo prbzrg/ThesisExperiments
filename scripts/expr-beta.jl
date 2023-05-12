@@ -42,7 +42,6 @@ function makesim_expr(d::Dict)
     data, fn = produce_or_load(makesim_gendata, config, datadir("synthetic-gendata"))
     r = data["r"]
 
-    # Model
     nn = FluxCompatLayer(
         f32(
             Flux.Chain(
@@ -53,7 +52,6 @@ function makesim_expr(d::Dict)
     )
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
-    # Training
     df = DataFrame(transpose(r), :auto)
     model = ICNFModel(icnf; optimizers)
     mach = machine(model, df)
@@ -62,13 +60,10 @@ function makesim_expr(d::Dict)
     rpt = report(mach)
     fulld["elapsed_time"] = rpt.stats.time
 
-    # Use It
     dist = ICNFDist(icnf, ps, st)
     actual_pdf = pdf.(data_dist, vec(r))
     estimated_pdf = pdf(dist, r)
-    # new_data = rand(dist, n)
 
-    # Evaluation
     mad_ = Distances.meanad(estimated_pdf, actual_pdf)
     msd_ = Distances.msd(estimated_pdf, actual_pdf)
     tv_dis = Distances.totalvariation(estimated_pdf, actual_pdf) / n
@@ -76,17 +71,7 @@ function makesim_expr(d::Dict)
     fulld["msd"] = msd_
     fulld["totalvariation"] = tv_dis
 
-    # Plot
-    # hist_data = collect((0:0.001:1)')
-    # hist_actual_pdf = pdf.(data_dist, vec(hist_data))
-    # hist_estimated_pdf = pdf(dist, hist_data)
-
-    # p = plot(data_dist; label = "actual")
-    # p = plot(hist_data', hist_actual_pdf; label = "actual")
-    # p = plot(Base.Fix1(pdf, data_dist), 0, 1; label = "actual")
     p = plot(x -> pdf(data_dist, x), 0, 1; label = "actual")
-    # p = plot!(p, hist_data', hist_estimated_pdf; label = "estimated")
-    # p = plot!(p, Base.Fix1(pdf, dist), 0, 1; label = "estimated")
     p = plot!(p, x -> pdf(dist, convert.(Float32, vcat(x))), 0, 1; label = "estimated")
     savefig(p, plotsdir("synthetic-sims", savename(d, "png")))
 

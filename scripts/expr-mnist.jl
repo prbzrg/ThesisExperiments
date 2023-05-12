@@ -14,13 +14,10 @@ allparams = Dict(
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
 
-# data_train = MNIST(Float32, :train).features
-# data_test = MNIST(Float32, :test).features
-# data_all = cat(data_train, data_test; dims=3)
-# x = MLUtils.flatten(data_all)
-x = MLUtils.flatten(
-    cat(MNIST(Float32, :train).features, MNIST(Float32, :test).features; dims = 3),
-)
+data_train = MNIST(Float32, :train).features
+data_test = MNIST(Float32, :test).features
+data_all = cat(data_train, data_test; dims = 3)
+x = MLUtils.flatten(data_all)
 df = DataFrame(transpose(x), :auto)
 
 function makesim_expr(d::Dict)
@@ -31,41 +28,31 @@ function makesim_expr(d::Dict)
     # fulld["tspan"] = tspan
 
     nn = FluxCompatLayer(
-        Flux.gpu(
-            f32(
-                Flux.Chain(
-                    rs_f,
-                    Flux.Parallel(
-                        +,
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                        Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
-                        # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
-                    ),
-                    Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                    MLUtils.flatten,
+        f32(
+            Flux.Chain(
+                rs_f,
+                Flux.Parallel(
+                    +,
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
+                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=6, pad=Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=7, pad=Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=8, pad=Flux.SamePad()),
+                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation=9, pad=Flux.SamePad()),
                 ),
+                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
+                MLUtils.flatten,
             ),
         ),
     )
 
-    icnf = construct(
-        RNODE,
-        nn,
-        28 * 28;
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
+    icnf = construct(RNODE, nn, 28 * 28; compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     model = ICNFModel(
         icnf;
-        resource = CUDALibs(),
         optimizers,
         n_epochs,
         # batch_size,
