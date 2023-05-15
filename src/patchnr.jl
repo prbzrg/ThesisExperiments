@@ -87,14 +87,19 @@ end
 #     pt_1st
 # end
 
+# main
+# function recn_loss_pt1(app_icnf::PatchNR, x, y)
+#     y = y[:, 1:(app_icnf.n_skp):1000]
+#     N₀ = app_icnf.N₀
+#     μ = app_icnf.μ
+#     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
+#     pt_1st = sum(exp.(-forw * μ) * N₀ - exp.(-y * μ) * N₀ .* (-forw * μ .+ log(N₀)))
+#     # pt_1st = sum((exp.(-forw * μ)*N₀ - exp.(-y * μ)*N₀) .* (-forw * μ .+ log(N₀)))
+#     pt_1st
+# end
+
 function recn_loss_pt1(app_icnf::PatchNR, x, y)
-    y = y[:, 1:(app_icnf.n_skp):1000]
-    N₀ = app_icnf.N₀
-    μ = app_icnf.μ
-    forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
-    pt_1st = sum(exp.(-forw * μ) * N₀ - exp.(-y * μ) * N₀ .* (-forw * μ .+ log(N₀)))
-    # pt_1st = sum((exp.(-forw * μ)*N₀ - exp.(-y * μ)*N₀) .* (-forw * μ .+ log(N₀)))
-    pt_1st
+    first_part(reshape(rotl90(x), (1, 1, 362, 362)), y)
 end
 
 function recn_loss_pt2(app_icnf::PatchNR, x, y)
@@ -123,4 +128,19 @@ function nr_patchs(app_icnf::PatchNR, x)
     x_pts[:, app_icnf.sel_pts]
     # sel_pts = sample(1:app_icnf.n_pts, app_icnf.Nₚ)
     # x_pts[:, sel_pts]
+end
+
+# main
+# function recn_loss_pt1_grad(ptchnr, ps, obs_y)
+#     # pt1 = ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
+#     pt1 = ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
+# end
+
+function recn_loss_pt1_grad(ptchnr, ps, obs_y)
+    vec(rotr90(grad_first_part(reshape(rotl90(ps), (1, 1, 362, 362)), obs_y)[1, 1, :, :]))
+end
+
+function recn_loss_pt2_grad(ptchnr, ps, obs_y)
+    # pt2 = ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
+    pt2 = only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
 end

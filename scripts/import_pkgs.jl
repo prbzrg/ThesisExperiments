@@ -1,3 +1,5 @@
+ENV["PYTHON"] = raw"C:\Program Files\Python37\python.exe"
+
 using ICNF
 using CUDA
 using Colors,
@@ -22,6 +24,7 @@ using Optim, Optimisers, Optimization, OptimizationOptimJL, OptimizationOptimise
 using MLDatasets, MLJBase, MLUtils, Plots
 using ImageReconstruction, Sinograms
 using Base.Threads, Base.Iterators
+using PyCall
 
 # debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
@@ -31,6 +34,7 @@ include(srcdir("radon_transform.jl"))
 include(srcdir("patchnr.jl"))
 include(srcdir("cstm_fbp.jl"))
 include(srcdir("train_loop.jl"))
+include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
 #defaults

@@ -150,8 +150,9 @@ function makesim_expr(d::Dict)
     obs_y = load(obs_test_fn)["data"]
     obs_y = obs_y[:, :, sel_t_img]
 
-    u_init = vec(cstm_fbp(obs_y))
-    u_init = standardize(UnitRangeTransform, u_init)
+    # u_init = vec(cstm_fbp(obs_y))
+    # u_init = standardize(UnitRangeTransform, u_init)
+    u_init = vec(cstm_fbp_2(obs_y))
     # u_init = rand(Float32, 362*362)
 
     opt = Optimisers.Lion()

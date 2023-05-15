@@ -7,11 +7,9 @@ function _loss(ps, ptchnr, obs_y)
 end
 
 function _loss_gd(G, ps, ptchnr, obs_y)
-    pt1 = ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
-    # pt1 = ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
+    pt1 = recn_loss_pt1_grad(ptchnr, ps, obs_y)
+    pt2 = recn_loss_pt2_grad(ptchnr, ps, obs_y)
 
-    # pt2 = ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
-    pt2 = only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
     G .= pt1 + pt2
     nothing
 end
