@@ -137,7 +137,7 @@ end
 # end
 
 function recn_loss_pt1_grad(ptchnr, ps, obs_y)
-    vec(rotr90(grad_first_part(reshape(rotl90(ps), (1, 1, 362, 362)), obs_y)[1, 1, :, :]))
+    vec(rotr90(grad_first_part(reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362)), obs_y)[1, 1, :, :]))
 end
 
 function recn_loss_pt2_grad(ptchnr, ps, obs_y)
