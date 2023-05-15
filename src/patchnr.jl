@@ -38,14 +38,14 @@ mutable struct PatchNR
         w_d::Integer = 362,
         s::Integer = p_s * p_s,
         d::Integer = w_d * w_d,
-        reduce_rate::Integer = 100,
-        # reduce_rate::Integer=4,
+        # reduce_rate::Integer = 100,
+        reduce_rate::Integer=4,
         n_skp::Integer = 27,
         # Nₚ::Integer=n_pts,
         Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
-        λ::AbstractFloat = 700 * (s / Nₚ),
+        λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
         forward_op::Function = cstm_radon,
     )
         sel_pts = sample(1:n_pts, Nₚ)
