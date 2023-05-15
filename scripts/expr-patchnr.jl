@@ -150,9 +150,18 @@ function makesim_expr(d::Dict)
     obs_y = load(obs_test_fn)["data"]
     obs_y = obs_y[:, :, sel_t_img]
 
+    fulld["gt_x"] = gt_x
+
+    s_point = cstm_fbp_2(obs_y)
+
+    fulld["fbp_img"] = s_point
+    fulld["fbp_a_psnr"] = assess_psnr(s_point, gt_x)
+    fulld["fbp_a_ssim"] = assess_ssim(s_point, gt_x)
+    fulld["fbp_a_msssim"] = assess_msssim(s_point, gt_x)
+
     # u_init = vec(cstm_fbp(obs_y))
     # u_init = standardize(UnitRangeTransform, u_init)
-    u_init = vec(cstm_fbp_2(obs_y))
+    u_init = vec(s_point)
     # u_init = rand(Float32, 362*362)
 
     opt = Optimisers.Lion()

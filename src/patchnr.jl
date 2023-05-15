@@ -127,9 +127,9 @@ function nr_patchs(app_icnf::PatchNR, x)
     ptchs = reshape(ptchs, (p_s, p_s, 1, :))
     x_pts = MLUtils.flatten(ptchs)
     # x_pts
-    x_pts[:, app_icnf.sel_pts]
-    # sel_pts = sample(1:app_icnf.n_pts, app_icnf.Nₚ)
-    # x_pts[:, sel_pts]
+    # x_pts[:, app_icnf.sel_pts]
+    sel_pts = rand(1:app_icnf.n_pts, app_icnf.Nₚ)
+    x_pts[:, sel_pts]
 end
 
 # main
