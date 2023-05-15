@@ -99,7 +99,9 @@ end
 # end
 
 function recn_loss_pt1(app_icnf::PatchNR, x, y)
-    first_part(reshape(rotl90(x), (1, 1, 362, 362)), y)
+    x = reshape(rotl90(reshape(x, (362, 362))), (1, 1, 362, 362))
+    y = reshape(rotl90(y), (1, 1, 1000, 513))
+    first_part(x, y)
 end
 
 function recn_loss_pt2(app_icnf::PatchNR, x, y)
@@ -132,15 +134,17 @@ end
 
 # main
 # function recn_loss_pt1_grad(ptchnr, ps, obs_y)
-#     # pt1 = ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
-#     pt1 = ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
+#     # ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
+#     ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
 # end
 
 function recn_loss_pt1_grad(ptchnr, ps, obs_y)
-    vec(rotr90(grad_first_part(reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362)), obs_y)[1, 1, :, :]))
+    ps = reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362))
+    obs_y = reshape(rotl90(obs_y), (1, 1, 1000, 513))
+    vec(rotr90(grad_first_part(ps, obs_y)[1, 1, :, :]))
 end
 
 function recn_loss_pt2_grad(ptchnr, ps, obs_y)
-    # pt2 = ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
-    pt2 = only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
+    # ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
+    only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
 end
