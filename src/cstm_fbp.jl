@@ -6,5 +6,6 @@
 # end
 
 function cstm_fbp_2(obs_y)
-    rotr90(fbp_t(obs_y))
+    obs_y2 = reshape(rotl90(obs_y), (1, 1, 1000, 513))
+    rotr90(fbp_t(obs_y2)[1, 1, :, :])
 end

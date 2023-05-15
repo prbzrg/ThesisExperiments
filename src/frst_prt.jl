@@ -1,8 +1,3 @@
-using DrWatson
-@quickactivate "ThesisExperiments" # <- project name
-
-include(scriptsdir("import_pkgs.jl"))
-
 @pyinclude(srcdir("py_part.py"))
 
 function fbp_t(x)
