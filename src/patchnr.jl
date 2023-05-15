@@ -39,7 +39,7 @@ mutable struct PatchNR
         s::Integer = p_s * p_s,
         d::Integer = w_d * w_d,
         # reduce_rate::Integer = 100,
-        reduce_rate::Integer=4,
+        reduce_rate::Integer = 4,
         n_skp::Integer = 27,
         # Nₚ::Integer=n_pts,
         Nₚ::Integer = n_pts ÷ reduce_rate,
@@ -128,7 +128,7 @@ function nr_patchs(app_icnf::PatchNR, x)
     x_pts = MLUtils.flatten(ptchs)
     # x_pts
     # x_pts[:, app_icnf.sel_pts]
-    sel_pts = rand(1:app_icnf.n_pts, app_icnf.Nₚ)
+    sel_pts = rand(1:(app_icnf.n_pts), app_icnf.Nₚ)
     x_pts[:, sel_pts]
 end
 

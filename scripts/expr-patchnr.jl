@@ -8,7 +8,8 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
     # "batch_size" => 128,
-    "n_iter_rec" => 16,
+    # "n_iter_rec" => 16,
+    "n_iter_rec" => [16, 128],
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
