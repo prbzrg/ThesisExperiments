@@ -37,22 +37,20 @@ include(srcdir("train_loop.jl"))
 include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
-#defaults
+# defaults
 sol_kwargs = Dict(
     :alg_hints => [:nonstiff, :memorybound],
     :dense => false,
-    # :saveat => false,
     :save_everystep => false,
     :save_on => false,
     :calck => false,
     :alg => BS3(; thread = OrdinaryDiffEq.True()),
+    # :alg => BS5(; thread = OrdinaryDiffEq.True()),
+    # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
     :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    # :abstol => eps(Float32),
-    # :reltol => eps(Float32),
-    # :maxiters => typemax(Int),
 )
 optimizers = Any[Optimisers.Lion(),]

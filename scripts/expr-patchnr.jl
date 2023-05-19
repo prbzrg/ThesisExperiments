@@ -9,7 +9,7 @@ allparams = Dict(
     "n_epochs" => 2,
     # "batch_size" => 128,
     # "n_iter_rec" => 16,
-    "n_iter_rec" => [16, 128],
+    "n_iter_rec" => [4, 16, 128],
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -162,7 +162,8 @@ function makesim_expr(d::Dict)
 
     # u_init = vec(cstm_fbp(obs_y))
     # u_init = standardize(UnitRangeTransform, u_init)
-    u_init = vec(s_point)
+    s_point_c = copy(s_point)
+    u_init = vec(s_point_c)
     # u_init = rand(Float32, 362*362)
 
     opt = Optimisers.Lion()

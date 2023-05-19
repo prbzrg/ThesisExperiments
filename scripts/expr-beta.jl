@@ -9,8 +9,10 @@ allparams = Dict(
     "n" => 2^10,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
-    "n_hidden_rate" => 2 .^ (0:3),
+    "n_hidden_rate" => 1,
+    # "n_hidden_rate" => 2 .^ (0:3),
     "tspan_end" => 2 .^ (0:4),
+    "arch" => "Dense",
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -30,7 +32,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack nvars, n, data_dist, n_hidden_rate, tspan_end = d
+    @unpack nvars, n, data_dist, n_hidden_rate, tspan_end, arch = d
     fulld = copy(d)
 
     n_hidden = n_hidden_rate * nvars
@@ -42,14 +44,7 @@ function makesim_expr(d::Dict)
     data, fn = produce_or_load(makesim_gendata, config, datadir("synthetic-gendata"))
     r = data["r"]
 
-    nn = FluxCompatLayer(
-        f32(
-            Flux.Chain(
-                Flux.Dense(nvars => n_hidden, tanh),
-                Flux.Dense(n_hidden => nvars, tanh),
-            ),
-        ),
-    )
+    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     df = DataFrame(transpose(r), :auto)

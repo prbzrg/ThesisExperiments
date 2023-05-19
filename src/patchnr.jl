@@ -41,7 +41,7 @@ mutable struct PatchNR
         # reduce_rate::Integer = 100,
         reduce_rate::Integer = 4,
         n_skp::Integer = 27,
-        # Nₚ::Integer=n_pts,
+        # Nₚ::Integer = n_pts,
         Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
