@@ -81,7 +81,12 @@ end
 function makesim_expr(d::Dict)
     @unpack p_s, n_epochs, n_iter_rec, tspan_end, arch = d
     d2 = Dict{String, Any}("p_s" => p_s)
-    d3 = Dict{String, Any}("p_s" => p_s, "n_epochs" => n_epochs, "arch" => arch)
+    d3 = Dict{String, Any}(
+        "p_s" => p_s,
+        "n_epochs" => n_epochs,
+        "tspan_end" => tspan_end,
+        "arch" => arch,
+    )
     fulld = copy(d)
 
     tspan = convert.(Float32, (0, tspan_end))
