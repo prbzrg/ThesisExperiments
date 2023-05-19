@@ -9,7 +9,7 @@ allparams = Dict(
     "n_epochs" => 2,
     # "batch_size" => 128,
     # "n_iter_rec" => 16,
-    "n_iter_rec" => [4, 16, 128, 512],
+    "n_iter_rec" => [4, 16, 128, 256],
     "tspan_end" => 8,
     "arch" => "Dense",
 )
