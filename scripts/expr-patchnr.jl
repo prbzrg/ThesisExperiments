@@ -10,6 +10,8 @@ allparams = Dict(
     # "batch_size" => 128,
     # "n_iter_rec" => 16,
     "n_iter_rec" => [4, 16, 128],
+    "tspan_end" => 8,
+    "arch" => "Dense",
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -36,12 +38,12 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs = d
+    @unpack p_s, n_epochs, tspan_end, arch = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
-    # tspan = convert.(Float32, (0, tspan_end))
-    # fulld["tspan"] = tspan
+    tspan = convert.(Float32, (0, tspan_end))
+    fulld["tspan"] = tspan
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
@@ -60,30 +62,8 @@ function makesim_genflows(d::Dict)
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-    nn = FluxCompatLayer(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
-            ),
-        ),
-    )
-
-    icnf = construct(RNODE, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
-
+    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
     model = ICNFModel(icnf; optimizers, n_epochs)
 
     mach = machine(model, df)
@@ -99,13 +79,13 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack p_s, n_epochs, n_iter_rec = d
+    @unpack p_s, n_epochs, n_iter_rec, tspan_end, arch = d
     d2 = Dict{String, Any}("p_s" => p_s)
-    d3 = Dict{String, Any}("p_s" => p_s, "n_epochs" => n_epochs)
+    d3 = Dict{String, Any}("p_s" => p_s, "n_epochs" => n_epochs, "arch" => arch)
     fulld = copy(d)
 
-    # tspan = convert.(Float32, (0, tspan_end))
-    # fulld["tspan"] = tspan
+    tspan = convert.(Float32, (0, tspan_end))
+    fulld["tspan"] = tspan
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
@@ -119,28 +99,8 @@ function makesim_expr(d::Dict)
     fulld["nvars"] = nvars
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-    nn = FluxCompatLayer(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
-            ),
-        ),
-    )
-    icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
+    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
