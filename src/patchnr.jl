@@ -45,7 +45,8 @@ mutable struct PatchNR
         Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
-        λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
+        λ::AbstractFloat = 400.0f0,
+        # λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
         forward_op::Function = cstm_radon,
     )
         sel_pts = sample(1:n_pts, Nₚ)

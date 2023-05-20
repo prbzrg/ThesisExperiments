@@ -8,10 +8,11 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
     # "batch_size" => 128,
-    # "n_iter_rec" => 16,
-    "n_iter_rec" => [4, 16, 128, 256, 100],
-    "tspan_end" => 8,
+    "n_iter_rec" => 128,
+    # "n_iter_rec" => [4, 16, 128, 256, 100],
+    "tspan_end" => 1,
     "arch" => "Dense",
+    "n_t_imgs" => 6,
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -38,7 +39,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs, tspan_end, arch = d
+    @unpack p_s, n_epochs, tspan_end, arch, n_t_imgs = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -47,12 +48,17 @@ function makesim_genflows(d::Dict)
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
-    sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
+    # sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
     # sp = sample(1:128, 6)
-    fulld["sp"] = [sel_pc]
-    # fulld["sp"] = sp
-    ptchs = ptchs[:, :, :, :, sel_pc]
-    # ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
+    sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
+    sp = broadcast(
+        x -> x[1],
+        sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])),
+    )[1:n_t_imgs]
+    # fulld["sp"] = [sel_pc]
+    fulld["sp"] = sp
+    # ptchs = ptchs[:, :, :, :, sel_pc]
+    ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
 
     x = MLUtils.flatten(ptchs)
     df = DataFrame(transpose(x), :auto)
@@ -79,13 +85,14 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack p_s, n_epochs, n_iter_rec, tspan_end, arch = d
+    @unpack p_s, n_epochs, n_iter_rec, tspan_end, arch, n_t_imgs = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         "p_s" => p_s,
         "n_epochs" => n_epochs,
         "tspan_end" => tspan_end,
         "arch" => arch,
+        "n_t_imgs" => n_t_imgs,
     )
     fulld = copy(d)
 
