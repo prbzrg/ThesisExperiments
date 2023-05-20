@@ -9,7 +9,7 @@ allparams = Dict(
     "n_epochs" => 2,
     # "batch_size" => 128,
     # "n_iter_rec" => 16,
-    "n_iter_rec" => [4, 16, 128, 256],
+    "n_iter_rec" => [4, 16, 128, 256, 100],
     "tspan_end" => 8,
     "arch" => "Dense",
 )
@@ -110,7 +110,7 @@ function makesim_expr(d::Dict)
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
-    sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
     fulld["sel_t_img"] = sel_t_img
     gt_x = gt_x[:, :, sel_t_img]
     obs_y = load(obs_test_fn)["data"]

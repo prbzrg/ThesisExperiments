@@ -41,8 +41,8 @@ mutable struct PatchNR
         # reduce_rate::Integer = 100,
         reduce_rate::Integer = 4,
         n_skp::Integer = 27,
-        Nₚ::Integer = n_pts,
-        # Nₚ::Integer = n_pts ÷ reduce_rate,
+        # Nₚ::Integer = n_pts,
+        Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
         λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
@@ -126,10 +126,10 @@ function nr_patchs(app_icnf::PatchNR, x)
     # ptchs = extract_patch_33(img, p_s, p_s)
     ptchs = reshape(ptchs, (p_s, p_s, 1, :))
     x_pts = MLUtils.flatten(ptchs)
-    x_pts
+    # x_pts
     # x_pts[:, app_icnf.sel_pts]
-    # sel_pts = rand(1:(app_icnf.n_pts), app_icnf.Nₚ)
-    # x_pts[:, sel_pts]
+    sel_pts = rand(1:(app_icnf.n_pts), app_icnf.Nₚ)
+    x_pts[:, sel_pts]
 end
 
 # main
