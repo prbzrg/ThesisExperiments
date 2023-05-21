@@ -15,6 +15,11 @@ cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length = 38)
 # cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length=1000), -256:256)
 # cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, 1; length=1000), -256:256)
 
+# 4 * 4 = 1600
+# 6 * 6 = 700
+# 8 * 8 = 400
+# 10 * 10 = 250
+
 mutable struct PatchNR
     icnf_f::Function
     n_pts::Integer
@@ -34,7 +39,7 @@ mutable struct PatchNR
     function PatchNR(;
         icnf_f::Function,
         n_pts::Integer,
-        p_s::Integer = 8,
+        p_s::Integer = 6,
         w_d::Integer = 362,
         s::Integer = p_s * p_s,
         d::Integer = w_d * w_d,
@@ -42,11 +47,11 @@ mutable struct PatchNR
         reduce_rate::Integer = 4,
         n_skp::Integer = 27,
         # Nₚ::Integer = n_pts,
-        Nₚ::Integer = n_pts ÷ reduce_rate,
+        Nₚ::Integer = 40000,
+        # Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
-        λ::AbstractFloat = 400.0f0,
-        # λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
+        λ::AbstractFloat = convert(Float32, 700 * (s / Nₚ)),
         forward_op::Function = cstm_radon,
     )
         sel_pts = sample(1:n_pts, Nₚ)

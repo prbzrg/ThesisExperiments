@@ -4,13 +4,13 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
-    "p_s" => 8,
+    "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
-    # "batch_size" => 128,
-    "n_iter_rec" => 128,
+    "batch_size" => 32,
+    "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 16, 128, 256, 100],
-    "tspan_end" => 1,
+    "tspan_end" => 8,
     "arch" => "Dense",
     "n_t_imgs" => 6,
 )
@@ -39,7 +39,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs, tspan_end, arch, n_t_imgs = d
+    @unpack p_s, n_epochs, batch_size, tspan_end, arch, n_t_imgs = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -70,7 +70,7 @@ function makesim_genflows(d::Dict)
 
     nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
-    model = ICNFModel(icnf; optimizers, n_epochs)
+    model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
 
     mach = machine(model, df)
     fit!(mach)
@@ -85,11 +85,12 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack p_s, n_epochs, n_iter_rec, tspan_end, arch, n_t_imgs = d
+    @unpack p_s, n_epochs, batch_size, n_iter_rec, tspan_end, arch, n_t_imgs = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         "p_s" => p_s,
         "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
         "tspan_end" => tspan_end,
         "arch" => arch,
         "n_t_imgs" => n_t_imgs,
