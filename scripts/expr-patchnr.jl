@@ -13,6 +13,7 @@ allparams = Dict(
     "tspan_end" => 8,
     "arch" => "Dense",
     "n_t_imgs" => 6,
+    "reg_la" => 2,
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
