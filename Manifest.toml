@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "e3a9d86daa946ff94cb80fa1fd5ce5f06ca02570"
+project_hash = "e09e035c611314bacba2b763773b4aef3b3ae0b0"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "dcfdf328328f2645531c4ddebf841228aef74130"
@@ -1181,14 +1181,6 @@ deps = ["ImageContrastAdjustment", "ImageCore", "ImageDistances", "ImageFilterin
 git-tree-sha1 = "bcc2f0db769e5d42a67f501ec6781401a4389e8f"
 uuid = "2996bd0c-7a13-11e9-2da2-2f5ce47296a9"
 version = "0.3.5"
-
-[[deps.ImageReconstruction]]
-deps = ["FFTW", "Interpolations"]
-git-tree-sha1 = "6b841afd450f1fc13b16a0a0be2b225329bf8d5a"
-repo-rev = "master"
-repo-url = "https://github.com/JuliaImages/ImageReconstruction.jl"
-uuid = "d5d0ac58-a118-45a5-925e-339d09fa0c5f"
-version = "0.1.0"
 
 [[deps.ImageSegmentation]]
 deps = ["Clustering", "DataStructures", "Distances", "Graphs", "ImageCore", "ImageFiltering", "ImageMorphology", "LinearAlgebra", "MetaGraphs", "RegionTrees", "SimpleWeightedGraphs", "StaticArrays", "Statistics"]

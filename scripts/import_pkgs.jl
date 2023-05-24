@@ -1,30 +1,58 @@
 ENV["PYTHON"] = raw"C:\Program Files\Python37\python.exe"
 
-using ICNF
-using CUDA
-using Colors,
+using ICNF,
+    AbstractDifferentiation,
+    Base.Iterators,
+    Base.Threads,
+    ChainRules,
+    ChainRulesCore,
+    Colors,
+    ComputationalResources,
+    CSV,
+    CUDA,
+    DataFrames,
+    Dates,
+    DifferentialEquations,
+    Distances,
+    Distributions,
+    Documenter,
+    DrWatson,
+    Enzyme,
     FileIO,
-    ImageIO,
+    FiniteDiff,
+    Flux,
+    ForwardDiff,
     ImageInTerminal,
+    ImageIO,
     ImageQualityIndexes,
+    Images,
     ImageShow,
     ImageTransformations,
     ImageView,
-    Images,
-    Sixel
-using ComputationalResources, DataFrames
-using Dates, Logging, Random, Statistics
-using DifferentialEquations, SciMLSensitivity
-using Distances, Distributions, StatsBase
-using Documenter, DrWatson, JLD2, ProgressMeter
-using FiniteDiff, ForwardDiff, ReverseDiff, Zygote, Enzyme, Tracker, AbstractDifferentiation
-using ChainRules, ChainRulesCore
-using Flux, Lux, LuxCUDA
-using Optim, Optimisers, Optimization, OptimizationOptimJL, OptimizationOptimisers
-using MLDatasets, MLJBase, MLUtils, Plots
-using ImageReconstruction, Sinograms
-using Base.Threads, Base.Iterators
-using PyCall
+    JLD2,
+    Logging,
+    Lux,
+    LuxCUDA,
+    MLDatasets,
+    MLJBase,
+    MLUtils,
+    Optim,
+    Optimisers,
+    Optimization,
+    OptimizationOptimisers,
+    OptimizationOptimJL,
+    Plots,
+    ProgressMeter,
+    PyCall,
+    Random,
+    ReverseDiff,
+    SciMLSensitivity,
+    Sinograms,
+    Sixel,
+    Statistics,
+    StatsBase,
+    Tracker,
+    Zygote
 
 # debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
