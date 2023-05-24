@@ -14,6 +14,7 @@ allparams = Dict(
     "arch" => "Dense",
     "n_t_imgs" => 6,
     "reg_la" => 2,
+    "sel_a" => "max",
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -86,7 +87,7 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack p_s, n_epochs, batch_size, n_iter_rec, tspan_end, arch, n_t_imgs = d
+    @unpack p_s, n_epochs, batch_size, n_iter_rec, tspan_end, arch, n_t_imgs, sel_a = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         "p_s" => p_s,
@@ -119,7 +120,11 @@ function makesim_expr(d::Dict)
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
-    sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    if sel_a == "min"
+        sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    elseif sel_a == "max"
+        sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    end
     fulld["sel_t_img"] = sel_t_img
     gt_x = gt_x[:, :, sel_t_img]
     obs_y = load(obs_test_fn)["data"]
