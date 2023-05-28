@@ -9,4 +9,5 @@ df[!, "res_img"] .= missing
 df[!, "fbp_img"] .= missing
 df[!, "gt_x"] .= missing
 df[!, "time_obj"] .= missing
-CSV.write("patchnr-sims.csv", df)
+
+CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
