@@ -1,13 +1,13 @@
 ENV["PYTHON"] = raw"C:\Program Files\Python37\python.exe"
 
-using ICNF,
-    AbstractDifferentiation,
+using AbstractDifferentiation,
     Base.Iterators,
     Base.Threads,
     ChainRules,
     ChainRulesCore,
     Colors,
     ComputationalResources,
+    ContinuousNormalizingFlows,
     CSV,
     CUDA,
     DataFrames,
