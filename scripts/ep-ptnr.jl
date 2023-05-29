@@ -4,11 +4,17 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
-    "p_s" => 8,
+    "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
-    # "batch_size" => 128,
-    "n_iter_rec" => 16,
+    "batch_size" => 32,
+    "n_iter_rec" => 300,
+    # "n_iter_rec" => [4, 16, 128, 256, 100],
+    "tspan_end" => 8,
+    "arch" => "Dense",
+    "n_t_imgs" => 6,
+    "reg_la" => 2,
+    "sel_a" => "max",
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -35,21 +41,26 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs = d
+    @unpack p_s, n_epochs, batch_size, tspan_end, arch, n_t_imgs = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
-    # tspan = convert.(Float32, (0, tspan_end))
-    # fulld["tspan"] = tspan
+    tspan = convert.(Float32, (0, tspan_end))
+    fulld["tspan"] = tspan
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
-    sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
+    # sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
     # sp = sample(1:128, 6)
-    fulld["sp"] = [sel_pc]
-    # fulld["sp"] = sp
-    ptchs = ptchs[:, :, :, :, sel_pc]
-    # ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
+    sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
+    sp = broadcast(
+        x -> x[1],
+        sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])),
+    )[1:n_t_imgs]
+    # fulld["sp"] = [sel_pc]
+    fulld["sp"] = sp
+    # ptchs = ptchs[:, :, :, :, sel_pc]
+    ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
 
     x = MLUtils.flatten(ptchs)
     df = DataFrame(transpose(x), :auto)
@@ -59,31 +70,9 @@ function makesim_genflows(d::Dict)
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-    nn = FluxCompatLayer(
-        f32(
-            Flux.Chain(
-                rs_f,
-                Flux.Parallel(
-                    +,
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                    Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                    # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-                ),
-                Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-                MLUtils.flatten,
-            ),
-        ),
-    )
-
-    icnf = construct(RNODE, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
-
-    model = ICNFModel(icnf; optimizers, n_epochs)
+    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
 
     mach = machine(model, df)
     fit!(mach)
@@ -98,13 +87,20 @@ function makesim_genflows(d::Dict)
 end
 
 d = first(dicts)
-@unpack p_s, n_epochs, n_iter_rec = d
+@unpack p_s, n_epochs, batch_size, n_iter_rec, tspan_end, arch, n_t_imgs, sel_a = d
 d2 = Dict{String, Any}("p_s" => p_s)
-d3 = Dict{String, Any}("p_s" => p_s, "n_epochs" => n_epochs)
+d3 = Dict{String, Any}(
+    "p_s" => p_s,
+    "n_epochs" => n_epochs,
+    "batch_size" => batch_size,
+    "tspan_end" => tspan_end,
+    "arch" => arch,
+    "n_t_imgs" => n_t_imgs,
+)
 fulld = copy(d)
 
-# tspan = convert.(Float32, (0, tspan_end))
-# fulld["tspan"] = tspan
+tspan = convert.(Float32, (0, tspan_end))
+fulld["tspan"] = tspan
 
 data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
 ptchs = data["ptchs"]
@@ -118,33 +114,17 @@ nvars = p_s * p_s
 fulld["nvars"] = nvars
 rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-nn = FluxCompatLayer(
-    f32(
-        Flux.Chain(
-            rs_f,
-            Flux.Parallel(
-                +,
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 1, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 2, pad = Flux.SamePad()),
-                Flux.Conv((3, 3), 1 => 3, tanh; dilation = 3, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 4, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 5, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 6, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 7, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 8, pad = Flux.SamePad()),
-                # Flux.Conv((3, 3), 1 => 3, tanh; dilation = 9, pad = Flux.SamePad()),
-            ),
-            Flux.Conv((3, 3), 3 => 1, tanh; pad = Flux.SamePad()),
-            MLUtils.flatten,
-        ),
-    ),
-)
-icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
+nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
 icnf_f(x) = loss(icnf, x, ps, st)
 ptchnr = PatchNR(; icnf_f, n_pts, p_s)
 gt_x = load(gt_test_fn)["data"]
-sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+if sel_a == "min"
+    sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+elseif sel_a == "max"
+    sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+end
 fulld["sel_t_img"] = sel_t_img
 gt_x = gt_x[:, :, sel_t_img]
 obs_y = load(obs_test_fn)["data"]
@@ -161,7 +141,8 @@ fulld["fbp_a_msssim"] = assess_msssim(s_point, gt_x)
 
 # u_init = vec(cstm_fbp(obs_y))
 # u_init = standardize(UnitRangeTransform, u_init)
-u_init = vec(s_point)
+s_point_c = copy(s_point)
+u_init = vec(s_point_c)
 # u_init = rand(Float32, 362*362)
 
 opt = Optimisers.Lion()
