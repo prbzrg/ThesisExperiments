@@ -1,5 +1,9 @@
 ENV["PYTHON"] = raw"C:\Program Files\Python37\python.exe"
 
+using Pkg
+
+Pkg.precompile()
+
 using AbstractDifferentiation,
     Base.Iterators,
     Base.Threads,

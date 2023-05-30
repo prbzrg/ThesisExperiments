@@ -8,13 +8,13 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
     "n_epochs" => 2,
     "batch_size" => 32,
-    "n_iter_rec" => 300,
+    "n_iter_rec" => [8, 128, 300],
     # "n_iter_rec" => [4, 16, 128, 256, 100],
-    "tspan_end" => 8,
+    "tspan_end" => [1, 8],
     "arch" => "Dense",
     "n_t_imgs" => 6,
-    "reg_la" => 2,
-    "sel_a" => "max",
+    # "reg_la" => 2,
+    "sel_a" => ["min", "max"],
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -147,7 +147,7 @@ function makesim_expr(d::Dict)
 
     opt = Optimisers.Lion()
 
-    tst_one = @timed new_ps = train_loop(u_init, ptchnr, obs_y, opt, n_iter_rec)
+    tst_one = @timed new_ps = train_loop_optpkg(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
     fulld["res_img"] = new_img
     fulld["a_psnr"] = assess_psnr(new_img, gt_x)

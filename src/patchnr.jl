@@ -81,7 +81,7 @@ end
 #     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
 #     pt_1st = sum(exp.(-forw) * N₀ + exp.(-y) * N₀ .* (forw .- log(N₀)))
 #     pt_2ed = app_icnf.icnf_f(nr_patchs(app_icnf, x))
-#     # pt_2ed = extract_patch_50(app_icnf.icnf_f, reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)), app_icnf.p_s, app_icnf.p_s)
+#     # pt_2ed = extract_patch_one(app_icnf.icnf_f, reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)), app_icnf.p_s, app_icnf.p_s)
 #     # pt_2ed = mean(app_icnf.icnf_f.(eachcol(nr_patchs(app_icnf, x))))
 #     pt_1st + app_icnf.λ * pt_2ed
 # end
@@ -117,7 +117,7 @@ function recn_loss_pt2(app_icnf::PatchNR, x, y)
 end
 
 # function recn_loss_pt2(app_icnf::PatchNR, x, y)
-#     app_icnf.λ * extract_patch_50(
+#     app_icnf.λ * extract_patch_one(
 #         app_icnf.icnf_f,
 #         reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)),
 #         app_icnf.p_s,
@@ -128,15 +128,18 @@ end
 function nr_patchs(app_icnf::PatchNR, x)
     p_s = app_icnf.p_s
     w_d = app_icnf.w_d
-    img = reshape(x, (w_d, w_d, 1, :))
-    ptchs = extract_patch(img, p_s, p_s)
-    # ptchs = extract_patch_33(img, p_s, p_s)
-    ptchs = reshape(ptchs, (p_s, p_s, 1, :))
+    img = reshape(x, (w_d, w_d))
+    # img = reshape(x, (w_d, w_d, 1, :))
+    ptchs = extract_patch_2_rand(img, p_s, p_s, app_icnf.Nₚ)
+    # ptchs = extract_patch_rand(img, p_s, p_s, app_icnf.Nₚ)
+    # ptchs = extract_patch_2(img, p_s, p_s)
+    # ptchs = extract_patch(img, p_s, p_s)
+    # ptchs = reshape(ptchs, (p_s, p_s, 1, :))
     x_pts = MLUtils.flatten(ptchs)
-    # x_pts
+    x_pts
     # x_pts[:, app_icnf.sel_pts]
-    sel_pts = rand(1:(app_icnf.n_pts), app_icnf.Nₚ)
-    x_pts[:, sel_pts]
+    # sel_pts = rand(1:(app_icnf.n_pts), app_icnf.Nₚ)
+    # x_pts[:, sel_pts]
 end
 
 # main
