@@ -18,7 +18,7 @@ function train_loop(ps, ptchnr, obs_y, opt, n_iter)
     opt_state = Optimisers.setup(opt, ps)
     G = copy(ps)
     # G = zeros(eltype(ps), length(ps))
-    prgr = Progress(n_iter; dt = eps(Float32), desc = "Min for CT: ", showspeed = true)
+    prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
     for i in 1:n_iter
         _loss_gd(G, ps, ptchnr, obs_y)
         opt_state, ps = Optimisers.update!(opt_state, ps, G)
@@ -33,7 +33,7 @@ function train_loop(ps, ptchnr, obs_y, opt, n_iter)
 end
 
 function train_loop_optpkg(ps, ptchnr, obs_y, opt, n_iter)
-    prgr = Progress(n_iter; dt = eps(Float32), desc = "Min for CT: ", showspeed = true)
+    prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
 
     function _callback(ps, l)
         ProgressMeter.next!(
