@@ -4,22 +4,32 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
-    # "p_s" => 8,
-    "p_s" => 6,
-    # "p_s" => [4, 6, 8],
-    # "n_epochs" => 8,
-    "n_epochs" => 2,
-    # "batch_size" => 128,
-    "batch_size" => 32,
-    "n_iter_rec" => [8, 128, 300],
+    # test
+    "n_iter_rec" => 300,
+    # "n_iter_rec" => [8, 128, 300],
     # "n_iter_rec" => [4, 16, 128, 256, 100],
-    # "tspan_end" => 32,
-    "tspan_end" => [1, 8],
-    # "n_hidden_rate" => 4,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
-    "n_t_imgs" => 6,
     "sel_a" => ["min", "max"],
+
+    # train
+    "n_t_imgs" => 6,
+    "p_s" => 8,
+    # "p_s" => 6,
+    # "p_s" => [4, 6, 8],
+
+    # nn
+    "n_hidden_rate" => 4,
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
+
+    # construct
+    "tspan_end" => 32,
+    # "tspan_end" => [1, 8],
+
+    # ICNFModel
+    "n_epochs" => 8,
+    # "n_epochs" => 2,
+    "batch_size" => 128,
+    # "batch_size" => 32,
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
@@ -46,8 +56,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    n_hidden_rate = 4
-    @unpack p_s, n_epochs, batch_size, tspan_end, arch, n_t_imgs = d
+    @unpack p_s, n_epochs, batch_size, tspan_end, arch, n_t_imgs, n_hidden_rate = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -78,21 +87,31 @@ function makesim_genflows(d::Dict)
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
     if arch == "Dense"
-        nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+        nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
     elseif arch == "Dense-ML"
         nn = FluxCompatLayer(
-            f32(
-                Flux.Chain(
-                    Flux.Dense(nvars => n_hidden, tanh),
-                    Flux.Dense(n_hidden => nvars, tanh),
+            Flux.gpu(
+                f32(
+                    Flux.Chain(
+                        Flux.Dense(nvars => n_hidden, tanh),
+                        Flux.Dense(n_hidden => nvars, tanh),
+                    ),
                 ),
             ),
         )
     else
         error("Not Imp")
     end
-    icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
-    model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
+    icnf = construct(
+        RNODE,
+        nn,
+        nvars;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        array_type = CuArray,
+        sol_kwargs,
+    )
+    model = ICNFModel(icnf; optimizers, n_epochs, batch_size, resource = CUDALibs())
 
     mach = machine(model, df)
     fit!(mach)
@@ -107,16 +126,31 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    n_hidden_rate = 4
-    @unpack p_s, n_epochs, batch_size, n_iter_rec, tspan_end, arch, n_t_imgs, sel_a = d
+    @unpack p_s,
+    n_epochs,
+    batch_size,
+    n_iter_rec,
+    tspan_end,
+    arch,
+    n_t_imgs,
+    sel_a,
+    n_hidden_rate = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
+        # train
+        "n_t_imgs" => n_t_imgs,
         "p_s" => p_s,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+
+        # construct
+        "tspan_end" => tspan_end,
+
+        # ICNFModel
         "n_epochs" => n_epochs,
         "batch_size" => batch_size,
-        "tspan_end" => tspan_end,
-        "arch" => arch,
-        "n_t_imgs" => n_t_imgs,
     )
     fulld = copy(d)
 
@@ -130,6 +164,8 @@ function makesim_expr(d::Dict)
 
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
     @unpack ps, st = data
+    ps = Lux.gpu(ps)
+    st = Lux.gpu(st)
 
     nvars = p_s * p_s
     n_hidden = n_hidden_rate * nvars
@@ -138,20 +174,30 @@ function makesim_expr(d::Dict)
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
     if arch == "Dense"
-        nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+        nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
     elseif arch == "Dense-ML"
         nn = FluxCompatLayer(
-            f32(
-                Flux.Chain(
-                    Flux.Dense(nvars => n_hidden, tanh),
-                    Flux.Dense(n_hidden => nvars, tanh),
+            Flux.gpu(
+                f32(
+                    Flux.Chain(
+                        Flux.Dense(nvars => n_hidden, tanh),
+                        Flux.Dense(n_hidden => nvars, tanh),
+                    ),
                 ),
             ),
         )
     else
         error("Not Imp")
     end
-    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(
+        FFJORD,
+        nn,
+        nvars;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        array_type = CuArray,
+        sol_kwargs,
+    )
 
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)

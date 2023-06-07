@@ -4,20 +4,30 @@ using DrWatson
 include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
+    # data
     "nvars" => 2^0,
     # "nvars" => 2 .^ (0:3),
     "n" => 2^10,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
-    "n_hidden_rate" => 1,
+
+    # nn
+    "n_hidden_rate" => 4,
     # "n_hidden_rate" => 2 .^ (0:3),
-    "tspan_end" => 2 .^ (0:4),
-    "arch" => "Dense",
+    "arch" => ["Dense", "Dense-ML"],
+
+    # construct
+    "tspan_end" => [1, 32],
+    # "tspan_end" => 2 .^ (0:4),
+
+    # ICNFModel
+    "n_epochs" => 512,
+    "batch_size" => [32, 128],
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)
 
-function gen_data(nvars, n, data_dist = Beta{Float32}(2.0f0, 4.0f0))
+function gen_data(nvars, n, data_dist)
     convert.(Float32, rand(data_dist, nvars, n))
 end
 
@@ -32,7 +42,7 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack nvars, n, data_dist, n_hidden_rate, tspan_end, arch = d
+    @unpack nvars, n, data_dist, n_hidden_rate, tspan_end, arch, batch_size, n_epochs = d
     fulld = copy(d)
 
     n_hidden = n_hidden_rate * nvars
@@ -44,11 +54,24 @@ function makesim_expr(d::Dict)
     data, fn = produce_or_load(makesim_gendata, config, datadir("synthetic-gendata"))
     r = data["r"]
 
-    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    if arch == "Dense"
+        nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    elseif arch == "Dense-ML"
+        nn = FluxCompatLayer(
+            f32(
+                Flux.Chain(
+                    Flux.Dense(nvars => n_hidden, tanh),
+                    Flux.Dense(n_hidden => nvars, tanh),
+                ),
+            ),
+        )
+    else
+        error("Not Imp")
+    end
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
     df = DataFrame(transpose(r), :auto)
-    model = ICNFModel(icnf; optimizers)
+    model = ICNFModel(icnf; optimizers, batch_size, n_epochs)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)
