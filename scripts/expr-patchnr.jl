@@ -68,10 +68,14 @@ function makesim_genflows(d::Dict)
     # sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
     # sp = sample(1:128, 6)
     sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
-    sp = broadcast(
+    n_t_imgs_h = n_t_imgs ÷ 2
+    sp1 = broadcast(
         x -> x[1],
         sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])),
-    )[1:n_t_imgs]
+    )[1:n_t_imgs_h]
+    sp2 =
+        broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))[1:n_t_imgs_h]
+    sp = vcat(sp1, sp2)
     # fulld["sp"] = [sel_pc]
     fulld["sp"] = sp
     # ptchs = ptchs[:, :, :, :, sel_pc]
