@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-use_gpu_nn = true
+use_gpu_nn = false
 
 allparams = Dict(
     # test
@@ -14,14 +14,14 @@ allparams = Dict(
 
     # train
     "n_t_imgs" => 6,
-    "p_s" => 8,
-    # "p_s" => 6,
+    # "p_s" => 8,
+    "p_s" => 6,
     # "p_s" => [4, 6, 8],
 
     # nn
     "n_hidden_rate" => 4,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
 
     # construct
     "tspan_end" => 32,
