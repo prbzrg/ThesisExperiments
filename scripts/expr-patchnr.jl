@@ -14,8 +14,8 @@ allparams = Dict(
 
     # train
     "n_t_imgs" => 6,
-    # "p_s" => 8,
-    "p_s" => 6,
+    "p_s" => 8,
+    # "p_s" => 6,
     # "p_s" => [4, 6, 8],
 
     # nn
