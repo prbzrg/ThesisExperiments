@@ -3,6 +3,8 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
+use_gpu_nn = false
+
 allparams = Dict(
     # test
     "n_iter_rec" => 300,
@@ -90,32 +92,55 @@ function makesim_genflows(d::Dict)
     fulld["n_hidden"] = n_hidden
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
-    if arch == "Dense"
-        nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
-    elseif arch == "Dense-ML"
-        nn = FluxCompatLayer(
-            Flux.gpu(
+    if use_gpu_nn
+        if arch == "Dense"
+            nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
+        elseif arch == "Dense-ML"
+            nn = FluxCompatLayer(
+                Flux.gpu(
+                    f32(
+                        Flux.Chain(
+                            Flux.Dense(nvars => n_hidden, tanh),
+                            Flux.Dense(n_hidden => nvars, tanh),
+                        ),
+                    ),
+                ),
+            )
+        else
+            error("Not Imp")
+        end
+    else
+        if arch == "Dense"
+            nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+        elseif arch == "Dense-ML"
+            nn = FluxCompatLayer(
                 f32(
                     Flux.Chain(
                         Flux.Dense(nvars => n_hidden, tanh),
                         Flux.Dense(n_hidden => nvars, tanh),
                     ),
                 ),
-            ),
-        )
-    else
-        error("Not Imp")
+            )
+        else
+            error("Not Imp")
+        end
     end
-    icnf = construct(
-        RNODE,
-        nn,
-        nvars;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
-    model = ICNFModel(icnf; optimizers, n_epochs, batch_size, resource = CUDALibs())
+    if use_gpu_nn
+        icnf = construct(
+            RNODE,
+            nn,
+            nvars;
+            tspan,
+            compute_mode = ZygoteMatrixMode,
+            array_type = CuArray,
+            sol_kwargs,
+        )
+        model = ICNFModel(icnf; optimizers, n_epochs, batch_size, resource = CUDALibs())
+    else
+        icnf =
+            construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+        model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
+    end
 
     mach = machine(model, df)
     fit!(mach)
@@ -168,8 +193,10 @@ function makesim_expr(d::Dict)
 
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
     @unpack ps, st = data
-    ps = Lux.gpu(ps)
-    st = Lux.gpu(st)
+    if use_gpu_nn
+        ps = Lux.gpu(ps)
+        st = Lux.gpu(st)
+    end
 
     nvars = p_s * p_s
     n_hidden = n_hidden_rate * nvars
@@ -177,31 +204,53 @@ function makesim_expr(d::Dict)
     fulld["n_hidden"] = n_hidden
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-    if arch == "Dense"
-        nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
-    elseif arch == "Dense-ML"
-        nn = FluxCompatLayer(
-            Flux.gpu(
+    if use_gpu_nn
+        if arch == "Dense"
+            nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
+        elseif arch == "Dense-ML"
+            nn = FluxCompatLayer(
+                Flux.gpu(
+                    f32(
+                        Flux.Chain(
+                            Flux.Dense(nvars => n_hidden, tanh),
+                            Flux.Dense(n_hidden => nvars, tanh),
+                        ),
+                    ),
+                ),
+            )
+        else
+            error("Not Imp")
+        end
+    else
+        if arch == "Dense"
+            nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+        elseif arch == "Dense-ML"
+            nn = FluxCompatLayer(
                 f32(
                     Flux.Chain(
                         Flux.Dense(nvars => n_hidden, tanh),
                         Flux.Dense(n_hidden => nvars, tanh),
                     ),
                 ),
-            ),
+            )
+        else
+            error("Not Imp")
+        end
+    end
+    if use_gpu_nn
+        icnf = construct(
+            FFJORD,
+            nn,
+            nvars;
+            tspan,
+            compute_mode = ZygoteMatrixMode,
+            array_type = CuArray,
+            sol_kwargs,
         )
     else
-        error("Not Imp")
+        icnf =
+            construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
 
     icnf_f(x) = loss(icnf, x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
