@@ -20,8 +20,8 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 4,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
 
     # construct
     "tspan_end" => 32,
