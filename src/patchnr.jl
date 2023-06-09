@@ -109,8 +109,12 @@ function recn_loss_pt1(app_icnf::PatchNR, x, y)
 end
 
 function recn_loss_pt2(app_icnf::PatchNR, x, y)
-    # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(nr_patchs(app_icnf, x))))
-    app_icnf.λ * app_icnf.icnf_f(nr_patchs(app_icnf, x))
+    new_pts = nr_patchs(app_icnf, x)
+    if use_gpu_nn
+        new_pts = Lux.gpu(new_pts)
+    end
+    # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(new_pts)))
+    app_icnf.λ * app_icnf.icnf_f(new_pts)
 end
 
 # function recn_loss_pt2(app_icnf::PatchNR, x, y)
