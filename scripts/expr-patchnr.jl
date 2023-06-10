@@ -24,7 +24,7 @@ allparams = Dict(
     "arch" => "Dense",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 4,
     # "tspan_end" => [1, 8],
 
     # ICNFModel
