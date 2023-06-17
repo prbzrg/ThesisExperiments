@@ -7,22 +7,22 @@ allparams = Dict(
     # data
     "nvars" => 2^0,
     # "nvars" => 2 .^ (0:3),
-    "n" => 2^10,
+    "n" => 2^12,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
     # nn
-    "n_hidden_rate" => 4,
+    "n_hidden_rate" => 2^2,
     # "n_hidden_rate" => 2 .^ (0:3),
     "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => [1, 32],
+    "tspan_end" => [2^0, 2^5],
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
-    "n_epochs" => 512,
-    "batch_size" => [32, 128],
+    "n_epochs" => 2^10 * 2^3,
+    "batch_size" => 2^12,
 )
 dicts = dict_list(allparams)
 dicts = convert.(Dict{String, Any}, dicts)

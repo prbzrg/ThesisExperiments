@@ -84,5 +84,8 @@ sol_kwargs = Dict(
     :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    :abstol => eps(one(Float32)),
+    :reltol => 1.0f-2 + eps(1.0f-2),
+    # :reltol => eps(one(Float32)),
 )
 optimizers = Any[Optimisers.Lion(),]
