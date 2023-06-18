@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "2460320fe46c88aec281e6c15d4e4bf2e092c947"
+project_hash = "09cd73357370afcacfe3eac3570dc9de57f1f0b4"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "dcfdf328328f2645531c4ddebf841228aef74130"
@@ -113,9 +113,9 @@ version = "0.1.29"
 
 [[deps.ArrayLayouts]]
 deps = ["FillArrays", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "4aff5fa660eb95c2e0deb6bcdabe4d9a96bc4667"
+git-tree-sha1 = "1d9e98721e71dcf4db5a7d34f55d8aa07c43468f"
 uuid = "4c555306-a7a7-4459-81d9-ec55ddd5c99a"
-version = "0.8.18"
+version = "1.0.6"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -145,10 +145,10 @@ uuid = "ab4f0b2a-ad5b-11e8-123f-65d77653426b"
 version = "0.4.2"
 
 [[deps.BandedMatrices]]
-deps = ["ArrayLayouts", "FillArrays", "LinearAlgebra", "SnoopPrecompile", "SparseArrays"]
-git-tree-sha1 = "6ef8fc1d77b60f41041d59ce61ef9eb41ed97a83"
+deps = ["ArrayLayouts", "FillArrays", "LinearAlgebra", "PrecompileTools", "SparseArrays"]
+git-tree-sha1 = "9ad46355045491b12eab409dee73e9de46293aa2"
 uuid = "aae01518-5342-5314-be14-df237901396f"
-version = "0.17.18"
+version = "0.17.28"
 
 [[deps.BangBang]]
 deps = ["Compat", "ConstructionBase", "InitialValues", "LinearAlgebra", "Requires", "Setfield", "Tables"]
@@ -413,9 +413,9 @@ version = "1.0.2+0"
 
 [[deps.ComponentArrays]]
 deps = ["ArrayInterface", "ChainRulesCore", "ForwardDiff", "Functors", "LinearAlgebra", "Requires", "StaticArrayInterface"]
-git-tree-sha1 = "891f08177789faff56f0deda1e23615ec220ce44"
+git-tree-sha1 = "47960a253c1a759762504a8158d0afbfd7dccd61"
 uuid = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
-version = "0.13.12"
+version = "0.13.14"
 weakdeps = ["ConstructionBase", "GPUArrays", "RecursiveArrayTools", "ReverseDiff", "SciMLBase", "StaticArrays"]
 
     [deps.ComponentArrays.extensions]
@@ -478,10 +478,10 @@ uuid = "6add18c4-b38d-439d-96f6-d6bc489c04c5"
 version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
-deps = ["AbstractDifferentiation", "CUDA", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "DifferentialEquations", "Distributions", "DistributionsAD", "FillArrays", "Flux", "IterTools", "LinearAlgebra", "Lux", "LuxCUDA", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "NNlibCUDA", "Optimisers", "Optimization", "OptimizationOptimisers", "PrecompileTools", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "1cc292abb098b969c9ccb1ecb9ac683c4353cb72"
+deps = ["ADTypes", "AbstractDifferentiation", "CUDA", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "DifferentialEquations", "Distributions", "DistributionsAD", "FillArrays", "Flux", "IterTools", "LinearAlgebra", "Lux", "LuxCUDA", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "NNlibCUDA", "Optimisers", "Optimization", "OptimizationOptimisers", "PrecompileTools", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
+git-tree-sha1 = "0d98a7c3db2b8a876cdda9de5c1ee91eb68e155e"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
-version = "0.5.1"
+version = "0.6.0"
 
 [[deps.Contour]]
 git-tree-sha1 = "d05d9e7b7aedff4e5b51a029dced05cfb6125781"
@@ -820,9 +820,9 @@ uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
-git-tree-sha1 = "7072f1e3e5a8be51d525d64f63d3ec1287ff2790"
+git-tree-sha1 = "e17cc4dc2d0b0b568e80d937de8ed8341822de67"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "0.13.11"
+version = "1.2.0"
 
 [[deps.FiniteDiff]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires", "Setfield", "SparseArrays"]
@@ -854,15 +854,17 @@ version = "1.0.0"
 
 [[deps.Flux]]
 deps = ["Adapt", "CUDA", "ChainRulesCore", "Functors", "LinearAlgebra", "MLUtils", "MacroTools", "NNlib", "NNlibCUDA", "OneHotArrays", "Optimisers", "Preferences", "ProgressLogging", "Random", "Reexport", "SparseArrays", "SpecialFunctions", "Statistics", "Zygote", "cuDNN"]
-git-tree-sha1 = "64005071944bae14fc145661f617eb68b339189c"
+git-tree-sha1 = "3e2c3704c2173ab4b1935362384ca878b53d4c34"
 uuid = "587475ba-b771-5e3f-ad9e-33799f191a9c"
-version = "0.13.16"
+version = "0.13.17"
 
     [deps.Flux.extensions]
     AMDGPUExt = "AMDGPU"
+    FluxMetalExt = "Metal"
 
     [deps.Flux.weakdeps]
     AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
+    Metal = "dde4c033-4e86-420c-a63e-0dd931031962"
 
 [[deps.Fontconfig_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Expat_jll", "FreeType2_jll", "JLLWrappers", "Libdl", "Libuuid_jll", "Pkg", "Zlib_jll"]
@@ -1122,7 +1124,9 @@ version = "0.7.5"
 
 [[deps.ImageGeoms]]
 deps = ["FillArrays", "LazyGrids", "Requires"]
-git-tree-sha1 = "4c686e050bec098a550dcbc9f95501a4743dc54b"
+git-tree-sha1 = "7a41f9487cc081a15df9338cd905406b1041acba"
+repo-rev = "main"
+repo-url = "https://github.com/JuliaImageRecon/ImageGeoms.jl.git"
 uuid = "9ee76f2b-840d-4475-b6d6-e485c9297852"
 version = "0.10.0"
 
@@ -1926,9 +1930,9 @@ version = "0.2.18"
 
 [[deps.Optimization]]
 deps = ["ADTypes", "ArrayInterface", "ConsoleProgressMonitor", "DocStringExtensions", "LinearAlgebra", "Logging", "LoggingExtras", "Pkg", "Printf", "ProgressLogging", "Reexport", "Requires", "SciMLBase", "SparseArrays", "TerminalLoggers"]
-git-tree-sha1 = "9a8ab955f52ddc1575585187e94b7a0dbbaf1642"
+git-tree-sha1 = "80005bc7d96d4d00e56b8a58c5240a35bd638d4a"
 uuid = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
-version = "3.15.1"
+version = "3.15.2"
 
     [deps.Optimization.extensions]
     OptimizationEnzymeExt = "Enzyme"
@@ -1956,9 +1960,9 @@ version = "0.1.9"
 
 [[deps.OptimizationOptimisers]]
 deps = ["Optimisers", "Optimization", "Printf", "ProgressLogging", "Reexport"]
-git-tree-sha1 = "133ef3f9529e6cdd6d7668490dd144de56675bcc"
+git-tree-sha1 = "3887930feadac706d0cfd91c680d56704de0b570"
 uuid = "42dfb2eb-d2b4-4451-abcd-913932933ac1"
-version = "0.1.2"
+version = "0.1.4"
 
 [[deps.Opus_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -2019,10 +2023,10 @@ uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "2.7.0"
 
 [[deps.Pickle]]
-deps = ["DataStructures", "InternedStrings", "Serialization", "SparseArrays", "Strided", "StringEncodings", "ZipFile"]
-git-tree-sha1 = "e6a34eb1dc0c498f0774bbfbbbeff2de101f4235"
+deps = ["BFloat16s", "DataStructures", "InternedStrings", "Serialization", "SparseArrays", "Strided", "StringEncodings", "ZipFile"]
+git-tree-sha1 = "2e71d7dbcab8dc47306c0ed6ac6018fbc1a7070f"
 uuid = "fbb45041-c46e-462f-888f-7c521cafbc2c"
-version = "0.3.2"
+version = "0.3.3"
 
 [[deps.Pipe]]
 git-tree-sha1 = "6842804e7867b115ca9de748a0cf6b364523c16d"
