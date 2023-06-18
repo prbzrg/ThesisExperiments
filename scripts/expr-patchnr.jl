@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-use_gpu_nn = false
+use_gpu_nn = true
 
 allparams = Dict(
     # test
@@ -20,17 +20,17 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 4,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
 
     # construct
-    "tspan_end" => 4,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 8],
 
     # ICNFModel
-    # "n_epochs" => 8,
-    "n_epochs" => 2,
-    "batch_size" => 128,
+    "n_epochs" => 32,
+    # "n_epochs" => 2,
+    "batch_size" => 2^12,
     # "batch_size" => 32,
 )
 dicts = dict_list(allparams)
