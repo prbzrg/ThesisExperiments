@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-use_gpu_nn = true
+use_gpu_nn = false
 
 allparams = Dict(
     # test
