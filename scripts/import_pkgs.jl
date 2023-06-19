@@ -89,3 +89,9 @@ sol_kwargs = Dict(
     # :reltol => eps(one(Float32)),
 )
 optimizers = Any[Optimisers.Lion(),]
+
+if !isempty(ARGS)
+    use_gpu_nn = ARGS[1] == "gpu"
+else
+    use_gpu_nn = false
+end

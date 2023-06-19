@@ -3,8 +3,6 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-use_gpu_nn = false
-
 allparams = Dict(
     # test
     "n_iter_rec" => 300,
