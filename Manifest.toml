@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.0"
+julia_version = "1.9.1"
 manifest_format = "2.0"
 project_hash = "09cd73357370afcacfe3eac3570dc9de57f1f0b4"
 
@@ -85,9 +85,9 @@ version = "0.2.0"
 
 [[deps.ArrayInterface]]
 deps = ["Adapt", "LinearAlgebra", "Requires", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "d3f758863a47ceef2248d136657cb9c033603641"
+git-tree-sha1 = "f83ec24f76d4c8f525099b2ac475fc098138ec31"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "7.4.8"
+version = "7.4.11"
 
     [deps.ArrayInterface.extensions]
     ArrayInterfaceBandedMatricesExt = "BandedMatrices"
@@ -345,9 +345,9 @@ version = "0.1.12"
 
 [[deps.Clustering]]
 deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "Printf", "Random", "SparseArrays", "Statistics", "StatsBase"]
-git-tree-sha1 = "a6e6ce44a1e0a781772fc795fb7343b1925e9898"
+git-tree-sha1 = "42fe66dbc8f1d09a44aa87f18d26926d06a35f84"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
-version = "0.15.2"
+version = "0.15.3"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
@@ -639,9 +639,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[deps.Distributions]]
 deps = ["FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns", "Test"]
-git-tree-sha1 = "c72970914c8a21b36bbc244e9df0ed1834a0360b"
+git-tree-sha1 = "4ed4a6df2548a72f66e03f3a285cd1f3b573035d"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.95"
+version = "0.25.96"
 
     [deps.Distributions.extensions]
     DistributionsChainRulesCoreExt = "ChainRulesCore"
@@ -728,10 +728,10 @@ uuid = "7cc45869-7501-5eee-bdea-0790c847d4ef"
 version = "0.0.53+0"
 
 [[deps.Expat_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "bad72f730e9e91c08d9427d5e8db95478a3c323d"
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "4558ab818dcceaab612d1bb8c19cee87eda2b83c"
 uuid = "2e619515-83b5-522b-bb60-26c02a35a201"
-version = "2.4.8+0"
+version = "2.5.0+0"
 
 [[deps.ExponentialUtilities]]
 deps = ["Adapt", "ArrayInterface", "GPUArraysCore", "GenericSchur", "LinearAlgebra", "Printf", "SnoopPrecompile", "SparseArrays", "libblastrampoline_jll"]
@@ -1549,9 +1549,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LinearSolve]]
 deps = ["ArrayInterface", "DocStringExtensions", "EnumX", "FastLapackInterface", "GPUArraysCore", "InteractiveUtils", "KLU", "Krylov", "LinearAlgebra", "PrecompileTools", "Preferences", "RecursiveFactorization", "Reexport", "Requires", "SciMLBase", "SciMLOperators", "Setfield", "SparseArrays", "Sparspak", "SuiteSparse", "UnPack"]
-git-tree-sha1 = "d4514497594519b3c20e93a609389fddb4ee39ab"
+git-tree-sha1 = "c6a6f78167d7b7c19dfb7148161d7f1962a0b361"
 uuid = "7ed4a6bd-45f5-4d41-b270-4a48e9bafcae"
-version = "2.1.13"
+version = "2.2.1"
 
     [deps.LinearSolve.extensions]
     LinearSolveCUDAExt = "CUDA"
@@ -2460,7 +2460,9 @@ version = "1.4.0"
 
 [[deps.Sinograms]]
 deps = ["FFTW", "ImageGeoms", "LazyGrids", "Requires"]
-git-tree-sha1 = "0ef751c0c3c5741d73b11ad2ea4e4003640f5c5a"
+git-tree-sha1 = "e7d0ec263955ab6425340634deffb5c38598eda2"
+repo-rev = "main"
+repo-url = "https://github.com/JuliaImageRecon/Sinograms.jl.git"
 uuid = "02a14def-c6e6-4ab0-b2df-0ab64bc8cdd7"
 version = "0.4.1"
 
@@ -3152,7 +3154,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.7.0+0"
+version = "5.8.0+0"
 
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
