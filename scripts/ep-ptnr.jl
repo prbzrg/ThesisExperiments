@@ -70,7 +70,7 @@ function makesim_genflows(d::Dict)
 
     rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-    nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+    nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
     icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
 
@@ -114,7 +114,7 @@ nvars = p_s * p_s
 fulld["nvars"] = nvars
 rs_f(x) = reshape(x, (p_s, p_s, 1, :))
 
-nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
 icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 
 icnf_f(x) = loss(icnf, x, ps, st)

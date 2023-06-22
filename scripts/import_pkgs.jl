@@ -4,7 +4,8 @@ using Pkg
 
 Pkg.precompile()
 
-using AbstractDifferentiation,
+using ADTypes,
+    AbstractDifferentiation,
     Base.Iterators,
     Base.Threads,
     ChainRules,
@@ -81,8 +82,9 @@ sol_kwargs = Dict(
     # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
-    :sensealg => ForwardDiffSensitivity(),
-    # :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    # :sensealg => ForwardDiffSensitivity(),
+    # :sensealg => ZygoteAdjoint(),
+    :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     :abstol => eps(one(Float32)),

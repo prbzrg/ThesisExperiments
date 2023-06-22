@@ -55,10 +55,10 @@ function makesim_expr(d::Dict)
     r = data["r"]
 
     if arch == "Dense"
-        nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+        nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
     elseif arch == "Dense-ML"
         nn = FluxCompatLayer(
-            f32(
+            Flux.f32(
                 Flux.Chain(
                     Flux.Dense(nvars => n_hidden, tanh),
                     Flux.Dense(n_hidden => nvars, tanh),

@@ -28,7 +28,7 @@ function makesim_expr(d::Dict)
     # fulld["tspan"] = tspan
 
     nn = FluxCompatLayer(
-        f32(
+        Flux.f32(
             Flux.Chain(
                 rs_f,
                 Flux.Parallel(

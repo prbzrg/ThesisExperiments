@@ -20,8 +20,8 @@ allparams = Dict(
     "n_hidden_rate" => 4,
     "arch" => "Dense-ML",
     # "arch" => "Dense",
-    "back" => "Lux",
-    # "back" => "Flux",
+    # "back" => "Lux",
+    "back" => "Flux",
 
     # construct
     "tspan_end" => 32,
@@ -29,7 +29,7 @@ allparams = Dict(
     # "tspan_end" => [1, 8],
 
     # ICNFModel
-    "n_epochs" => 32,
+    "n_epochs" => 8,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -107,11 +107,11 @@ function makesim_genflows(d::Dict)
     elseif back == "Flux"
         if use_gpu_nn
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
-                        f32(
+                        Flux.f32(
                             Flux.Chain(
                                 Flux.Dense(nvars => n_hidden, tanh),
                                 Flux.Dense(n_hidden => nvars, tanh),
@@ -124,10 +124,10 @@ function makesim_genflows(d::Dict)
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
-                    f32(
+                    Flux.f32(
                         Flux.Chain(
                             Flux.Dense(nvars => n_hidden, tanh),
                             Flux.Dense(n_hidden => nvars, tanh),
@@ -151,11 +151,24 @@ function makesim_genflows(d::Dict)
             array_type = CuArray,
             sol_kwargs,
         )
-        model = ICNFModel(icnf; optimizers, n_epochs, batch_size, resource = CUDALibs())
+        model = ICNFModel(
+            icnf;
+            optimizers,
+            n_epochs,
+            batch_size,
+            # adtype = AutoForwardDiff(),
+            resource = CUDALibs(),
+        )
     else
         icnf =
             construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
-        model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
+        model = ICNFModel(
+            icnf;
+            optimizers,
+            n_epochs,
+            batch_size,
+            # adtype = AutoForwardDiff(),
+        )
     end
 
     mach = machine(model, df)
@@ -236,11 +249,11 @@ function makesim_expr(d::Dict)
     elseif back == "Flux"
         if use_gpu_nn
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
-                        f32(
+                        Flux.f32(
                             Flux.Chain(
                                 Flux.Dense(nvars => n_hidden, tanh),
                                 Flux.Dense(n_hidden => nvars, tanh),
@@ -253,10 +266,10 @@ function makesim_expr(d::Dict)
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
-                    f32(
+                    Flux.f32(
                         Flux.Chain(
                             Flux.Dense(nvars => n_hidden, tanh),
                             Flux.Dense(n_hidden => nvars, tanh),

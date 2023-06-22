@@ -3,9 +3,9 @@
 nn = Lux.Dense(nvars => nvars, tanh)
 nn = Lux.Chain(Lux.Dense(nvars => n_hidden, tanh), Lux.Dense(n_hidden => nvars, tanh))
 # beta - flux
-nn = FluxCompatLayer(f32(Flux.Dense(nvars => nvars, tanh)))
+nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
 nn = FluxCompatLayer(
-    f32(
+    Flux.f32(
         Flux.Chain(
             Flux.Dense(nvars => n_hidden, tanh),
             Flux.Dense(n_hidden => nvars, tanh),
@@ -51,9 +51,9 @@ nn = Lux.Chain(
     Lux.FlattenLayer(),
 )
 # mnist - flux
-nn = FluxCompatLayer(f32(Flux.Dense(28 * 28 => 28 * 28, tanh)))
+nn = FluxCompatLayer(Flux.f32(Flux.Dense(28 * 28 => 28 * 28, tanh)))
 nn = FluxCompatLayer(
-    f32(
+    Flux.f32(
         Flux.Chain(
             rs_f,
             Flux.Parallel(
@@ -74,7 +74,7 @@ nn = FluxCompatLayer(
     ),
 )
 nn = FluxCompatLayer(
-    f32(
+    Flux.f32(
         Flux.Chain(
             rs_f,
             Flux.Parallel(
@@ -117,7 +117,7 @@ nn = Lux.Chain(
 )
 # patchnr - flux
 nn = FluxCompatLayer(
-    f32(
+    Flux.f32(
         Flux.Chain(
             Flux.Dense(nvars => nvars * 4, tanh),
             Flux.Dense(nvars * 4 => nvars, tanh),
@@ -125,7 +125,7 @@ nn = FluxCompatLayer(
     ),
 )
 nn = FluxCompatLayer(
-    f32(
+    Flux.f32(
         Flux.Chain(
             rs_f,
             Flux.Parallel(
