@@ -1,0 +1,11 @@
+With threads & no procs
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project -i scripts/import_pkgs.jl
+
+no procs & threads
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project -i scripts/import_pkgs.jl
+
+With threads & no procs - exec
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project -i scripts/import_pkgs.jl
+
+no procs & threads - exec
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project -i scripts/import_pkgs.jl

@@ -1,0 +1,7 @@
+python -bb -OO -R -u -Walways -m pip install --user --upgrade --upgrade-strategy "eager" --force-reinstall --ignore-installed pip
+
+python -bb -OO -R -u -Walways -m pip install --user --upgrade --upgrade-strategy "eager" --force-reinstall --ignore-installed setuptools
+
+python -bb -OO -R -u -Walways -m pip install --user --upgrade --upgrade-strategy "eager" --force-reinstall --ignore-installed numpy==1.23.5 scikit-image==0.18.3 torch odl dival
+
+python -bb -OO -R -u -Walways -m pip freeze --all

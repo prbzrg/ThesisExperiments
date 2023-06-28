@@ -17,8 +17,8 @@ function grad_first_part(x, y)
 end
 
 # r2 = rand(Float32, 1, 1, 362, 362)
-# rr3 = rand(Float32, 1, 1, 1000, 513)
-# res1 = first_part(r2, rr3)
-# res2 = grad_first_part(r2, rr3)
+# r3 = rand(Float32, 1, 1, 1000, 513)
+# res1 = first_part(r2, r3)
+# res2 = grad_first_part(r2, r3)
 # res3 = radon_t(r2)
-# res4 = fbp_t(rr3)
+# res4 = fbp_t(r3)

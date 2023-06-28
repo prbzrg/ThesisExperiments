@@ -1,7 +1,9 @@
-import numpy as np
+import numpy
 import torch
+import odl
+import dival.util.torch_losses
+# import odl.contrib.torch
 
-from odl import Operator
 
 class OperatorFunction(torch.autograd.Function):
 
@@ -25,7 +27,7 @@ class OperatorFunction(torch.autograd.Function):
     Simple example with of evaluating the ODL ``MatrixOperator`` on an
     input tensor of matching shape:
 
-    >>> matrix = np.array([[1, 0, 1],
+    >>> matrix = numpy.array([[1, 0, 1],
     ...                    [0, 1, 1]], dtype='float32')
     >>> odl_op = odl.MatrixOperator(matrix)
     >>> odl_op.domain.shape
@@ -158,7 +160,7 @@ class OperatorFunction(torch.autograd.Function):
         result : `torch.Tensor`
             Tensor holding the result of the evaluation.
         """
-        if not isinstance(operator, Operator):
+        if not isinstance(operator, odl.Operator):
             raise TypeError(
                 "`operator` must be an `Operator` instance, got {!r}"
                 "".format(operator)
@@ -213,11 +215,11 @@ class OperatorFunction(torch.autograd.Function):
 
             # Stack results, reshape to the expected output shape and enforce
             # correct dtype
-            result_arr = np.stack(results).astype(op_out_dtype, copy=False)
+            result_arr = numpy.stack(results).astype(op_out_dtype, copy=False)
             result_arr = result_arr.reshape(extra_shape + op_out_shape)
         else:
             # Single input: evaluate directly
-            result_arr = np.asarray(
+            result_arr = numpy.asarray(
                 operator(input_arr)
             ).astype(op_out_dtype, copy=False)
 
@@ -330,7 +332,7 @@ class OperatorFunction(torch.autograd.Function):
             results = []
             if operator.is_linear:
                 for ograd in grad_output_arr_flat_extra:
-                    results.append(np.asarray(operator.adjoint(ograd)))
+                    results.append(numpy.asarray(operator.adjoint(ograd)))
             else:
                 # Need inputs, flattened in the same way as the gradients
                 input_arr_flat_extra = input_arr.reshape((-1,) + op_in_shape)
@@ -338,21 +340,21 @@ class OperatorFunction(torch.autograd.Function):
                     grad_output_arr_flat_extra, input_arr_flat_extra
                 ):
                     results.append(
-                        np.asarray(operator.derivative(inp).adjoint(ograd))
+                        numpy.asarray(operator.derivative(inp).adjoint(ograd))
                     )
 
             # Stack results, reshape to the expected output shape and enforce
             # correct dtype
-            result_arr = np.stack(results).astype(op_in_dtype, copy=False)
+            result_arr = numpy.stack(results).astype(op_in_dtype, copy=False)
             result_arr = result_arr.reshape(extra_shape + op_in_shape)
         else:
             # Single gradient: evaluate directly
             if operator.is_linear:
-                result_arr = np.asarray(
+                result_arr = numpy.asarray(
                     operator.adjoint(grad_output_arr)
                 ).astype(op_in_dtype, copy=False)
             else:
-                result_arr = np.asarray(
+                result_arr = numpy.asarray(
                     operator.derivative(input_arr).adjoint(grad_output_arr)
                 ).astype(op_in_dtype, copy=False)
 
@@ -383,7 +385,7 @@ class OperatorModule(torch.nn.Module):
     The input must have at least one extra dimension (batch axis), i.e.,
     in this case must be a 2D tensor:
 
-    >>> matrix = np.array([[1, 0, 0],
+    >>> matrix = numpy.array([[1, 0, 0],
     ...                    [0, 1, 1]], dtype='float32')
     >>> odl_op = odl.MatrixOperator(matrix)
     >>> odl_op.domain.shape
@@ -485,14 +487,9 @@ class OperatorModule(torch.nn.Module):
 
 def copy_if_zero_strides(arr):
     """Workaround for NumPy issue #9165 with 0 in arr.strides."""
-    assert isinstance(arr, np.ndarray)
+    assert isinstance(arr, numpy.ndarray)
     return arr.copy() if 0 in arr.strides else arr
 
-
-import odl
-import torch
-import dival.util.torch_losses
-# import odl.contrib.torch
 
 def fbp_t(x):
     ddd = odl.uniform_discr([-0.13, -0.13], [0.13, 0.13], (362, 362))
@@ -534,5 +531,3 @@ def grad_first_part(x, y_t):
     res2.backward()
     dx2 = x2.grad
     return dx2
-
-# grad_first_part = autograd.grad(first_part)

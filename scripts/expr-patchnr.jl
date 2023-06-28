@@ -141,6 +141,7 @@ function makesim_genflows(d::Dict)
     else
         error("Not Imp")
     end
+    myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
     if use_gpu_nn
         icnf = construct(
             RNODE,
@@ -152,7 +153,8 @@ function makesim_genflows(d::Dict)
             sol_kwargs,
         )
         model = ICNFModel(
-            icnf;
+            icnf,
+            myloss;
             optimizers,
             n_epochs,
             batch_size,
@@ -163,7 +165,8 @@ function makesim_genflows(d::Dict)
         icnf =
             construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
         model = ICNFModel(
-            icnf;
+            icnf,
+            myloss;
             optimizers,
             n_epochs,
             batch_size,
@@ -298,7 +301,7 @@ function makesim_expr(d::Dict)
             construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
 
-    icnf_f(x) = loss(icnf, x, ps, st)
+    icnf_f(x) = loss(icnf, TrainMode(), x, ps, st)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"

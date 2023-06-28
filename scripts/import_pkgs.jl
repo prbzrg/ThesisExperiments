@@ -1,4 +1,4 @@
-ENV["PYTHON"] = raw"C:\Program Files\Python37\python.exe"
+ENV["PYTHON"] = raw"C:\Program Files\Python39\python.exe"
 
 using Pkg
 
