@@ -29,9 +29,9 @@ allparams = Dict(
     # "tspan_end" => [1, 8],
 
     # ICNFModel
-    "n_epochs" => 2^5,
+    "n_epochs" => 2^3,
     # "n_epochs" => 2,
-    "batch_size" => 2^15,
+    "batch_size" => 2^12,
     # "batch_size" => 32,
 )
 dicts = dict_list(allparams)
