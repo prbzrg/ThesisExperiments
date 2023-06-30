@@ -17,7 +17,7 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
 
     # nn
-    "n_hidden_rate" => 2^2,
+    "n_hidden_rate" => 2,
     "arch" => "Dense-ML",
     # "arch" => "Dense",
     # "back" => "Lux",
@@ -29,9 +29,9 @@ allparams = Dict(
     # "tspan_end" => [1, 8],
 
     # ICNFModel
-    "n_epochs" => 2^5,
+    "n_epochs" => 2^3,
     # "n_epochs" => 2,
-    "batch_size" => 2^12,
+    "batch_size" => 2^10,
     # "batch_size" => 32,
 )
 dicts = dict_list(allparams)

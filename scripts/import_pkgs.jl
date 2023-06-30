@@ -4,8 +4,8 @@ using Pkg
 
 Pkg.precompile()
 
-using ADTypes,
-    AbstractDifferentiation,
+using AbstractDifferentiation,
+    ADTypes,
     Base.Iterators,
     Base.Threads,
     ChainRules,
