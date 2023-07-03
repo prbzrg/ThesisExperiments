@@ -24,7 +24,7 @@ allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 2^5,
+    "tspan_end" => 2^3,
     # "tspan_end" => [1, 32],
     # "tspan_end" => [1, 8],
 
