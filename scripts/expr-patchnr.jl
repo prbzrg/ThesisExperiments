@@ -18,13 +18,14 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 2,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 2^3,
+    "tspan_end" => 1,
+    # "tspan_end" => 2^3,
     # "tspan_end" => [1, 32],
     # "tspan_end" => [1, 8],
 
