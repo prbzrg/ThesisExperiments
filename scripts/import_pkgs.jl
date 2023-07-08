@@ -2,7 +2,7 @@ ENV["PYTHON"] = raw"C:\Program Files\Python39\python.exe"
 
 using Pkg
 
-Pkg.precompile()
+Pkg.precompile(; strict = true)
 
 using AbstractDifferentiation,
     ADTypes,
@@ -77,6 +77,10 @@ sol_kwargs = Dict(
     :save_everystep => false,
     :save_on => false,
     :calck => false,
+    :alias_u0 => true,
+    :verbose => true,
+    :merge_callbacks => true,
+    :wrap => Val(true),
     :alg => BS3(),
     # :alg => BS3(; thread = OrdinaryDiffEq.True()),
     # :alg => BS5(; thread = OrdinaryDiffEq.True()),
@@ -85,12 +89,16 @@ sol_kwargs = Dict(
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
     # :sensealg => ForwardDiffSensitivity(),
     # :sensealg => ZygoteAdjoint(),
+    # :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = EnzymeVJP()),
     :sensealg => BacksolveAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = EnzymeVJP()),
     # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = EnzymeVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    :abstol => eps(one(Float32)),
-    :reltol => 1.0f-2 + eps(1.0f-2),
-    # :reltol => eps(one(Float32)),
+    :reltol => 1.0e-2 + eps(1.0e-2),
+    # :reltol => eps(one(Float64)),
+    :abstol => eps(one(Float64)),
+    :maxiters => typemax(Int),
 )
 optimizers = Any[Optimisers.Lion(),]
 
