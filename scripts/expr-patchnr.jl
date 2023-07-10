@@ -27,7 +27,7 @@ allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 2^3,
+    "n_epochs" => 2^7,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
