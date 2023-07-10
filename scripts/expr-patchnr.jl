@@ -6,8 +6,7 @@ include(scriptsdir("import_pkgs.jl"))
 allparams = Dict(
     # test
     "n_iter_rec" => 300,
-    # "n_iter_rec" => [8, 128, 300],
-    # "n_iter_rec" => [4, 16, 128, 256, 100],
+    # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
     "sel_a" => ["min", "max"],
 
     # train
@@ -25,9 +24,7 @@ allparams = Dict(
 
     # construct
     "tspan_end" => 1,
-    # "tspan_end" => 2^3,
-    # "tspan_end" => [1, 32],
-    # "tspan_end" => [1, 8],
+    # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
     "n_epochs" => 2^3,

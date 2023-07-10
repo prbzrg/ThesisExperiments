@@ -97,10 +97,10 @@ sol_kwargs = Dict(
     # :sensealg => InterpolatingAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = EnzymeVJP()),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    :reltol => 1.0e-2 + eps(1.0e-2),
-    # :reltol => eps(one(Float64)),
-    :abstol => eps(one(Float64)),
-    :maxiters => typemax(Int),
+    :reltol => 1.0f-2 + eps(1.0f-2),
+    # :reltol => eps(one(Float32)),
+    :abstol => eps(one(Float32)),
+    :maxiters => typemax(Int32),
 )
 optimizers = Any[Optimisers.Lion(),]
 
