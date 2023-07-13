@@ -17,8 +17,8 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 2,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
@@ -139,7 +139,7 @@ function makesim_genflows(d::Dict)
     else
         error("Not Imp")
     end
-    myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
+    # myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
     if use_gpu_nn
         icnf = construct(
             RNODE,
@@ -152,7 +152,8 @@ function makesim_genflows(d::Dict)
         )
         model = ICNFModel(
             icnf,
-            myloss;
+            # myloss,
+            ;
             optimizers,
             n_epochs,
             batch_size,
@@ -164,7 +165,8 @@ function makesim_genflows(d::Dict)
             construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
         model = ICNFModel(
             icnf,
-            myloss;
+            # myloss,
+            ;
             optimizers,
             n_epochs,
             batch_size,
