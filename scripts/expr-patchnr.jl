@@ -17,8 +17,8 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 2,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
@@ -27,7 +27,7 @@ allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 2^7,
+    "n_epochs" => 40,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
