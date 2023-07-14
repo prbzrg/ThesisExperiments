@@ -105,7 +105,12 @@ sol_kwargs = Dict(
 optimizers = Any[Optimisers.Lion(),]
 
 if !isempty(ARGS)
-    use_gpu_nn = ARGS[1] == "gpu"
+    use_gpu_nn_train = ARGS[1] == "train_gpu"
+    use_gpu_nn_test = ARGS[2] == "test_gpu"
 else
-    use_gpu_nn = false
+    @warn "please have `train_cpu test_cpu` as arguments of julia"
+    use_gpu_nn_train = false
+    use_gpu_nn_test = false
 end
+
+@show (use_gpu_nn_train, use_gpu_nn_test)

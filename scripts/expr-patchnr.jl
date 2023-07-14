@@ -17,8 +17,8 @@ allparams = Dict(
 
     # nn
     "n_hidden_rate" => 2,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
@@ -103,7 +103,7 @@ function makesim_genflows(d::Dict)
             error("Not Imp")
         end
     elseif back == "Flux"
-        if use_gpu_nn
+        if use_gpu_nn_train
             if arch == "Dense"
                 nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
@@ -140,7 +140,7 @@ function makesim_genflows(d::Dict)
         error("Not Imp")
     end
     # myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
-    if use_gpu_nn
+    if use_gpu_nn_train
         icnf = construct(
             RNODE,
             nn,
@@ -227,7 +227,7 @@ function makesim_expr(d::Dict)
 
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
     @unpack ps, st = data
-    if use_gpu_nn
+    if use_gpu_nn_test
         ps = Lux.gpu(ps)
         st = Lux.gpu(st)
     end
@@ -250,7 +250,7 @@ function makesim_expr(d::Dict)
             error("Not Imp")
         end
     elseif back == "Flux"
-        if use_gpu_nn
+        if use_gpu_nn_test
             if arch == "Dense"
                 nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
@@ -286,7 +286,7 @@ function makesim_expr(d::Dict)
     else
         error("Not Imp")
     end
-    if use_gpu_nn
+    if use_gpu_nn_test
         icnf = construct(
             FFJORD,
             nn,
