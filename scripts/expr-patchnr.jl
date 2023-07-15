@@ -16,7 +16,7 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
 
     # nn
-    "n_hidden_rate" => 2,
+    "n_hidden_rate" => 8,
     "arch" => "Dense-ML",
     # "arch" => "Dense",
     # "back" => "Lux",
