@@ -16,9 +16,9 @@ allparams = Dict(
     # "p_s" => [4, 6, 8],
 
     # nn
-    "n_hidden_rate" => 2,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "n_hidden_rate" => 8,
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
@@ -176,5 +176,10 @@ if use_gpu_nn_test
     st = Lux.gpu(st)
 end
 
-smp = ptchs[:, :, 1, 10_000:10_100]
+smp = ptchs[:, :, 1, 10_000:10_000]
 smp_f = MLUtils.flatten(smp)
+prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, st)
+sl = solve(prob)
+display(sl.stats)
+plt = plot(sl[1:(end - 3), 1, :]')
+savefig(plt, "plt_new.png")
