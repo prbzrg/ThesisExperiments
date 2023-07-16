@@ -673,9 +673,9 @@ version = "0.25.98"
 
 [[deps.DistributionsAD]]
 deps = ["Adapt", "ChainRules", "ChainRulesCore", "Compat", "Distributions", "FillArrays", "LinearAlgebra", "PDMats", "Random", "Requires", "SpecialFunctions", "StaticArrays", "StatsFuns", "ZygoteRules"]
-git-tree-sha1 = "1fb4fedd5a407243d535cc50c8c803c2fce0dc26"
+git-tree-sha1 = "72076a95c1874d7c33bd1dd7b3754ecad61e3df5"
 uuid = "ced4e74d-a319-5a8a-b0ac-84af2272839c"
-version = "0.6.49"
+version = "0.6.50"
 
     [deps.DistributionsAD.extensions]
     DistributionsADForwardDiffExt = "ForwardDiff"
@@ -1365,9 +1365,9 @@ version = "0.2.4"
 
 [[deps.JumpProcesses]]
 deps = ["ArrayInterface", "DataStructures", "DiffEqBase", "DocStringExtensions", "FunctionWrappers", "Graphs", "LinearAlgebra", "Markdown", "PoissonRandom", "Random", "RandomNumbers", "RecursiveArrayTools", "Reexport", "SciMLBase", "StaticArrays", "TreeViews", "UnPack"]
-git-tree-sha1 = "9eae998d01d31e4fc7d79dda8a6b7695d872eee8"
+git-tree-sha1 = "6f1e0f4364022ea2cd9e324cc9b851bc5434d41c"
 uuid = "ccbc3e58-028d-4f4c-8cd5-9ae44345cda5"
-version = "9.6.4"
+version = "9.7.0"
 
 [[deps.KLU]]
 deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse_jll"]
