@@ -177,8 +177,8 @@ function makesim_genflows(d::Dict)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)
-    fulld["ps"] = Lux.cpu(ps)
-    fulld["st"] = Lux.cpu(st)
+    fulld["ps"] = cpu(ps)
+    fulld["st"] = cpu(st)
 
     rpt = report(mach)
     fulld["fit_stats"] = rpt.stats
@@ -228,8 +228,8 @@ function makesim_expr(d::Dict)
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
     @unpack ps, st = data
     if use_gpu_nn_test
-        ps = Lux.gpu(ps)
-        st = Lux.gpu(st)
+        ps = gpu(ps)
+        st = gpu(st)
     end
 
     nvars = p_s * p_s

@@ -77,8 +77,8 @@ function makesim_genflows(d::Dict)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)
-    fulld["ps"] = Lux.cpu(ps)
-    fulld["st"] = Lux.cpu(st)
+    fulld["ps"] = cpu(ps)
+    fulld["st"] = cpu(st)
 
     rpt = report(mach)
     fulld["fit_stats"] = rpt.stats

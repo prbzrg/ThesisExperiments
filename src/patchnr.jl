@@ -111,7 +111,7 @@ end
 function recn_loss_pt2(app_icnf::PatchNR, x, y)
     new_pts = nr_patchs(app_icnf, x)
     if use_gpu_nn_test
-        new_pts = Lux.gpu(new_pts)
+        new_pts = gpu(new_pts)
     end
     # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(new_pts)))
     app_icnf.λ * app_icnf.icnf_f(new_pts)

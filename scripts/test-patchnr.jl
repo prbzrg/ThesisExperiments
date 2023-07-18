@@ -172,8 +172,8 @@ end
 data, fn = produce_or_load(x -> error(), d3, datadir("ld-ct-sims"))
 @unpack ps, st = data
 if use_gpu_nn_test
-    ps = Lux.gpu(ps)
-    st = Lux.gpu(st)
+    ps = gpu(ps)
+    st = gpu(st)
 end
 
 smp = ptchs[:, :, 1, 10_000:10_000]
