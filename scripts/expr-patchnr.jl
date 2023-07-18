@@ -5,7 +5,7 @@ include(scriptsdir("import_pkgs.jl"))
 
 allparams = Dict(
     # test
-    "n_iter_rec" => 40,
+    "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
     "sel_a" => ["min", "max"],
 
