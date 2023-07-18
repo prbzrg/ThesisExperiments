@@ -38,6 +38,7 @@ using AbstractDifferentiation,
     JLD2,
     Logging,
     Lux,
+    LuxCUDA,
     MLDatasets,
     MLJBase,
     MLUtils,
@@ -60,6 +61,8 @@ using AbstractDifferentiation,
     Tracker,
     Zygote
 
+cpu = cpu_device()
+gpu = gpu_device()
 # debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
