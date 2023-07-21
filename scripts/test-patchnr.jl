@@ -182,4 +182,4 @@ prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, s
 sl = solve(prob)
 display(sl.stats)
 plt = plot(sl[1:(end - 3), 1, :]')
-savefig(plt, "plt_new.png")
+savefig(plt, plotsdir("plot-lines", "plt_new.png"))
