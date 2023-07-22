@@ -23,11 +23,11 @@ allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 32,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 40,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -139,7 +139,6 @@ function makesim_genflows(d::Dict)
     else
         error("Not Imp")
     end
-    # myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
     if use_gpu_nn_train
         icnf = construct(
             RNODE,
@@ -149,11 +148,11 @@ function makesim_genflows(d::Dict)
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
             sol_kwargs,
+            λ₁ = Float32(eps(one(Float16))),
+            λ₂ = Float32(eps(one(Float16))),
         )
         model = ICNFModel(
-            icnf,
-            # myloss,
-            ;
+            icnf;
             optimizers,
             n_epochs,
             batch_size,
@@ -161,12 +160,18 @@ function makesim_genflows(d::Dict)
             resource = CUDALibs(),
         )
     else
-        icnf =
-            construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+        icnf = construct(
+            RNODE,
+            nn,
+            nvars;
+            tspan,
+            compute_mode = ZygoteMatrixMode,
+            sol_kwargs,
+            λ₁ = Float32(eps(one(Float16))),
+            λ₂ = Float32(eps(one(Float16))),
+        )
         model = ICNFModel(
-            icnf,
-            # myloss,
-            ;
+            icnf;
             optimizers,
             n_epochs,
             batch_size,

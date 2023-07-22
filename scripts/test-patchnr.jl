@@ -23,7 +23,7 @@ allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 32,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -137,7 +137,6 @@ elseif back == "Flux"
 else
     error("Not Imp")
 end
-myloss(icnf, mode, xs, ps, st) = loss(icnf, mode, xs, ps, st, 1.0f-1, 1.0f-1)
 if use_gpu_nn_train
     icnf = construct(
         RNODE,
@@ -147,10 +146,11 @@ if use_gpu_nn_train
         compute_mode = ZygoteMatrixMode,
         array_type = CuArray,
         sol_kwargs,
+        λ₁ = Float32(eps(one(Float16))),
+        λ₂ = Float32(eps(one(Float16))),
     )
     model = ICNFModel(
-        icnf,
-        myloss;
+        icnf;
         optimizers,
         n_epochs,
         batch_size,
@@ -158,10 +158,18 @@ if use_gpu_nn_train
         resource = CUDALibs(),
     )
 else
-    icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(
+        RNODE,
+        nn,
+        nvars;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs,
+        λ₁ = Float32(eps(one(Float16))),
+        λ₂ = Float32(eps(one(Float16))),
+    )
     model = ICNFModel(
-        icnf,
-        myloss;
+        icnf;
         optimizers,
         n_epochs,
         batch_size,
