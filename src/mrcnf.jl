@@ -1,4 +1,4 @@
-tp_t = Dict(Float16 => Float32, Float32 => Float64, Float64 => BigFloat)
+const tp_t = Dict(Float16 => Float32, Float32 => Float64, Float64 => BigFloat)
 
 struct MTrans
     tp::Any

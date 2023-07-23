@@ -7,15 +7,15 @@
 # i = 333
 # i = 999
 
-MU_WATER = 20
-MU_AIR = 0.02
-MU_MAX = 3071 * (MU_WATER - MU_AIR) / 1000 + MU_WATER
+const MU_WATER = 20
+const MU_AIR = 0.02
+const MU_MAX = 3071 * (MU_WATER - MU_AIR) / 1000 + MU_WATER
 
 cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
 # cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length=1000), -256:256)
 # cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, 1; length=1000), -256:256)
 
-lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
+const lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
 
 mutable struct PatchNR
     icnf_f::Function
@@ -111,7 +111,7 @@ end
 function recn_loss_pt2(app_icnf::PatchNR, x, y)
     new_pts = nr_patchs(app_icnf, x)
     if use_gpu_nn_test
-        new_pts = gpu(new_pts)
+        new_pts = gdev(new_pts)
     end
     # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(new_pts)))
     app_icnf.λ * app_icnf.icnf_f(new_pts)

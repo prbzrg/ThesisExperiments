@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-allparams = Dict(
+const allparams = Dict(
     # data
     "nvars" => 2^0,
     # "nvars" => 2 .^ (0:3),
@@ -24,8 +24,7 @@ allparams = Dict(
     "n_epochs" => 2^10 * 2^3,
     "batch_size" => 2^12,
 )
-dicts = dict_list(allparams)
-dicts = convert.(Dict{String, Any}, dicts)
+const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
 function gen_data(nvars, n, data_dist)
     convert.(Float32, rand(data_dist, nvars, n))

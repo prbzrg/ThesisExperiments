@@ -61,8 +61,8 @@ using AbstractDifferentiation,
     Tracker,
     Zygote
 
-cpu = cpu_device()
-gpu = gpu_device()
+const cdev = cpu_device()
+const gdev = gpu_device()
 # debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
@@ -75,7 +75,7 @@ include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
 # defaults
-sol_kwargs = Dict(
+const sol_kwargs = Dict(
     :alg_hints => [:nonstiff, :memorybound],
     :dense => false,
     :save_everystep => false,
@@ -107,15 +107,15 @@ sol_kwargs = Dict(
     :abstol => eps(one(Float32)),
     :maxiters => typemax(Int32),
 )
-optimizers = Any[Optimisers.Lion(),]
+const optimizers = Any[Optimisers.Lion(),]
 
 if !isempty(ARGS)
-    use_gpu_nn_train = ARGS[1] == "train_gpu"
-    use_gpu_nn_test = ARGS[2] == "test_gpu"
+    const use_gpu_nn_train = ARGS[1] == "train_gpu"
+    const use_gpu_nn_test = ARGS[2] == "test_gpu"
 else
     @warn "please have `train_cpu test_cpu` as arguments of julia"
-    use_gpu_nn_train = false
-    use_gpu_nn_test = false
+    const use_gpu_nn_train = false
+    const use_gpu_nn_test = false
 end
 
 @show (use_gpu_nn_train, use_gpu_nn_test)

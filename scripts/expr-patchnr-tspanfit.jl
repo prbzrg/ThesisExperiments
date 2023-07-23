@@ -2,6 +2,7 @@ using DrWatson
 @quickactivate "ThesisExperiments" # <- project name
 
 include(scriptsdir("import_pkgs.jl"))
+include(srcdir("tspan_fit.jl"))
 
 const allparams = Dict(
     # test
@@ -22,12 +23,8 @@ const allparams = Dict(
     # "back" => "Lux",
     "back" => "Flux",
 
-    # construct
-    "tspan_end" => 1,
-    # "tspan_end" => [1, 4, 8, 32],
-
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 40,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -56,12 +53,9 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs, batch_size, tspan_end, arch, back, n_t_imgs, n_hidden_rate = d
+    @unpack p_s, n_epochs, batch_size, arch, back, n_t_imgs, n_hidden_rate = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
-
-    tspan = convert.(Float32, (0, tspan_end))
-    fulld["tspan"] = tspan
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
@@ -104,9 +98,9 @@ function makesim_genflows(d::Dict)
     elseif back == "Flux"
         if use_gpu_nn_train
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxTspanLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
+                nn = FluxTspanLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
@@ -121,9 +115,9 @@ function makesim_genflows(d::Dict)
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxTspanLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
             elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
+                nn = FluxTspanLayer(
                     Flux.f32(
                         Flux.Chain(
                             Flux.Dense(nvars => n_hidden, tanh),
@@ -143,7 +137,6 @@ function makesim_genflows(d::Dict)
             RNODE,
             nn,
             nvars;
-            tspan,
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
             sol_kwargs,
@@ -151,7 +144,8 @@ function makesim_genflows(d::Dict)
             λ₂ = Float32(eps(one(Float16))),
         )
         model = ICNFModel(
-            icnf;
+            icnf,
+            myloss_tspan;
             optimizers,
             n_epochs,
             batch_size,
@@ -163,14 +157,14 @@ function makesim_genflows(d::Dict)
             RNODE,
             nn,
             nvars;
-            tspan,
             compute_mode = ZygoteMatrixMode,
             sol_kwargs,
             λ₁ = Float32(eps(one(Float16))),
             λ₂ = Float32(eps(one(Float16))),
         )
         model = ICNFModel(
-            icnf;
+            icnf,
+            myloss_tspan;
             optimizers,
             n_epochs,
             batch_size,
@@ -195,7 +189,6 @@ function makesim_expr(d::Dict)
     n_epochs,
     batch_size,
     n_iter_rec,
-    tspan_end,
     arch,
     back,
     n_t_imgs,
@@ -212,24 +205,18 @@ function makesim_expr(d::Dict)
         "arch" => arch,
         "back" => back,
 
-        # construct
-        "tspan_end" => tspan_end,
-
         # ICNFModel
         "n_epochs" => n_epochs,
         "batch_size" => batch_size,
     )
     fulld = copy(d)
 
-    tspan = convert.(Float32, (0, tspan_end))
-    fulld["tspan"] = tspan
-
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
     n_pts = size(ptchs, 4)
     fulld["n_pts"] = n_pts
 
-    data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
+    data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims-tspanfit"))
     @unpack ps, st = data
     if use_gpu_nn_test
         ps = gdev(ps)
@@ -256,9 +243,9 @@ function makesim_expr(d::Dict)
     elseif back == "Flux"
         if use_gpu_nn_test
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxTspanLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
             elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
+                nn = FluxTspanLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
@@ -273,9 +260,9 @@ function makesim_expr(d::Dict)
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxTspanLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
             elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
+                nn = FluxTspanLayer(
                     Flux.f32(
                         Flux.Chain(
                             Flux.Dense(nvars => n_hidden, tanh),
@@ -295,14 +282,12 @@ function makesim_expr(d::Dict)
             FFJORD,
             nn,
             nvars;
-            tspan,
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
             sol_kwargs,
         )
     else
-        icnf =
-            construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+        icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
 
     icnf_f(x) = loss(icnf, TrainMode(), x, ps, st)
@@ -348,8 +333,8 @@ end
 
 for (i, d) in enumerate(dicts)
     CUDA.allowscalar() do
-        produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+        produce_or_load(makesim_expr, d, datadir("patchnr-sims-tspanfit"))
     end
 end
 
-df = collect_results(datadir("patchnr-sims"))
+df = collect_results(datadir("patchnr-sims-tspanfit"))

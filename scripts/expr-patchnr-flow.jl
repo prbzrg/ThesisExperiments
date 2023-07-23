@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-allparams = Dict(
+const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
@@ -27,21 +27,30 @@ allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 40,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
 )
-dicts = dict_list(allparams)
-dicts = convert.(Dict{String, Any}, dicts)
+const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
-gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
-gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
-obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
-obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
+const gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
+const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
+const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
+const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
 d = first(dicts)
-@unpack p_s, n_epochs, batch_size, tspan_end, arch, back, n_t_imgs, n_hidden_rate = d
+
+@unpack p_s,
+n_epochs,
+batch_size,
+n_iter_rec,
+tspan_end,
+arch,
+back,
+n_t_imgs,
+sel_a,
+n_hidden_rate = d
 d2 = Dict{String, Any}("p_s" => p_s)
 d3 = Dict{String, Any}(
     # train
@@ -67,28 +76,22 @@ fulld["tspan"] = tspan
 
 data, fn = produce_or_load(x -> error(), d2, datadir("gen-ld-patch"))
 ptchs = data["ptchs"]
-# sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
-# sp = sample(1:128, 6)
-sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
-n_t_imgs_h = n_t_imgs ÷ 2
-sp1 =
-    broadcast(x -> x[1], sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])))[1:n_t_imgs_h]
-sp2 = broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))[1:n_t_imgs_h]
-sp = vcat(sp1, sp2)
-# fulld["sp"] = [sel_pc]
-fulld["sp"] = sp
-# ptchs = ptchs[:, :, :, :, sel_pc]
-ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
+n_pts = size(ptchs, 4)
+fulld["n_pts"] = n_pts
 
-x = MLUtils.flatten(ptchs)
-df = DataFrame(transpose(x), :auto)
+data, fn = produce_or_load(x -> error(), d3, datadir("ld-ct-sims"))
+@unpack ps, st = data
+if use_gpu_nn_test
+    ps = gdev(ps)
+    st = gdev(st)
+end
 
 nvars = p_s * p_s
 n_hidden = n_hidden_rate * nvars
 fulld["nvars"] = nvars
 fulld["n_hidden"] = n_hidden
-
 rs_f(x) = reshape(x, (p_s, p_s, 1, :))
+
 if back == "Lux"
     if arch == "Dense"
         nn = Lux.Dense(nvars => nvars, tanh)
@@ -101,7 +104,7 @@ if back == "Lux"
         error("Not Imp")
     end
 elseif back == "Flux"
-    if use_gpu_nn_train
+    if use_gpu_nn_test
         if arch == "Dense"
             nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
         elseif arch == "Dense-ML"
@@ -137,51 +140,18 @@ elseif back == "Flux"
 else
     error("Not Imp")
 end
-if use_gpu_nn_train
+if use_gpu_nn_test
     icnf = construct(
-        RNODE,
+        FFJORD,
         nn,
         nvars;
         tspan,
         compute_mode = ZygoteMatrixMode,
         array_type = CuArray,
         sol_kwargs,
-        λ₁ = Float32(eps(one(Float16))),
-        λ₂ = Float32(eps(one(Float16))),
-    )
-    model = ICNFModel(
-        icnf;
-        optimizers,
-        n_epochs,
-        batch_size,
-        # adtype = AutoForwardDiff(),
-        resource = CUDALibs(),
     )
 else
-    icnf = construct(
-        RNODE,
-        nn,
-        nvars;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-        sol_kwargs,
-        λ₁ = Float32(eps(one(Float16))),
-        λ₂ = Float32(eps(one(Float16))),
-    )
-    model = ICNFModel(
-        icnf;
-        optimizers,
-        n_epochs,
-        batch_size,
-        # adtype = AutoForwardDiff(),
-    )
-end
-
-data, fn = produce_or_load(x -> error(), d3, datadir("ld-ct-sims"))
-@unpack ps, st = data
-if use_gpu_nn_test
-    ps = gpu(ps)
-    st = gpu(st)
+    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
 end
 
 smp = ptchs[:, :, 1, 10_000:10_000]
@@ -189,5 +159,7 @@ smp_f = MLUtils.flatten(smp)
 prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, st)
 sl = solve(prob)
 display(sl.stats)
-plt = plot(sl[1:(end - 3), 1, :]')
+plt = plot(
+    sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]',
+)
 savefig(plt, plotsdir("plot-lines", "plt_new.png"))

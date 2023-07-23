@@ -6,19 +6,18 @@ include(scriptsdir("import_pkgs.jl"))
 rs_f(x) = reshape(x, (28, 28, 1, :))
 agg_f(x...) = cat(x...; dims = 3)
 
-allparams = Dict(
+const allparams = Dict(
     "n_newdata" => 8,
     "n_epochs" => 2,
     # "batch_size" => 128,
 )
-dicts = dict_list(allparams)
-dicts = convert.(Dict{String, Any}, dicts)
+const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
-data_train = MNIST(Float32, :train).features
-data_test = MNIST(Float32, :test).features
-data_all = cat(data_train, data_test; dims = 3)
-x = MLUtils.flatten(data_all)
-df = DataFrame(transpose(x), :auto)
+const data_train = MNIST(Float32, :train).features
+const data_test = MNIST(Float32, :test).features
+const data_all = cat(data_train, data_test; dims = 3)
+const x = MLUtils.flatten(data_all)
+const df = DataFrame(transpose(x), :auto)
 
 function makesim_expr(d::Dict)
     @unpack n_newdata, n_epochs = d
