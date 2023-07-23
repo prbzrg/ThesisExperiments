@@ -48,7 +48,15 @@ function makesim_expr(d::Dict)
         ),
     )
 
-    icnf = construct(RNODE, nn, 28 * 28; compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(
+        RNODE,
+        nn,
+        28 * 28;
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs,
+        λ₁ = 1.0f-1,
+        λ₂ = 1.0f-1,
+    )
 
     model = ICNFModel(
         icnf;

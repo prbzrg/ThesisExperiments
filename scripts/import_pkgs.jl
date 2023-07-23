@@ -63,7 +63,7 @@ using AbstractDifferentiation,
 
 const cdev = cpu_device()
 const gdev = gpu_device()
-# debuglogger = Logging.ConsoleLogger(Logging.Debug)
+# const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
 include(srcdir("ext_patch.jl"))

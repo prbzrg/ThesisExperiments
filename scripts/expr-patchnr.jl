@@ -23,7 +23,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -147,8 +147,8 @@ function makesim_genflows(d::Dict)
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
             sol_kwargs,
-            λ₁ = Float32(eps(one(Float16))),
-            λ₂ = Float32(eps(one(Float16))),
+            λ₁ = 1.0f-1,
+            λ₂ = 1.0f-1,
         )
         model = ICNFModel(
             icnf;
@@ -166,8 +166,8 @@ function makesim_genflows(d::Dict)
             tspan,
             compute_mode = ZygoteMatrixMode,
             sol_kwargs,
-            λ₁ = Float32(eps(one(Float16))),
-            λ₂ = Float32(eps(one(Float16))),
+            λ₁ = 1.0f-1,
+            λ₂ = 1.0f-1,
         )
         model = ICNFModel(
             icnf;

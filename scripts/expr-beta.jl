@@ -67,7 +67,16 @@ function makesim_expr(d::Dict)
     else
         error("Not Imp")
     end
-    icnf = construct(RNODE, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(
+        RNODE,
+        nn,
+        nvars;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs,
+        λ₁ = 1.0f-1,
+        λ₂ = 1.0f-1,
+    )
 
     df = DataFrame(transpose(r), :auto)
     model = ICNFModel(icnf; optimizers, batch_size, n_epochs)

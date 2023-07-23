@@ -23,7 +23,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -159,7 +159,6 @@ smp_f = MLUtils.flatten(smp)
 prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, st)
 sl = solve(prob)
 display(sl.stats)
-plt = plot(
-    sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]',
-)
+plt =
+    plot(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]')
 savefig(plt, plotsdir("plot-lines", "plt_new.png"))
