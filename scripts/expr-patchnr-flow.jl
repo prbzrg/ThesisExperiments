@@ -151,14 +151,16 @@ if use_gpu_nn_test
         sol_kwargs,
     )
 else
-    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode)
 end
 
 smp = ptchs[:, :, 1, 10_000:10_000]
 smp_f = MLUtils.flatten(smp)
 prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, st)
-sl = solve(prob)
+sl = solve(prob, icnf.sol_args...; icnf.sol_kwargs...)
 display(sl.stats)
-plt =
-    plot(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]')
+plt = plot(
+    sl.t,
+    sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]',
+)
 savefig(plt, plotsdir("plot-lines", "plt_new.png"))
