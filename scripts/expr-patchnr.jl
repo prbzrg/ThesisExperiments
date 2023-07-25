@@ -7,7 +7,7 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => ["min", "max"],
+    "sel_a" => vcat(["min", "max"], 1:16),
 
     # train
     "n_t_imgs" => 6,
@@ -312,6 +312,8 @@ function makesim_expr(d::Dict)
         sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
     elseif sel_a == "max"
         sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+    else
+        sel_t_img = sel_a
     end
     fulld["sel_t_img"] = sel_t_img
     gt_x = gt_x[:, :, sel_t_img]
