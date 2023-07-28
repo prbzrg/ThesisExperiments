@@ -75,9 +75,7 @@ function makesim_genflows(d::Dict)
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
-    # sel_pc = argmax(vec(std(reshape(ptchs, (:, n_data_b)); dims = 1)))
-    # sp = sample(1:n_data_b, 6)
-    sp_std = vec(std(reshape(ptchs, (:, n_data_b)); dims = 1))
+    sp_std = vec(std(MLUtils.flatten(ptchs); dims = 1))
     if sel_pol == "min_max"
         n_t_imgs_h = n_t_imgs ÷ 2
         sp1 = broadcast(
@@ -88,12 +86,20 @@ function makesim_genflows(d::Dict)
             broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))[1:n_t_imgs_h]
         sp = vcat(sp1, sp2)
     elseif sel_pol == "equ_d"
-        sp = [1, n_data_b]
+        sp_tp = broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))
+        sp_imd = [1, n_data_b]
         n_cut = n_t_imgs - 1
         stp = n_data_b / n_cut
         for i in 1:(n_cut - 1)
-            push!(sp, round(Int, i * stp))
+            push!(sp_imd, round(Int, i * stp))
         end
+        sp = sp_tp[sp_imd]
+    elseif sel_pol == "one_max"
+        sp = [argmax(vec(std(MLUtils.flatten(ptchs); dims = 1)))]
+    elseif sel_pol == "one_min"
+        sp = [argmin(vec(std(MLUtils.flatten(ptchs); dims = 1)))]
+    elseif sel_pol == "random"
+        sp = sample(1:n_data_b, n_t_imgs)
     else
         error("Not Imp")
     end
@@ -334,9 +340,9 @@ function makesim_expr(d::Dict)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"
-        sel_t_img = argmin(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
+        sel_t_img = argmin(vec(std(MLUtils.flatten(gt_x); dims = 1)))
     elseif sel_a == "max"
-        sel_t_img = argmax(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
+        sel_t_img = argmax(vec(std(MLUtils.flatten(gt_x); dims = 1)))
     else
         sel_t_img = sel_a
     end
