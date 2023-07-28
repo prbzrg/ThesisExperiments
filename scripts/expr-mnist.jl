@@ -85,4 +85,4 @@ for (i, d) in enumerate(dicts)
     end
 end
 
-df = collect_results(datadir("mnist-sims-res"))
+df_n = collect_results(datadir("mnist-sims-res"))
