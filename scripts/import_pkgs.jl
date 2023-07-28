@@ -54,6 +54,7 @@ using AbstractDifferentiation,
     Tracker,
     Zygote
 
+const n_data_b = 128
 const cdev = cpu_device()
 const gdev = gpu_device()
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)

@@ -10,6 +10,8 @@ const allparams = Dict(
     "sel_a" => vcat(["min", "max"], 1:16),
 
     # train
+    "sel_pol" => "equ_d",
+    # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
     "p_s" => 6,
@@ -27,7 +29,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 48,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -47,7 +49,7 @@ function makesim_gendata(d::Dict)
     fulld["p_h"] = p_s
 
     imgs = load(gt_train_fn)["data"]
-    imgs = reshape(imgs, (362, 362, 1, 128))
+    imgs = reshape(imgs, (362, 362, 1, n_data_b))
 
     ptchs = extract_patch(imgs, p_s, p_s)
     fulld["ptchs"] = ptchs
@@ -56,7 +58,15 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s, n_epochs, batch_size, tspan_end, arch, back, n_t_imgs, n_hidden_rate = d
+    @unpack p_s,
+    n_epochs,
+    batch_size,
+    tspan_end,
+    arch,
+    back,
+    n_t_imgs,
+    n_hidden_rate,
+    sel_pol = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -65,17 +75,30 @@ function makesim_genflows(d::Dict)
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
-    # sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
-    # sp = sample(1:128, 6)
-    sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
-    n_t_imgs_h = n_t_imgs ÷ 2
-    sp1 = broadcast(
-        x -> x[1],
-        sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])),
-    )[1:n_t_imgs_h]
-    sp2 =
-        broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))[1:n_t_imgs_h]
-    sp = vcat(sp1, sp2)
+    # sel_pc = argmax(vec(std(reshape(ptchs, (:, n_data_b)); dims = 1)))
+    # sp = sample(1:n_data_b, 6)
+    sp_std = vec(std(reshape(ptchs, (:, n_data_b)); dims = 1))
+    if sel_pol == "min_max"
+        n_t_imgs_h = n_t_imgs ÷ 2
+        sp1 = broadcast(
+            x -> x[1],
+            sort(collect(enumerate(sp_std)); rev = true, by = (x -> x[2])),
+        )[1:n_t_imgs_h]
+        sp2 =
+            broadcast(x -> x[1], sort(collect(enumerate(sp_std)); by = (x -> x[2])))[1:n_t_imgs_h]
+        sp = vcat(sp1, sp2)
+    elseif sel_pol == "equ_d"
+        sp = [1, n_data_b]
+        n_cut = n_t_imgs - 1
+        stp = n_data_b / n_cut
+        for i in 1:(n_cut - 1)
+            push!(sp, round(Int, i * stp))
+        end
+    else
+        error("Not Imp")
+    end
+    sort!(sp)
+    @show sp
     # fulld["sp"] = [sel_pc]
     fulld["sp"] = sp
     # ptchs = ptchs[:, :, :, :, sel_pc]
@@ -200,10 +223,12 @@ function makesim_expr(d::Dict)
     back,
     n_t_imgs,
     sel_a,
-    n_hidden_rate = d
+    n_hidden_rate,
+    sel_pol = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         # train
+        "sel_pol" => sel_pol,
         "n_t_imgs" => n_t_imgs,
         "p_s" => p_s,
 
@@ -309,9 +334,9 @@ function makesim_expr(d::Dict)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"
-        sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+        sel_t_img = argmin(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
     elseif sel_a == "max"
-        sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+        sel_t_img = argmax(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
     else
         sel_t_img = sel_a
     end

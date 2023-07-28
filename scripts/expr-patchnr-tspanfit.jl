@@ -44,7 +44,7 @@ function makesim_gendata(d::Dict)
     fulld["p_h"] = p_s
 
     imgs = load(gt_train_fn)["data"]
-    imgs = reshape(imgs, (362, 362, 1, 128))
+    imgs = reshape(imgs, (362, 362, 1, n_data_b))
 
     ptchs = extract_patch(imgs, p_s, p_s)
     fulld["ptchs"] = ptchs
@@ -59,9 +59,9 @@ function makesim_genflows(d::Dict)
 
     data, fn = produce_or_load(makesim_gendata, d2, datadir("gen-ld-patch"))
     ptchs = data["ptchs"]
-    # sel_pc = argmax(vec(std(reshape(ptchs, (:, 128)); dims = 1)))
-    # sp = sample(1:128, 6)
-    sp_std = vec(std(reshape(ptchs, (:, 128)); dims = 1))
+    # sel_pc = argmax(vec(std(reshape(ptchs, (:, n_data_b)); dims = 1)))
+    # sp = sample(1:n_data_b, 6)
+    sp_std = vec(std(reshape(ptchs, (:, n_data_b)); dims = 1))
     n_t_imgs_h = n_t_imgs ÷ 2
     sp1 = broadcast(
         x -> x[1],
@@ -294,9 +294,9 @@ function makesim_expr(d::Dict)
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"
-        sel_t_img = argmin(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+        sel_t_img = argmin(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
     elseif sel_a == "max"
-        sel_t_img = argmax(vec(std(reshape(gt_x, (:, 128)); dims = 1)))
+        sel_t_img = argmax(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
     end
     fulld["sel_t_img"] = sel_t_img
     gt_x = gt_x[:, :, sel_t_img]
