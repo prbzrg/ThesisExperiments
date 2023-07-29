@@ -97,9 +97,13 @@ function makesim_expr(d::Dict)
     fulld["msd"] = msd_
     fulld["totalvariation"] = tv_dis
 
-    p = plot(x -> pdf(data_dist, x), 0, 1; label = "actual")
-    p = plot!(p, x -> pdf(dist, convert.(Float32, vcat(x))), 0, 1; label = "estimated")
-    savefig(p, plotsdir("synthetic-sims", savename(d, "png")))
+    f = Figure()
+    ax = Makie.Axis(f[1, 1]; title = "Result")
+    lines!(ax, 0.0f0 .. 1.0f0, x -> pdf(data_dist, x); label = "actual")
+    lines!(ax, 0.0f0 .. 1.0f0, x -> pdf(dist, vcat(x)); label = "estimated")
+    axislegend(ax)
+    save(plotsdir("synthetic-sims", savename(d, "svg")), f)
+    save(plotsdir("synthetic-sims", savename(d, "png")), f)
 
     fulld
 end

@@ -58,15 +58,15 @@ function makesim_gendata(d::Dict)
 end
 
 function makesim_genflows(d::Dict)
-    @unpack p_s,
-    n_epochs,
-    batch_size,
-    tspan_end,
+    @unpack sel_pol,
+    n_t_imgs,
+    p_s,
+    n_hidden_rate,
     arch,
     back,
-    n_t_imgs,
-    n_hidden_rate,
-    sel_pol = d
+    tspan_end,
+    n_epochs,
+    batch_size = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -220,17 +220,17 @@ function makesim_genflows(d::Dict)
 end
 
 function makesim_expr(d::Dict)
-    @unpack p_s,
-    n_epochs,
-    batch_size,
-    n_iter_rec,
-    tspan_end,
+    @unpack n_iter_rec,
+    sel_a,
+    sel_pol,
+    n_t_imgs,
+    p_s,
+    n_hidden_rate,
     arch,
     back,
-    n_t_imgs,
-    sel_a,
-    n_hidden_rate,
-    sel_pol = d
+    tspan_end,
+    n_epochs,
+    batch_size = d
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         # train

@@ -7,9 +7,11 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => ["min", "max"],
+    "sel_a" => vcat(["min", "max"], 1:16),
 
     # train
+    "sel_pol" => "equ_d",
+    # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
     "p_s" => 6,
@@ -27,7 +29,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 48,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -41,19 +43,21 @@ const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
 d = first(dicts)
 
-@unpack p_s,
-n_epochs,
-batch_size,
-n_iter_rec,
-tspan_end,
+@unpack n_iter_rec,
+sel_a,
+sel_pol,
+n_t_imgs,
+p_s,
+n_hidden_rate,
 arch,
 back,
-n_t_imgs,
-sel_a,
-n_hidden_rate = d
+tspan_end,
+n_epochs,
+batch_size = d
 d2 = Dict{String, Any}("p_s" => p_s)
 d3 = Dict{String, Any}(
     # train
+    "sel_pol" => sel_pol,
     "n_t_imgs" => n_t_imgs,
     "p_s" => p_s,
 
@@ -141,26 +145,22 @@ else
     error("Not Imp")
 end
 if use_gpu_nn_test
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-        array_type = CuArray,
-        sol_kwargs,
-    )
+    icnf = construct(FFJORD, nn, nvars; tspan, array_type = CuArray, sol_kwargs)
 else
-    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode)
+    icnf = construct(FFJORD, nn, nvars; tspan)
 end
 
-smp = ptchs[:, :, 1, 10_000:10_000]
-smp_f = MLUtils.flatten(smp)
-prob = ContinuousNormalizingFlows.inference_prob(icnf, TrainMode(), smp_f, ps, st)
+smp = ptchs[:, :, 1, 10_000, 1]
+smp_f = vec(smp)
+# smp_f = MLUtils.flatten(smp)
+prob = ContinuousNormalizingFlows.inference_prob(icnf, TestMode(), smp_f, ps, st)
 sl = solve(prob, icnf.sol_args...; icnf.sol_kwargs...)
 display(sl.stats)
-plt = plot(
-    sl.t,
-    sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TrainMode()) + 1)), 1, :]',
+f = Figure()
+ax = Makie.Axis(f[1, 1]; title = "Flow")
+broadcast(
+    x -> lines!(ax, sl.t, x),
+    eachrow(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode()) + 1)), :]),
 )
-savefig(plt, plotsdir("plot-lines", "plt_new.png"))
+save(plotsdir("plot-lines", "flow_new.svg"), f)
+save(plotsdir("plot-lines", "flow_new.png"), f)
