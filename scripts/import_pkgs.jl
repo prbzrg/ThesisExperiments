@@ -29,6 +29,8 @@ using AbstractDifferentiation,
     Images,
     ImageTransformations,
     JLD2,
+    JuliaFormatter,
+    LinearAlgebra,
     Logging,
     Lux,
     LuxCUDA,
@@ -54,11 +56,17 @@ using AbstractDifferentiation,
     Tracker,
     Zygote
 
+# const debuglogger = Logging.ConsoleLogger(Logging.Debug)
+# Logging.global_logger(debuglogger)
+
+const nthd = Threads.nthreads(:default)
+if nthd > 1
+    BLAS.set_num_threads(nthd)
+end
+
 const n_data_b = 128
 const cdev = cpu_device()
 const gdev = gpu_device()
-# const debuglogger = Logging.ConsoleLogger(Logging.Debug)
-# Logging.global_logger(debuglogger)
 
 include(srcdir("ext_patch.jl"))
 include(srcdir("radon_transform.jl"))
