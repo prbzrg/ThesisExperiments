@@ -10,7 +10,8 @@ const allparams = Dict(
     "sel_a" => vcat(["min", "max"], 1:16),
 
     # train
-    "sel_pol" => "equ_d",
+    "sel_pol" => nothing,
+    # "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
@@ -29,7 +30,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 48,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -145,14 +146,28 @@ else
     error("Not Imp")
 end
 if use_gpu_nn_test
-    icnf = construct(FFJORD, nn, nvars; tspan, array_type = CuArray, sol_kwargs)
+    icnf = construct(FFJORD, nn, nvars; tspan, array_type = CuArray)
 else
     icnf = construct(FFJORD, nn, nvars; tspan)
 end
 
-smp = ptchs[:, :, 1, 10_000, 1]
-smp_f = vec(smp)
+# way 4
+# smp_f = rand(Float32, 36)
+
+# way 3
+# smp_f = ones(Float32, 36)
+smp_f = zeros(Float32, 36)
+
+# way 2
+# ptchs2 = reshape(ptchs, 36, size(ptchs, 4) * 128);
+# high_std = argmin(std.(eachcol(ptchs2)))
+# smp_f = ptchs2[:, high_std]
+
+# way 1
+# smp = ptchs[:, :, 1, 10_000, 10]
+# smp_f = vec(smp)
 # smp_f = MLUtils.flatten(smp)
+
 prob = ContinuousNormalizingFlows.inference_prob(icnf, TestMode(), smp_f, ps, st)
 sl = solve(prob, icnf.sol_args...; icnf.sol_kwargs...)
 display(sl.stats)
@@ -162,5 +177,7 @@ broadcast(
     x -> lines!(ax, sl.t, x),
     eachrow(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode()) + 1)), :]),
 )
+# ax2 = Makie.Axis(f[1, 2]; title = "Log")
+# lines!(ax2, sl.t, sl[end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode())), :])
 save(plotsdir("plot-lines", "flow_new.svg"), f)
 save(plotsdir("plot-lines", "flow_new.png"), f)

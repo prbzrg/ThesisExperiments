@@ -10,7 +10,8 @@ const allparams = Dict(
     "sel_a" => vcat(["min", "max"], 1:16),
 
     # train
-    "sel_pol" => "equ_d",
+    "sel_pol" => nothing,
+    # "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
@@ -29,7 +30,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 48,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -215,6 +216,8 @@ function makesim_genflows(d::Dict)
 
     rpt = report(mach)
     fulld["fit_stats"] = rpt.stats
+
+    Zygote.refresh()
 
     fulld
 end
