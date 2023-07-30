@@ -42,7 +42,7 @@ const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
 const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
 const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
-function makesim_gendata(d::Dict)
+@inline function makesim_gendata(d::Dict)
     @unpack p_s, = d
     fulld = copy(d)
 
@@ -58,7 +58,7 @@ function makesim_gendata(d::Dict)
     fulld
 end
 
-function makesim_genflows(d::Dict)
+@inline function makesim_genflows(d::Dict)
     @unpack sel_pol,
     n_t_imgs,
     p_s,
@@ -119,7 +119,10 @@ function makesim_genflows(d::Dict)
     fulld["nvars"] = nvars
     fulld["n_hidden"] = n_hidden
 
-    rs_f(x) = reshape(x, (p_s, p_s, 1, :))
+    @inline function rs_f(x)
+        reshape(x, (p_s, p_s, 1, :))
+    end
+
     if back == "Lux"
         if arch == "Dense"
             nn = Lux.Dense(nvars => nvars, tanh)
@@ -222,7 +225,7 @@ function makesim_genflows(d::Dict)
     fulld
 end
 
-function makesim_expr(d::Dict)
+@inline function makesim_expr(d::Dict)
     @unpack n_iter_rec,
     sel_a,
     sel_pol,
@@ -274,7 +277,10 @@ function makesim_expr(d::Dict)
     n_hidden = n_hidden_rate * nvars
     fulld["nvars"] = nvars
     fulld["n_hidden"] = n_hidden
-    rs_f(x) = reshape(x, (p_s, p_s, 1, :))
+
+    @inline function rs_f(x)
+        reshape(x, (p_s, p_s, 1, :))
+    end
 
     if back == "Lux"
         if arch == "Dense"
@@ -339,7 +345,10 @@ function makesim_expr(d::Dict)
             construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
 
-    icnf_f(x) = loss(icnf, TrainMode(), x, ps, st)
+    @inline function icnf_f(x)
+        loss(icnf, TrainMode(), x, ps, st)
+    end
+
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"

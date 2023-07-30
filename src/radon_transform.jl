@@ -1,4 +1,4 @@
-function radon_transform_new(
+@inline function radon_transform_new(
     I::AbstractMatrix{T},
     θ::AbstractRange,
     t::AbstractRange,
@@ -20,7 +20,7 @@ function radon_transform_new(
     copy(P)
 end
 
-# function radon_transform_new(
+# @inline function radon_transform_new(
 #     I::AbstractMatrix{T},
 #     θ::AbstractRange,
 #     t::AbstractRange,
@@ -41,7 +41,7 @@ end
 #     P
 # end
 
-# function radon_transform_old(
+# @inline function radon_transform_old(
 #     I::AbstractMatrix{T},
 #     θ::AbstractRange,
 #     t::AbstractRange,
@@ -69,7 +69,7 @@ end
 #     P
 # end
 
-# function radon_transform_new_thrd(
+# @inline function radon_transform_new_thrd(
 #     I::AbstractMatrix{T},
 #     θ::AbstractRange,
 #     t::AbstractRange,
@@ -91,7 +91,7 @@ end
 #     P
 # end
 
-# function radon_transform_new(
+# @inline function radon_transform_new(
 #     I::AbstractMatrix{T},
 #     θ::AbstractRange,
 # )::AbstractMatrix{T} where {T <: Real}
@@ -103,4 +103,6 @@ end
 #     radon_transform_new(I, θ, t)
 # end
 
-prep_img_radon(img) = rotl90(reverse(img; dims = 2))
+@inline function prep_img_radon(img)
+    rotl90(reverse(img; dims = 2))
+end

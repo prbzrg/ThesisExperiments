@@ -3,8 +3,13 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-rs_f(x) = reshape(x, (28, 28, 1, :))
-agg_f(x...) = cat(x...; dims = 3)
+@inline function rs_f(x)
+    reshape(x, (28, 28, 1, :))
+end
+
+@inline function agg_f(x...)
+    cat(x...; dims = 3)
+end
 
 const allparams = Dict(
     "n_newdata" => 8,
@@ -19,7 +24,7 @@ const data_all = cat(data_train, data_test; dims = 3)
 const x = MLUtils.flatten(data_all)
 const df = DataFrame(transpose(x), :auto)
 
-function makesim_expr(d::Dict)
+@inline function makesim_expr(d::Dict)
     @unpack n_newdata, n_epochs = d
     fulld = copy(d)
 

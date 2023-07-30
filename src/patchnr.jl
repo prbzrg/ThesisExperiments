@@ -11,9 +11,11 @@ const MU_WATER = 20
 const MU_AIR = 0.02
 const MU_MAX = 3071 * (MU_WATER - MU_AIR) / 1000 + MU_WATER
 
-cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
-# cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, π; length=1000), -256:256)
-# cstm_radon(x) = radon_transform_new(prep_img_radon(x), range(0, 1; length=1000), -256:256)
+@inline function cstm_radon(x)
+    # radon_transform_new(prep_img_radon(x), range(0, 1; length = 1000), -256:256)
+    # radon_transform_new(prep_img_radon(x), range(0, π; length = 1000), -256:256)
+    radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
+end
 
 const lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
 
@@ -33,7 +35,7 @@ mutable struct PatchNR
     forward_op::Function
     sel_pts::AbstractArray
 
-    function PatchNR(;
+    @inline function PatchNR(;
         icnf_f::Function,
         n_pts::Integer,
         p_s::Integer,
@@ -72,7 +74,7 @@ mutable struct PatchNR
     end
 end
 
-# function recn_loss(app_icnf::PatchNR, x, y)
+# @inline function recn_loss(app_icnf::PatchNR, x, y)
 #     y = y[:, 1:(app_icnf.n_skp):1000]
 #     N₀ = app_icnf.N₀
 #     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
@@ -83,7 +85,7 @@ end
 #     pt_1st + app_icnf.λ * pt_2ed
 # end
 
-# function recn_loss_pt1(app_icnf::PatchNR, x, y)
+# @inline function recn_loss_pt1(app_icnf::PatchNR, x, y)
 #     y = y[:, 1:(app_icnf.n_skp):1000]
 #     N₀ = app_icnf.N₀
 #     forw = app_icnf.forward_op(reshape(x, (app_icnf.w_d, app_icnf.w_d)))
@@ -92,7 +94,7 @@ end
 # end
 
 # main
-# function recn_loss_pt1(app_icnf::PatchNR, x, y)
+# @inline function recn_loss_pt1(app_icnf::PatchNR, x, y)
 #     y = y[:, 1:(app_icnf.n_skp):1000]
 #     N₀ = app_icnf.N₀
 #     μ = app_icnf.μ
@@ -102,13 +104,13 @@ end
 #     pt_1st
 # end
 
-function recn_loss_pt1(app_icnf::PatchNR, x, y)
+@inline function recn_loss_pt1(app_icnf::PatchNR, x, y)
     x = reshape(rotl90(reshape(x, (362, 362))), (1, 1, 362, 362))
     y = reshape(rotl90(y), (1, 1, 1000, 513))
     first_part(x, y)
 end
 
-function recn_loss_pt2(app_icnf::PatchNR, x, y)
+@inline function recn_loss_pt2(app_icnf::PatchNR, x, y)
     new_pts = nr_patchs(app_icnf, x)
     if use_gpu_nn_test
         new_pts = gdev(new_pts)
@@ -117,7 +119,7 @@ function recn_loss_pt2(app_icnf::PatchNR, x, y)
     app_icnf.λ * app_icnf.icnf_f(new_pts)
 end
 
-# function recn_loss_pt2(app_icnf::PatchNR, x, y)
+# @inline function recn_loss_pt2(app_icnf::PatchNR, x, y)
 #     app_icnf.λ * extract_patch_one(
 #         app_icnf.icnf_f,
 #         reshape(x, (app_icnf.w_d, app_icnf.w_d, 1, :)),
@@ -126,7 +128,7 @@ end
 #     )
 # end
 
-function nr_patchs(app_icnf::PatchNR, x)
+@inline function nr_patchs(app_icnf::PatchNR, x)
     p_s = app_icnf.p_s
     w_d = app_icnf.w_d
     img = reshape(x, (w_d, w_d))
@@ -144,18 +146,18 @@ function nr_patchs(app_icnf::PatchNR, x)
 end
 
 # main
-# function recn_loss_pt1_grad(ptchnr, ps, obs_y)
+# @inline function recn_loss_pt1_grad(ptchnr, ps, obs_y)
 #     # ForwardDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
 #     ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
 # end
 
-function recn_loss_pt1_grad(ptchnr, ps, obs_y)
+@inline function recn_loss_pt1_grad(ptchnr, ps, obs_y)
     ps = reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362))
     obs_y = reshape(rotl90(obs_y), (1, 1, 1000, 513))
     vec(rotr90(grad_first_part(ps, obs_y)[1, 1, :, :]))
 end
 
-function recn_loss_pt2_grad(ptchnr, ps, obs_y)
+@inline function recn_loss_pt2_grad(ptchnr, ps, obs_y)
     # ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
     only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
 end

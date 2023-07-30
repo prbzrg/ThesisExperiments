@@ -1,12 +1,14 @@
-# _loss(ps, ptchnr, obs_y) = recn_loss(ptchnr, ps, obs_y)
+# @inline function _loss(ps, ptchnr, obs_y)
+#     recn_loss(ptchnr, ps, obs_y)
+# end
 
-function _loss(ps, ptchnr, obs_y)
+@inline function _loss(ps, ptchnr, obs_y)
     pt1 = recn_loss_pt1(ptchnr, ps, obs_y)
     pt2 = recn_loss_pt2(ptchnr, ps, obs_y)
     pt1 + pt2
 end
 
-function _loss_gd(G, ps, ptchnr, obs_y)
+@inline function _loss_gd(G, ps, ptchnr, obs_y)
     pt1 = recn_loss_pt1_grad(ptchnr, ps, obs_y)
     pt2 = recn_loss_pt2_grad(ptchnr, ps, obs_y)
 
@@ -14,7 +16,7 @@ function _loss_gd(G, ps, ptchnr, obs_y)
     nothing
 end
 
-function train_loop(ps, ptchnr, obs_y, opt, n_iter)
+@inline function train_loop(ps, ptchnr, obs_y, opt, n_iter)
     opt_state = Optimisers.setup(opt, ps)
     G = copy(ps)
     # G = zeros(eltype(ps), length(ps))
@@ -32,10 +34,10 @@ function train_loop(ps, ptchnr, obs_y, opt, n_iter)
     ps
 end
 
-function train_loop_optpkg(ps, ptchnr, obs_y, opt, n_iter)
+@inline function train_loop_optpkg(ps, ptchnr, obs_y, opt, n_iter)
     prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
 
-    function _callback(ps, l)
+    @inline function _callback(ps, l)
         ProgressMeter.next!(
             prgr;
             showvalues = [(:loss_value, l), (:last_update, Dates.now())],
@@ -43,8 +45,13 @@ function train_loop_optpkg(ps, ptchnr, obs_y, opt, n_iter)
         false
     end
 
-    _loss2(ps, θ) = _loss(ps, ptchnr, obs_y)
-    _loss_gd2(ps_i, ps, θ) = _loss_gd(ps_i, ps, ptchnr, obs_y)
+    @inline function _loss2(ps, θ)
+        _loss(ps, ptchnr, obs_y)
+    end
+
+    @inline function _loss_gd2(ps_i, ps, θ)
+        _loss_gd(ps_i, ps, ptchnr, obs_y)
+    end
 
     # optfunc = OptimizationFunction(_loss2, AutoTracker())
     # optfunc = OptimizationFunction(_loss2, AutoForwardDiff())

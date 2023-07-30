@@ -95,7 +95,10 @@ nvars = p_s * p_s
 n_hidden = n_hidden_rate * nvars
 fulld["nvars"] = nvars
 fulld["n_hidden"] = n_hidden
-rs_f(x) = reshape(x, (p_s, p_s, 1, :))
+
+@inline function rs_f(x)
+    reshape(x, (p_s, p_s, 1, :))
+end
 
 if back == "Lux"
     if arch == "Dense"

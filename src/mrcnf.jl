@@ -4,7 +4,7 @@ struct MTrans
     tp::Any
     c::Any
     a::Any
-    function MTrans(
+    @inline function MTrans(
         tp = Float32,
         c = convert(tp_t[tp], 2)^(convert(tp_t[tp], 2) / convert(tp_t[tp], 3)),
         a = convert(tp_t[tp], 4),
@@ -14,7 +14,7 @@ struct MTrans
 end
 
 # return [y₁, y₂, y₃, x̄]
-function forward_trans(mt::MTrans, x)
+@inline function forward_trans(mt::MTrans, x)
     c = mt.c
     a = mt.a
     forward_t_m = [
@@ -27,7 +27,7 @@ function forward_trans(mt::MTrans, x)
 end
 
 # return [x₁, x₂, x₃, x₄]
-function backward_trans(mt::MTrans, y)
+@inline function backward_trans(mt::MTrans, y)
     c = mt.c
     a = mt.a
     backward_t_m = (1 / a) * [
@@ -43,7 +43,7 @@ mutable struct MRCNF
     nf_arr::Any
 end
 
-function MRCNF(s)
+@inline function MRCNF(s)
     nf_arr = []
     push!(nf_arr, NF(1))
     for i in 0:(log2(s) - 1)

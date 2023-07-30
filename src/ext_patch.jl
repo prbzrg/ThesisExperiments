@@ -1,4 +1,4 @@
-function extract_patch(
+@inline function extract_patch(
     img::AbstractArray{T, 4},
     p_w::Integer,
     p_h::Integer,
@@ -20,7 +20,7 @@ function extract_patch(
     copy(out_img)
 end
 
-function extract_patch_rand(
+@inline function extract_patch_rand(
     img::AbstractArray{T, 4},
     p_w::Integer,
     p_h::Integer,
@@ -44,7 +44,7 @@ function extract_patch_rand(
     copy(out_img)
 end
 
-function extract_patch_2(
+@inline function extract_patch_2(
     img::AbstractArray{T, 2},
     p_w::Integer,
     p_h::Integer,
@@ -63,7 +63,7 @@ function extract_patch_2(
     copy(out_img)
 end
 
-function extract_patch_2_rand(
+@inline function extract_patch_2_rand(
     img::AbstractArray{T, 2},
     p_w::Integer,
     p_h::Integer,
@@ -84,7 +84,7 @@ function extract_patch_2_rand(
     copy(out_img)
 end
 
-# function extract_patch_one(
+# @inline function extract_patch_one(
 #     icnf_f::Function,
 #     img::AbstractArray{T, 4},
 #     p_w::Integer,
