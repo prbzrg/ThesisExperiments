@@ -392,7 +392,11 @@ end
 end
 
 for (i, d) in enumerate(dicts)
-    CUDA.allowscalar() do
+    if use_gpu_nn_train || use_gpu_nn_test
+        CUDA.allowscalar() do
+            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+        end
+    else
         produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
     end
 end
