@@ -159,5 +159,14 @@ end
 
 @inline function recn_loss_pt2_grad(ptchnr, ps, obs_y)
     # ForwardDiff.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps)
-    only(Zygote.gradient(x -> recn_loss_pt2(ptchnr, x, obs_y), ps))
+
+    @inline function recn_loss_pt2_g1(x)
+        recn_loss_pt2(ptchnr, x, obs_y)
+    end
+
+    @inline function recn_loss_pt2_g2(x)
+        Zygote.forwarddiff(recn_loss_pt2_g1, x)
+    end
+
+    only(Zygote.gradient(recn_loss_pt2_g2, ps))
 end
