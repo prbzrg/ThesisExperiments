@@ -8,6 +8,7 @@ using AbstractDifferentiation,
     ADTypes,
     Base.Iterators,
     Base.Threads,
+    BenchmarkTools,
     Colors,
     ComputationalResources,
     ContinuousNormalizingFlows,
@@ -60,7 +61,7 @@ using AbstractDifferentiation,
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
-const nthd = Threads.nthreads(:default)
+const nthd = nthreads(:default)
 if nthd > 1
     BLAS.set_num_threads(nthd)
 end

@@ -21,14 +21,22 @@ end
     G = copy(ps)
     # G = zeros(eltype(ps), length(ps))
     prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
+    prev_time = time()
     for i in 1:n_iter
         _loss_gd(G, ps, ptchnr, obs_y)
         opt_state, ps = Optimisers.update!(opt_state, ps, G)
         lv = _loss(ps, ptchnr, obs_y)
+        new_time = time()
         ProgressMeter.next!(
             prgr;
-            showvalues = [(:loss_value, lv), (:last_update, Dates.now())],
+            showvalues = [
+                (:loss_value, lv),
+                (:last_update, now()),
+                (:iteration_number, i),
+                (:time_diff, new_time - prev_time),
+            ],
         )
+        prev_time = new_time
     end
     ProgressMeter.finish!(prgr)
     ps
@@ -36,12 +44,22 @@ end
 
 @inline function train_loop_optpkg(ps, ptchnr, obs_y, opt, n_iter)
     prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
+    iter_n = [1]
+    prev_time = [time()]
 
     @inline function _callback(ps, l)
+        new_time = time()
         ProgressMeter.next!(
             prgr;
-            showvalues = [(:loss_value, l), (:last_update, Dates.now())],
+            showvalues = [
+                (:loss_value, l),
+                (:last_update, now()),
+                (:iteration_number, iter_n[]),
+                (:time_diff, new_time - prev_time[]),
+            ],
         )
+        iter_n[] += 1
+        prev_time[] = new_time
         false
     end
 
