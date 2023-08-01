@@ -192,9 +192,6 @@ display(l_bench_ad11)
 l_bench_ad12 = @benchmark Zygote.jacobian(diff_loss, smp_f)
 @info "Zygote.jacobian"
 display(l_bench_ad12)
-l_bench_ad13 = @benchmark Zygote.forwarddiff(diff_loss, smp_f)
-@info "Zygote.forwarddiff"
-display(l_bench_ad13)
 l_bench_ad21 = @benchmark Zygote.diaghessian(diff_loss, smp_f)
 @info "Zygote.diaghessian"
 display(l_bench_ad21)
