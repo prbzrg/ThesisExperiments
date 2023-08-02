@@ -5,24 +5,25 @@ include(scriptsdir("import_pkgs.jl"))
 
 const allparams = Dict(
     # data
-    "nvars" => 2^0,
+    "nvars" => 1,
     # "nvars" => 2 .^ (0:3),
-    "n" => 2^12,
+    "n" => 2^10,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
     # nn
-    "n_hidden_rate" => 2^2,
+    "n_hidden_rate" => 2,
     # "n_hidden_rate" => 2 .^ (0:3),
-    "arch" => ["Dense", "Dense-ML"],
+    "arch" => "Dense",
+    # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => [2^0, 2^5],
+    "tspan_end" => 1,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
-    "n_epochs" => 2^10 * 2^3,
-    "batch_size" => 2^12,
+    "n_epochs" => 2^10,
+    "batch_size" => 2^7,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -54,13 +55,13 @@ end
     r = data["r"]
 
     if arch == "Dense"
-        nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+        nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
     elseif arch == "Dense-ML"
         nn = FluxCompatLayer(
             Flux.f32(
                 Flux.Chain(
-                    Flux.Dense(nvars => n_hidden, tanh),
-                    Flux.Dense(n_hidden => nvars, tanh),
+                    Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                    Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                 ),
             ),
         )
@@ -70,9 +71,11 @@ end
     icnf = construct(
         RNODE,
         nn,
+        nvars,
         nvars;
         tspan,
         compute_mode = ZygoteMatrixMode,
+        augmented = true,
         sol_kwargs,
         λ₁ = 1.0f-1,
         λ₂ = 1.0f-1,
