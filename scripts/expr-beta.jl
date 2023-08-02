@@ -77,8 +77,8 @@ end
         compute_mode = ZygoteMatrixMode,
         augmented = true,
         sol_kwargs,
-        λ₁ = 1.0f-1,
-        λ₂ = 1.0f-1,
+        # λ₁ = 1.0f-1,
+        # λ₂ = 1.0f-1,
     )
 
     df = DataFrame(transpose(r), :auto)
@@ -89,7 +89,7 @@ end
     rpt = report(mach)
     fulld["elapsed_time"] = rpt.stats.time
 
-    dist = ICNFDist(icnf, ps, st)
+    dist = ICNFDist(icnf, TestMode(), ps, st)
     actual_pdf = pdf.(data_dist, vec(r))
     estimated_pdf = pdf(dist, r)
 
