@@ -76,6 +76,8 @@ end
         tspan,
         compute_mode = ZygoteMatrixMode,
         augmented = true,
+        steer = true,
+        steer_rate = 1.0f-1,
         sol_kwargs,
         # λ₁ = 1.0f-1,
         # λ₂ = 1.0f-1,
