@@ -10,8 +10,8 @@ const allparams = Dict(
     "sel_a" => vcat(["min", "max"], 1:32),
 
     # train
-    "sel_pol" => nothing,
-    # "sel_pol" => "equ_d",
+    # "sel_pol" => nothing,
+    "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
@@ -19,18 +19,18 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8],
 
     # nn
-    "n_hidden_rate" => 2,
+    "n_hidden_rate" => nothing,
     # "arch" => "Dense-ML",
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 10,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 48,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -125,11 +125,11 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(nvars => nvars, tanh)
+            nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(nvars => n_hidden, tanh),
-                Lux.Dense(n_hidden => nvars, tanh),
+                Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
             )
         else
             error("Not Imp")
@@ -137,14 +137,16 @@ end
     elseif back == "Flux"
         if use_gpu_nn_train
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxCompatLayer(
+                    Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+                )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(nvars => n_hidden, tanh),
-                                Flux.Dense(n_hidden => nvars, tanh),
+                                Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                                Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                             ),
                         ),
                     ),
@@ -154,13 +156,13 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars => n_hidden, tanh),
-                            Flux.Dense(n_hidden => nvars, tanh),
+                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                         ),
                     ),
                 )
@@ -175,13 +177,17 @@ end
         icnf = construct(
             RNODE,
             nn,
+            nvars,
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
+            augmented = true,
+            steer = true,
+            steer_rate = 1.0f-1,
             sol_kwargs,
-            λ₁ = 1.0f-1,
-            λ₂ = 1.0f-1,
+            # λ₁ = 1.0f-1,
+            # λ₂ = 1.0f-1,
         )
         model = ICNFModel(
             icnf;
@@ -195,12 +201,16 @@ end
         icnf = construct(
             RNODE,
             nn,
+            nvars,
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
+            augmented = true,
+            steer = true,
+            steer_rate = 1.0f-1,
             sol_kwargs,
-            λ₁ = 1.0f-1,
-            λ₂ = 1.0f-1,
+            # λ₁ = 1.0f-1,
+            # λ₂ = 1.0f-1,
         )
         model = ICNFModel(
             icnf;
@@ -284,11 +294,11 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(nvars => nvars, tanh)
+            nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(nvars => n_hidden, tanh),
-                Lux.Dense(n_hidden => nvars, tanh),
+                Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
             )
         else
             error("Not Imp")
@@ -296,14 +306,16 @@ end
     elseif back == "Flux"
         if use_gpu_nn_test
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+                nn = FluxCompatLayer(
+                    Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+                )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(nvars => n_hidden, tanh),
-                                Flux.Dense(n_hidden => nvars, tanh),
+                                Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                                Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                             ),
                         ),
                     ),
@@ -313,13 +325,13 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars => n_hidden, tanh),
-                            Flux.Dense(n_hidden => nvars, tanh),
+                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                         ),
                     ),
                 )
@@ -332,21 +344,35 @@ end
     end
     if use_gpu_nn_test
         icnf = construct(
-            FFJORD,
+            RNODE,
             nn,
+            nvars,
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
+            augmented = true,
+            steer = true,
+            steer_rate = 1.0f-1,
             sol_kwargs,
         )
     else
-        icnf =
-            construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+        icnf = construct(
+            RNODE,
+            nn,
+            nvars,
+            nvars;
+            tspan,
+            compute_mode = ZygoteMatrixMode,
+            augmented = true,
+            steer = true,
+            steer_rate = 1.0f-1,
+            sol_kwargs,
+        )
     end
 
     @inline function icnf_f(x)
-        loss(icnf, TrainMode(), x, ps, st)
+        loss(icnf, TestMode(), x, ps, st)
     end
 
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
