@@ -344,7 +344,7 @@ end
     end
     if use_gpu_nn_test
         icnf = construct(
-            RNODE,
+            FFJORD,
             nn,
             nvars,
             nvars;
@@ -352,27 +352,23 @@ end
             compute_mode = ZygoteMatrixMode,
             array_type = CuArray,
             augmented = true,
-            steer = true,
-            steer_rate = 1.0f-1,
             sol_kwargs,
         )
     else
         icnf = construct(
-            RNODE,
+            FFJORD,
             nn,
             nvars,
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
             augmented = true,
-            steer = true,
-            steer_rate = 1.0f-1,
             sol_kwargs,
         )
     end
 
     @inline function icnf_f(x)
-        loss(icnf, TestMode(), x, ps, st)
+        loss(icnf, TrainMode(), x, ps, st)
     end
 
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)

@@ -7,11 +7,11 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => vcat(["min", "max"], 1:16),
+    "sel_a" => vcat(["min", "max"], 1:32),
 
     # train
-    "sel_pol" => nothing,
-    # "sel_pol" => "equ_d",
+    # "sel_pol" => nothing,
+    "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
@@ -26,11 +26,11 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 10,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 48,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
@@ -102,11 +102,11 @@ end
 
 if back == "Lux"
     if arch == "Dense"
-        nn = Lux.Dense(nvars => nvars, tanh)
+        nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
     elseif arch == "Dense-ML"
         nn = Lux.Chain(
-            Lux.Dense(nvars => n_hidden, tanh),
-            Lux.Dense(n_hidden => nvars, tanh),
+            Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
+            Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
         )
     else
         error("Not Imp")
@@ -114,14 +114,16 @@ if back == "Lux"
 elseif back == "Flux"
     if use_gpu_nn_test
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+            nn = FluxCompatLayer(
+                Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+            )
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.gpu(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars => n_hidden, tanh),
-                            Flux.Dense(n_hidden => nvars, tanh),
+                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                         ),
                     ),
                 ),
@@ -131,13 +133,13 @@ elseif back == "Flux"
         end
     else
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+            nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.f32(
                     Flux.Chain(
-                        Flux.Dense(nvars => n_hidden, tanh),
-                        Flux.Dense(n_hidden => nvars, tanh),
+                        Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                        Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                     ),
                 ),
             )
@@ -149,9 +151,10 @@ else
     error("Not Imp")
 end
 if use_gpu_nn_test
-    icnf = construct(FFJORD, nn, nvars; tspan, array_type = CuArray)
+    icnf =
+        construct(FFJORD, nn, nvars, nvars; tspan, array_type = CuArray, augmented = true)
 else
-    icnf = construct(FFJORD, nn, nvars; tspan)
+    icnf = construct(FFJORD, nn, nvars, nvars; tspan, augmented = true)
 end
 
 # way 4
