@@ -19,7 +19,7 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8],
 
     # nn
-    "n_hidden_rate" => nothing,
+    "n_hidden_rate" => 2,
     # "arch" => "Dense-ML",
     "arch" => "Dense",
     # "back" => "Lux",
