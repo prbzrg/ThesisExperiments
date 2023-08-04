@@ -26,7 +26,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -181,7 +181,7 @@ end
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            array_type = CuArray,
+            resource = CUDALibs(),
             augmented = true,
             steer = true,
             steer_rate = 1.0f-1,
@@ -195,7 +195,6 @@ end
             n_epochs,
             batch_size,
             # adtype = AutoForwardDiff(),
-            resource = CUDALibs(),
         )
     else
         icnf = construct(
@@ -350,7 +349,7 @@ end
             nvars;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            array_type = CuArray,
+            resource = CUDALibs(),
             augmented = true,
             sol_kwargs,
         )

@@ -154,7 +154,7 @@ if use_gpu_nn_test
         nn,
         nvars;
         tspan,
-        array_type = CuArray,
+        resource = CUDALibs(),
         compute_mode = ZygoteMatrixMode,
         sol_kwargs,
     )

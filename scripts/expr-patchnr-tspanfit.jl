@@ -141,7 +141,7 @@ end
             nn,
             nvars;
             compute_mode = ZygoteMatrixMode,
-            array_type = CuArray,
+            resource = CUDALibs(),
             sol_kwargs,
             λ₁ = 1.0f-1,
             λ₂ = 1.0f-1,
@@ -153,7 +153,6 @@ end
             n_epochs,
             batch_size,
             # adtype = AutoForwardDiff(),
-            resource = CUDALibs(),
         )
     else
         icnf = construct(
@@ -289,7 +288,7 @@ end
             nn,
             nvars;
             compute_mode = ZygoteMatrixMode,
-            array_type = CuArray,
+            resource = CUDALibs(),
             sol_kwargs,
         )
     else

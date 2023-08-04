@@ -152,7 +152,7 @@ else
 end
 if use_gpu_nn_test
     icnf =
-        construct(FFJORD, nn, nvars, nvars; tspan, array_type = CuArray, augmented = true)
+        construct(FFJORD, nn, nvars, nvars; tspan, resource = CUDALibs(), augmented = true)
 else
     icnf = construct(FFJORD, nn, nvars, nvars; tspan, augmented = true)
 end

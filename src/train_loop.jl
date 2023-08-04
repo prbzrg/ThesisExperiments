@@ -58,7 +58,7 @@ end
                 (:time_diff, new_time - prev_time[]),
             ],
         )
-        iter_n[] += 1
+        iter_n[] += one(iter_n[])
         prev_time[] = new_time
         false
     end
