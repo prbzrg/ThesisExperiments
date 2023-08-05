@@ -1,0 +1,3 @@
+[ContinuousNormalizingFlows]
+doprecompilation = false
+fullprecompilation = false

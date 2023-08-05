@@ -7,7 +7,7 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => vcat(["min", "max"], 1:32),
+    "sel_a" => vcat(["min", "max"], 1:12),
 
     # train
     # "sel_pol" => nothing,
@@ -17,6 +17,8 @@ const allparams = Dict(
     # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
+    "rnode_reg" => 1.0f-1,
+    "steer_reg" => 0.25f0,
 
     # nn
     "n_hidden_rate" => 2,
@@ -62,6 +64,8 @@ end
     @unpack sel_pol,
     n_t_imgs,
     p_s,
+    rnode_reg,
+    steer_reg,
     n_hidden_rate,
     arch,
     back,
@@ -184,10 +188,10 @@ end
             resource = CUDALibs(),
             augmented = true,
             steer = true,
-            steer_rate = 1.0f-1,
+            steer_rate = steer_reg,
             sol_kwargs,
-            # λ₁ = 1.0f-1,
-            # λ₂ = 1.0f-1,
+            λ₁ = rnode_reg,
+            λ₂ = rnode_reg,
         )
         model = ICNFModel(
             icnf;
@@ -206,10 +210,10 @@ end
             compute_mode = ZygoteMatrixMode,
             augmented = true,
             steer = true,
-            steer_rate = 1.0f-1,
+            steer_rate = steer_reg,
             sol_kwargs,
-            # λ₁ = 1.0f-1,
-            # λ₂ = 1.0f-1,
+            λ₁ = rnode_reg,
+            λ₂ = rnode_reg,
         )
         model = ICNFModel(
             icnf;
@@ -240,6 +244,8 @@ end
     sel_pol,
     n_t_imgs,
     p_s,
+    rnode_reg,
+    steer_reg,
     n_hidden_rate,
     arch,
     back,
@@ -252,6 +258,8 @@ end
         "sel_pol" => sel_pol,
         "n_t_imgs" => n_t_imgs,
         "p_s" => p_s,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
 
         # nn
         "n_hidden_rate" => n_hidden_rate,
@@ -399,7 +407,7 @@ end
     u_init = vec(s_point_c)
     # u_init = rand(Float32, 362*362)
 
-    opt = Optimisers.Lion()
+    opt = only(optimizers)
 
     tst_one = @timed new_ps = train_loop_optpkg(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
@@ -412,13 +420,20 @@ end
     fulld
 end
 
-for (i, d) in enumerate(dicts)
-    if use_gpu_nn_train || use_gpu_nn_test
-        CUDA.allowscalar() do
+if use_thrds
+    thrd_rns = map(enumerate(dicts)) do (i, d)
+        @spawn produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+    end
+    fetch.(thrd_rns)
+else
+    for (i, d) in enumerate(dicts)
+        if use_gpu_nn_train || use_gpu_nn_test
+            CUDA.allowscalar() do
+                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            end
+        else
             produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
         end
-    else
-        produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
     end
 end
 

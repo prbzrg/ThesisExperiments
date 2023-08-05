@@ -66,6 +66,7 @@ if nthd > 1
     BLAS.set_num_threads(nthd)
 end
 
+const use_thrds = false
 const n_data_b = 128
 const cdev = cpu_device()
 const gdev = gpu_device()

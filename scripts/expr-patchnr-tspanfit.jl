@@ -326,7 +326,7 @@ end
     u_init = vec(s_point_c)
     # u_init = rand(Float32, 362*362)
 
-    opt = Optimisers.Lion()
+    opt = only(optimizers)
 
     tst_one = @timed new_ps = train_loop_optpkg(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
