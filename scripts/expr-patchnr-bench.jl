@@ -7,11 +7,11 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => vcat(["min", "max"], 1:16),
+    "sel_a" => vcat(["min", "max"], 1:32),
 
     # train
-    "sel_pol" => nothing,
-    # "sel_pol" => "equ_d",
+    # "sel_pol" => nothing,
+    "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
@@ -30,7 +30,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
+    "n_epochs" => 48,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
