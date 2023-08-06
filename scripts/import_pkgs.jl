@@ -55,6 +55,8 @@ if nthd > 1
     BLAS.set_num_threads(nthd)
 end
 
+# Enzyme.API.runtimeActivity!(true)
+
 const use_thrds = false
 const n_data_b = 128
 const cdev = cpu_device()
@@ -86,16 +88,16 @@ const sol_kwargs = Dict(
     # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
-    :sensealg => BacksolveAdjoint(;
-        autodiff = true,
-        autojacvec = ZygoteVJP(),
-        checkpointing = true,
-    ),
-    # :sensealg => InterpolatingAdjoint(;
+    # :sensealg => BacksolveAdjoint(;
     #     autodiff = true,
     #     autojacvec = ZygoteVJP(),
     #     checkpointing = true,
     # ),
+    :sensealg => InterpolatingAdjoint(;
+        autodiff = true,
+        autojacvec = ZygoteVJP(),
+        checkpointing = true,
+    ),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     :reltol => 1.0f-2 + eps(1.0f-2),
     # :reltol => eps(one(Float32)),

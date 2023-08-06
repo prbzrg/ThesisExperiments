@@ -11,13 +11,13 @@ const MU_WATER = 20
 const MU_AIR = 0.02
 const MU_MAX = 3071 * (MU_WATER - MU_AIR) / 1000 + MU_WATER
 
+const lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
+
 @inline function cstm_radon(x)
     # radon_transform_new(prep_img_radon(x), range(0, 1; length = 1000), -256:256)
     # radon_transform_new(prep_img_radon(x), range(0, π; length = 1000), -256:256)
     radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
 end
-
-const lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
 
 mutable struct PatchNR
     icnf_f::Function
