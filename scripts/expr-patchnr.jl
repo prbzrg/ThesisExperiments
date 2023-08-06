@@ -188,7 +188,7 @@ end
             RNODE,
             nn,
             nvars,
-            nvars;
+            naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
@@ -211,7 +211,7 @@ end
             RNODE,
             nn,
             nvars,
-            nvars;
+            naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
             augmented = true,
@@ -358,7 +358,7 @@ end
             FFJORD,
             nn,
             nvars,
-            nvars;
+            naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
@@ -370,7 +370,7 @@ end
             FFJORD,
             nn,
             nvars,
-            nvars;
+            naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
             augmented = true,
