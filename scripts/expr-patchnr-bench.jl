@@ -102,11 +102,11 @@ end
 
 if back == "Lux"
     if arch == "Dense"
-        nn = Lux.Dense(nvars => nvars, tanh)
+        nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
     elseif arch == "Dense-ML"
         nn = Lux.Chain(
-            Lux.Dense(nvars => n_hidden, tanh),
-            Lux.Dense(n_hidden => nvars, tanh),
+            Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
+            Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
         )
     else
         error("Not Imp")
@@ -114,14 +114,16 @@ if back == "Lux"
 elseif back == "Flux"
     if use_gpu_nn_test
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(nvars => nvars, tanh))))
+            nn = FluxCompatLayer(
+                Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+            )
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.gpu(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars => n_hidden, tanh),
-                            Flux.Dense(n_hidden => nvars, tanh),
+                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                         ),
                     ),
                 ),
@@ -131,13 +133,13 @@ elseif back == "Flux"
         end
     else
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars => nvars, tanh)))
+            nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.f32(
                     Flux.Chain(
-                        Flux.Dense(nvars => n_hidden, tanh),
-                        Flux.Dense(n_hidden => nvars, tanh),
+                        Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
+                        Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
                     ),
                 ),
             )
@@ -152,14 +154,25 @@ if use_gpu_nn_test
     icnf = construct(
         FFJORD,
         nn,
+        nvars,
         nvars;
         tspan,
         resource = CUDALibs(),
+        augmented = true,
         compute_mode = ZygoteMatrixMode,
         sol_kwargs,
     )
 else
-    icnf = construct(FFJORD, nn, nvars; tspan, compute_mode = ZygoteMatrixMode, sol_kwargs)
+    icnf = construct(
+        FFJORD,
+        nn,
+        nvars,
+        nvars;
+        tspan,
+        augmented = true,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs,
+    )
 end
 
 # way 4
