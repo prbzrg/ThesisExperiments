@@ -4,17 +4,11 @@ using Pkg
 
 Pkg.precompile(; strict = true)
 
-using AbstractDifferentiation,
-    ADTypes,
-    Base.Iterators,
-    Base.Threads,
+using Base.Threads,
     BenchmarkTools,
     Colors,
-    ComputationalResources,
     ContinuousNormalizingFlows,
     CSV,
-    CUDA,
-    cuDNN,
     CairoMakie,
     DataFrames,
     Dates,
@@ -23,40 +17,35 @@ using AbstractDifferentiation,
     Distributions,
     Documenter,
     DrWatson,
-    Enzyme,
     Flux,
-    ForwardDiff,
     ImageQualityIndexes,
     Images,
-    ImageTransformations,
     JLD2,
     JuliaFormatter,
     LinearAlgebra,
     Logging,
     Lux,
-    LuxCUDA,
-    MLDatasets,
     MLJBase,
     MLUtils,
     Makie,
-    Optim,
     Optimisers,
     Optimization,
     OptimizationOptimisers,
-    OptimizationOptimJL,
     OrdinaryDiffEq,
     ProgressMeter,
     PyCall,
     Random,
-    ReverseDiff,
     SciMLSensitivity,
-    Sinograms,
-    Sixel,
     Statistics,
     StatsBase,
-    Tracker,
     UnPack,
     Zygote
+
+# using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
+# using ComputationalResources, CUDA, cuDNN, LuxCUDA
+# using Optim, OptimizationOptimJL
+# using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
+# using MLDatasets
 
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
