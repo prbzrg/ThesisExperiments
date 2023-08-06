@@ -17,13 +17,14 @@ const allparams = Dict(
     # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
-    "rnode_reg" => 1.0f-1,
+    "naug_rate" => 1.5,
+    "rnode_reg" => 1.0f-2,
     "steer_reg" => 0.25f0,
 
     # nn
-    "n_hidden_rate" => 2,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "n_hidden_rate" => 2.5,
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
@@ -64,6 +65,7 @@ end
     @unpack sel_pol,
     n_t_imgs,
     p_s,
+    naug_rate,
     rnode_reg,
     steer_reg,
     n_hidden_rate,
@@ -119,8 +121,12 @@ end
     df = DataFrame(transpose(x), :auto)
 
     nvars = p_s * p_s
-    n_hidden = n_hidden_rate * nvars
+    naug_vl = convert(Int, naug_rate * nvars)
+    n_in_out = nvars + naug_vl
+    n_hidden = convert(Int, n_hidden_rate * n_in_out)
     fulld["nvars"] = nvars
+    fulld["naug_vl"] = naug_vl
+    fulld["n_in_out"] = n_in_out
     fulld["n_hidden"] = n_hidden
 
     @inline function rs_f(x)
@@ -129,11 +135,11 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
+            nn = Lux.Dense(n_in_out => n_in_out, tanh)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                Lux.Dense(n_in_out => n_hidden, tanh),
+                Lux.Dense(n_hidden => n_in_out, tanh),
             )
         else
             error("Not Imp")
@@ -142,15 +148,15 @@ end
         if use_gpu_nn_train
             if arch == "Dense"
                 nn = FluxCompatLayer(
-                    Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+                    Flux.gpu(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh))),
                 )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                                Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                                Flux.Dense(n_in_out => n_hidden, tanh),
+                                Flux.Dense(n_hidden => n_in_out, tanh),
                             ),
                         ),
                     ),
@@ -160,13 +166,13 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                            Flux.Dense(n_in_out => n_hidden, tanh),
+                            Flux.Dense(n_hidden => n_in_out, tanh),
                         ),
                     ),
                 )
@@ -244,6 +250,7 @@ end
     sel_pol,
     n_t_imgs,
     p_s,
+    naug_rate,
     rnode_reg,
     steer_reg,
     n_hidden_rate,
@@ -258,6 +265,7 @@ end
         "sel_pol" => sel_pol,
         "n_t_imgs" => n_t_imgs,
         "p_s" => p_s,
+        "naug_rate" => naug_rate,
         "rnode_reg" => rnode_reg,
         "steer_reg" => steer_reg,
 
@@ -284,16 +292,12 @@ end
     fulld["n_pts"] = n_pts
 
     data, fn = produce_or_load(makesim_genflows, d3, datadir("ld-ct-sims"))
+    @unpack nvars, naug_vl, n_in_out, n_hidden = data
     @unpack ps, st = data
     if use_gpu_nn_test
         ps = gdev(ps)
         st = gdev(st)
     end
-
-    nvars = p_s * p_s
-    n_hidden = n_hidden_rate * nvars
-    fulld["nvars"] = nvars
-    fulld["n_hidden"] = n_hidden
 
     @inline function rs_f(x)
         reshape(x, (p_s, p_s, 1, :))
@@ -301,11 +305,11 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(nvars * 2 => nvars * 2, tanh)
+            nn = Lux.Dense(n_in_out => n_in_out, tanh)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                Lux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                Lux.Dense(n_in_out => n_hidden, tanh),
+                Lux.Dense(n_hidden => n_in_out, tanh),
             )
         else
             error("Not Imp")
@@ -314,15 +318,15 @@ end
         if use_gpu_nn_test
             if arch == "Dense"
                 nn = FluxCompatLayer(
-                    Flux.gpu(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh))),
+                    Flux.gpu(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh))),
                 )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                                Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                                Flux.Dense(n_in_out => n_hidden, tanh),
+                                Flux.Dense(n_hidden => n_in_out, tanh),
                             ),
                         ),
                     ),
@@ -332,13 +336,13 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
+                nn = FluxCompatLayer(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh)))
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                            Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
+                            Flux.Dense(n_in_out => n_hidden, tanh),
+                            Flux.Dense(n_hidden => n_in_out, tanh),
                         ),
                     ),
                 )

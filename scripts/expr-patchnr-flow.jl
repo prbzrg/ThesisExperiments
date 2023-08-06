@@ -7,16 +7,18 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    "sel_a" => vcat(["min", "max"], 1:32),
+    "sel_a" => vcat(["min", "max"], 1:12),
 
     # train
     # "sel_pol" => nothing,
-    "sel_pol" => "equ_d",
-    # "sel_pol" => "min_max",
+    # "sel_pol" => "equ_d",
+    "sel_pol" => "min_max",
     "n_t_imgs" => 6,
     # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
+    "rnode_reg" => 1.0f-1,
+    "steer_reg" => 0.25f0,
 
     # nn
     "n_hidden_rate" => 2,
@@ -49,6 +51,8 @@ sel_a,
 sel_pol,
 n_t_imgs,
 p_s,
+rnode_reg,
+steer_reg,
 n_hidden_rate,
 arch,
 back,
@@ -61,6 +65,8 @@ d3 = Dict{String, Any}(
     "sel_pol" => sel_pol,
     "n_t_imgs" => n_t_imgs,
     "p_s" => p_s,
+    "rnode_reg" => rnode_reg,
+    "steer_reg" => steer_reg,
 
     # nn
     "n_hidden_rate" => n_hidden_rate,
