@@ -13,7 +13,7 @@ const allparams = Dict(
 
     # train
     "rnode_reg" => 1.0f-1,
-    "steer_reg" => 0.25f0,
+    "steer_reg" => [1.0f-1, 0.25f0],
 
     # nn
     "n_hidden_rate" => 2,
@@ -22,7 +22,7 @@ const allparams = Dict(
     # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => 10,
+    "tspan_end" => [1, 10],
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
