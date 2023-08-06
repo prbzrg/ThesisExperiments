@@ -11,6 +11,10 @@ const allparams = Dict(
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
+    # train
+    "rnode_reg" => 1.0f-1,
+    "steer_reg" => 0.25f0,
+
     # nn
     "n_hidden_rate" => 2,
     # "n_hidden_rate" => 2 .^ (0:3),
@@ -18,7 +22,7 @@ const allparams = Dict(
     # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
@@ -42,7 +46,16 @@ end
 end
 
 @inline function makesim_expr(d::Dict)
-    @unpack nvars, n, data_dist, n_hidden_rate, tspan_end, arch, batch_size, n_epochs = d
+    @unpack nvars,
+    n,
+    data_dist,
+    rnode_reg,
+    steer_reg,
+    n_hidden_rate,
+    arch,
+    tspan_end,
+    batch_size,
+    n_epochs = d
     fulld = copy(d)
 
     n_hidden = n_hidden_rate * nvars
@@ -77,10 +90,10 @@ end
         compute_mode = ZygoteMatrixMode,
         augmented = true,
         steer = true,
-        steer_rate = 1.0f-1,
+        steer_rate = steer_reg,
         sol_kwargs,
-        # λ₁ = 1.0f-1,
-        # λ₂ = 1.0f-1,
+        λ₁ = rnode_reg,
+        λ₂ = rnode_reg,
     )
 
     df = DataFrame(transpose(r), :auto)
