@@ -29,7 +29,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 10,
+    "tspan_end" => 1,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -192,8 +192,6 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            augmented = true,
-            steer = true,
             steer_rate = steer_reg,
             sol_kwargs,
             λ₁ = rnode_reg,
@@ -214,8 +212,6 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            augmented = true,
-            steer = true,
             steer_rate = steer_reg,
             sol_kwargs,
             λ₁ = rnode_reg,

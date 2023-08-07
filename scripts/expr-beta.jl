@@ -12,8 +12,8 @@ const allparams = Dict(
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
     # train
-    "rnode_reg" => 1.0f-1,
-    "steer_reg" => [1.0f-1, 0.25f0],
+    "rnode_reg" => 1.0f-2,
+    "steer_reg" => 0.25f0,
 
     # nn
     "n_hidden_rate" => 2,
@@ -22,7 +22,7 @@ const allparams = Dict(
     # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => [1, 10],
+    "tspan_end" => 1,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
@@ -88,8 +88,6 @@ end
         nvars;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        augmented = true,
-        steer = true,
         steer_rate = steer_reg,
         sol_kwargs,
         λ₁ = rnode_reg,
