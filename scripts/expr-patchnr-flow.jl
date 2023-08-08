@@ -157,10 +157,9 @@ else
     error("Not Imp")
 end
 if use_gpu_nn_test
-    icnf =
-        construct(FFJORD, nn, nvars, nvars; tspan, resource = CUDALibs(), augmented = true)
+    icnf = construct(FFJORD, nn, nvars, nvars; tspan, resource = CUDALibs())
 else
-    icnf = construct(FFJORD, nn, nvars, nvars; tspan, augmented = true)
+    icnf = construct(FFJORD, nn, nvars, nvars; tspan)
 end
 
 # way 4

@@ -158,7 +158,6 @@ if use_gpu_nn_test
         nvars;
         tspan,
         resource = CUDALibs(),
-        augmented = true,
         compute_mode = ZygoteMatrixMode,
         sol_kwargs,
     )
@@ -169,7 +168,6 @@ else
         nvars,
         nvars;
         tspan,
-        augmented = true,
         compute_mode = ZygoteMatrixMode,
         sol_kwargs,
     )

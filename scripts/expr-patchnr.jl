@@ -358,7 +358,6 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            augmented = true,
             sol_kwargs,
         )
     else
@@ -369,7 +368,6 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            augmented = true,
             sol_kwargs,
         )
     end
