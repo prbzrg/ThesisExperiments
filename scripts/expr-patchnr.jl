@@ -17,19 +17,19 @@ const allparams = Dict(
     # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
-    "naug_rate" => 1.5,
+    "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => 1.0f-2,
-    "steer_reg" => 0.25f0,
+    "steer_reg" => convert(Float32, 1 / 8),
 
     # nn
-    "n_hidden_rate" => 2.5,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    "n_hidden_rate" => 0,
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
