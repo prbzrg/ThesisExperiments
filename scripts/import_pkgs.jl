@@ -62,6 +62,12 @@ const use_thrds = false
 const n_data_b = 128
 const cdev = cpu_device()
 const gdev = gpu_device()
+const eps_sq = Float32[
+    eps(one(Float32)), # 1.1920929f-7
+    sqrt(eps(one(Float32))), # 0.00034526698
+    sqrt(sqrt(eps(one(Float32)))), # 0.01858136
+    sqrt(sqrt(sqrt(eps(one(Float32))))), # 0.13631347
+]
 
 include(srcdir("ext_patch.jl"))
 include(srcdir("radon_transform.jl"))
@@ -100,12 +106,8 @@ const sol_kwargs = Dict(
     #     checkpointing = true,
     # ),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    # :reltol => 1.0f-1,
-    # :reltol => 1.0f-2,
-    # :reltol => 1.0f-2 + eps(1.0f-2),
-    :reltol => sqrt(eps(one(Float32))),
-    # :reltol => eps(one(Float32)),
-    :abstol => eps(one(Float32)),
+    :reltol => eps_sq[3],
+    :abstol => eps_sq[1],
     :maxiters => typemax(Int32),
 )
 const optimizers = Any[Optimisers.Lion(),]

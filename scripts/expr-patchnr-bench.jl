@@ -17,23 +17,23 @@ const allparams = Dict(
     # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
-    "naug_rate" => 1.5,
-    "rnode_reg" => 1.0f-2,
-    "steer_reg" => 0.25f0,
+    "naug_rate" => 1 + (1 / 36),
+    "rnode_reg" => eps_sq[3],
+    "steer_reg" => eps_sq[4],
 
     # nn
-    "n_hidden_rate" => 2.5,
-    "arch" => "Dense-ML",
-    # "arch" => "Dense",
+    "n_hidden_rate" => 0,
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 1,
+    "tspan_end" => 10,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 48,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
