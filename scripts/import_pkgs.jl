@@ -89,19 +89,19 @@ const sol_kwargs = Dict(
     # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
-    # :sensealg => BacksolveAdjoint(;
-    #     autodiff = true,
-    #     autojacvec = ZygoteVJP(),
-    #     checkpointing = true,
-    # ),
-    :sensealg => InterpolatingAdjoint(;
+    :sensealg => BacksolveAdjoint(;
         autodiff = true,
         autojacvec = ZygoteVJP(),
         checkpointing = true,
     ),
+    # :sensealg => InterpolatingAdjoint(;
+    #     autodiff = true,
+    #     autojacvec = ZygoteVJP(),
+    #     checkpointing = true,
+    # ),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    # :reltol => 1.0f-1,
-    :reltol => 1.0f-2,
+    :reltol => 1.0f-1,
+    # :reltol => 1.0f-2,
     # :reltol => 1.0f-2 + eps(1.0f-2),
     # :reltol => sqrt(eps(one(Float32))),
     # :reltol => eps(one(Float32)),
