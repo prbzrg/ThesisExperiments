@@ -12,9 +12,9 @@ const allparams = Dict(
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
     # train
-    "rnode_reg" => eps_sq[3],
+    "rnode_reg" => eps_sq[2],
     "steer_reg" => eps_sq[4],
-    # "nvld" => collect(1:3),
+    "nvld" => collect(1:3),
 
     # nn
     "n_hidden_rate" => 0,
@@ -23,7 +23,7 @@ const allparams = Dict(
     # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => 10,
+    "tspan_end" => 1,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel

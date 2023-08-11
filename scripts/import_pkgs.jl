@@ -67,6 +67,7 @@ const eps_sq = Float32[
     sqrt(eps(one(Float32))), # 0.00034526698
     sqrt(sqrt(eps(one(Float32)))), # 0.01858136
     sqrt(sqrt(sqrt(eps(one(Float32))))), # 0.13631347
+    sqrt(sqrt(sqrt(sqrt(eps(one(Float32)))))), # 0.36920655f0
 ]
 
 include(srcdir("ext_patch.jl"))
