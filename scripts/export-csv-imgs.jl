@@ -27,3 +27,13 @@ for i in axes(df, 1)
     save(plotsdir("patchnr-sims-imgs", "$(i)_plot.svg"), f)
     save(plotsdir("patchnr-sims-imgs", "$(i)_plot.png"), f)
 end
+
+df2c = copy(df)
+
+df2c[!, "res_img"] .= missing
+df2c[!, "fbp_img"] .= missing
+df2c[!, "gt_x"] .= missing
+df2c[!, "time_obj"] .= missing
+# df2c[!, "sel_pol"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "sel_pol"])
+
+CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df2c)
