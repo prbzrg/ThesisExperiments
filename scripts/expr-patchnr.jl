@@ -33,7 +33,7 @@ const allparams = Dict(
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 33,
+    "n_epochs" => 50,
     # "n_epochs" => 2,
     "batch_size" => 2^12,
     # "batch_size" => 32,
