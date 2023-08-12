@@ -2114,7 +2114,7 @@ version = "0.2.19"
 
 [[deps.Optimization]]
 deps = ["ADTypes", "ArrayInterface", "ConsoleProgressMonitor", "DocStringExtensions", "LinearAlgebra", "Logging", "LoggingExtras", "Pkg", "Printf", "ProgressLogging", "Reexport", "Requires", "SciMLBase", "SparseArrays", "Symbolics", "TerminalLoggers"]
-git-tree-sha1 = "8bc62862f64c61109fe3e48faa1608c3cebcbb77"
+git-tree-sha1 = "a38397087b9ccf13552c10e618cbe91f54465616"
 repo-rev = "master"
 repo-url = "https://github.com/SciML/Optimization.jl.git"
 uuid = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
