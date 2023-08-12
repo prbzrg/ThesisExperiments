@@ -8,7 +8,6 @@ const allparams = Dict(
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
     "sel_a" => vcat(["min", "max"], 1:12),
-    "img_reg" => 10,
 
     # train
     # "sel_pol" => nothing,
@@ -20,7 +19,7 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8],
     "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[2],
-    "steer_reg" => eps_sq[4],
+    "steer_reg" => eps_sq[5],
 
     # nn
     "n_hidden_rate" => 0,

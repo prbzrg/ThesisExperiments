@@ -50,7 +50,7 @@ mutable struct PatchNR
         # Nₚ::Integer = n_pts ÷ reduce_rate,
         N₀::Integer = 4096,
         μ::AbstractFloat = MU_MAX,
-        λ::AbstractFloat = 10 * lmbd_ps[p_s],
+        λ::AbstractFloat = lmbd_ps[p_s],
         # λ::AbstractFloat = convert(Float32, lmbd_ps[p_s] * (s / Nₚ)),
         forward_op::Function = cstm_radon,
     )
