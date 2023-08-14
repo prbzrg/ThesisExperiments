@@ -153,20 +153,6 @@ elseif back == "Flux"
 else
     error("Not Imp")
 end
-sl_kw = deepcopy(sol_kwargs)
-for i in [
-    :alg_hints,
-    :dense,
-    :save_everystep,
-    :save_on,
-    :calck,
-    :alias_u0,
-    :verbose,
-    :merge_callbacks,
-    :wrap,
-]
-    delete!(sl_kw, i)
-end
 if use_gpu_nn_test
     icnf = construct(
         FFJORD,
@@ -174,11 +160,20 @@ if use_gpu_nn_test
         nvars,
         naug_vl;
         tspan,
+        compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
-        sol_kwargs = sl_kw,
+        sol_kwargs,
     )
 else
-    icnf = construct(FFJORD, nn, nvars, naug_vl; tspan, sol_kwargs = sl_kw)
+    icnf = construct(
+        FFJORD,
+        nn,
+        nvars,
+        naug_vl;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs,
+    )
 end
 
 # way 4
@@ -186,7 +181,7 @@ end
 
 # way 3
 # smp_f = ones(Float32, 36)
-smp_f = zeros(Float32, 36)
+smp_f = zeros(Float32, 36, 1)
 
 # way 2
 # ptchs2 = reshape(ptchs, 36, size(ptchs, 4) * 128);
@@ -198,16 +193,73 @@ smp_f = zeros(Float32, 36)
 # smp_f = vec(smp)
 # smp_f = MLUtils.flatten(smp)
 
-prob = ContinuousNormalizingFlows.inference_prob(icnf, TestMode(), smp_f, ps, st)
-sl = solve(prob, icnf.sol_args...; icnf.sol_kwargs...)
-display(sl.stats)
-f = Figure()
-ax = Makie.Axis(f[1, 1]; title = "Flow")
-broadcast(
-    x -> lines!(ax, sl.t, x),
-    eachrow(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode()) + 1)), :]),
-)
-# ax2 = Makie.Axis(f[1, 2]; title = "Log")
-# lines!(ax2, sl.t, sl[end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode())), :])
-save(plotsdir("plot-lines", "flow_new.svg"), f)
-save(plotsdir("plot-lines", "flow_new.png"), f)
+@inline function diff_loss(x)
+    loss(icnf, TrainMode(), x, ps, st)
+end
+
+l_bench = @benchmark diff_loss(smp_f)
+@info "diff_loss"
+display(l_bench)
+# l_bench_ad11 = @benchmark Zygote.gradient(diff_loss, smp_f)
+# @info "Zygote.gradient"
+# display(l_bench_ad11)
+# l_bench_ad12 = @benchmark Zygote.jacobian(diff_loss, smp_f)
+# @info "Zygote.jacobian"
+# display(l_bench_ad12)
+# l_bench_ad21 = @benchmark Zygote.diaghessian(diff_loss, smp_f)
+# @info "Zygote.diaghessian"
+# display(l_bench_ad21)
+# l_bench_ad22 = @benchmark Zygote.hessian(diff_loss, smp_f)
+# @info "Zygote.hessian"
+# display(l_bench_ad22)
+# l_bench_ad23 = @benchmark Zygote.hessian_reverse(diff_loss, smp_f)
+# @info "Zygote.hessian_reverse"
+# display(l_bench_ad23)
+
+@info "non-stiff"
+slvs = Any[VCABM]
+# slvs = Any[VCAB3, VCAB4, VCAB5, VCABM3, VCABM4, VCABM5, VCABM, AN5]
+# JVODE_Adams
+
+for slv in slvs
+    sl_kw = deepcopy(sol_kwargs)
+    sl_kw[:alg] = slv()
+    icnf = construct(
+        FFJORD,
+        nn,
+        nvars,
+        naug_vl;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs = sl_kw,
+    )
+    display(icnf.sol_kwargs)
+    l_bench = @benchmark loss(icnf, TrainMode(), smp_f, ps, st)
+    @info "diff_loss: $slv"
+    display(l_bench)
+end
+
+@info "stiff"
+slvs2 = Any[QNDF]
+# slvs2 = Any[QNDF1, QBDF1, ABDF2, QNDF2, QBDF2, QNDF, QBDF, FBDF]
+# MEBDF2
+
+for slv2 in slvs2
+    sl_kw = deepcopy(sol_kwargs)
+    sl_kw[:alg] = slv2()
+    sl_kw[:alg_hints] = [:stiff, :memorybound]
+
+    icnf = construct(
+        FFJORD,
+        nn,
+        nvars,
+        naug_vl;
+        tspan,
+        compute_mode = ZygoteMatrixMode,
+        sol_kwargs = sl_kw,
+    )
+    display(icnf.sol_kwargs)
+    l_bench = @benchmark loss(icnf, TrainMode(), smp_f, ps, st)
+    @info "diff_loss: $slv2"
+    display(l_bench)
+end
