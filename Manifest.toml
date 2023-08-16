@@ -501,7 +501,7 @@ version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
 deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "DifferentialEquations", "Distributions", "DistributionsAD", "FillArrays", "Flux", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "PackageExtensionCompat", "PrecompileTools", "Preferences", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "c4bd63c45d282228c4b3aaf7cd86fdd561bdb6f7"
+git-tree-sha1 = "aaa6f2f9e7d04edff2cadc586ef309e965eef05f"
 repo-rev = "main"
 repo-url = "https://github.com/impICNF/ContinuousNormalizingFlows.jl.git"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
@@ -1734,9 +1734,9 @@ weakdeps = ["CategoricalArrays"]
 
 [[deps.Lux]]
 deps = ["ADTypes", "ChainRulesCore", "ConcreteStructs", "Functors", "LinearAlgebra", "LuxCore", "LuxDeviceUtils", "LuxLib", "Markdown", "Optimisers", "PackageExtensionCompat", "Random", "Reexport", "Setfield", "SparseArrays", "Statistics", "TruncatedStacktraces", "WeightInitializers"]
-git-tree-sha1 = "4b67d3b3998d93c34206d81058afa634fa51f521"
+git-tree-sha1 = "3fd851ee04cd738f7c9214b3c47dd48bb4b807e5"
 uuid = "b2108857-7c20-44ae-9111-449ecde12c47"
-version = "0.5.0"
+version = "0.5.1"
 
     [deps.Lux.extensions]
     LuxComponentArraysExt = "ComponentArrays"
@@ -1820,9 +1820,9 @@ version = "0.21.13"
 
 [[deps.MLJModelInterface]]
 deps = ["Random", "ScientificTypesBase", "StatisticalTraits"]
-git-tree-sha1 = "381bed42bc96c353643033d69e506e9107d5e1f8"
+git-tree-sha1 = "e89d1ea12c5a50057bfb0c124d905669e5ed4ec9"
 uuid = "e80e1ace-859a-464e-9ed9-23947d8ae3ea"
-version = "1.9.0"
+version = "1.9.1"
 
 [[deps.MLStyle]]
 git-tree-sha1 = "bc38dff0548128765760c79eb7388a4b37fae2c8"
@@ -2104,9 +2104,9 @@ version = "0.5.5+0"
 
 [[deps.Optim]]
 deps = ["Compat", "FillArrays", "ForwardDiff", "LineSearches", "LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "PositiveFactorizations", "Printf", "SparseArrays", "StatsBase"]
-git-tree-sha1 = "e3a6546c1577bfd701771b477b794a52949e7594"
+git-tree-sha1 = "963b004d15216f8129f6c0f7d187efa136570be0"
 uuid = "429524aa-4258-5aef-a3af-852621145aeb"
-version = "1.7.6"
+version = "1.7.7"
 
 [[deps.Optimisers]]
 deps = ["ChainRulesCore", "Functors", "LinearAlgebra", "Random", "Statistics"]
