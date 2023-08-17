@@ -30,7 +30,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 50,
+    "tspan_end" => 32,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
