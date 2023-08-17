@@ -23,7 +23,7 @@ const allparams = Dict(
     # "arch" => ["Dense", "Dense-ML"],
 
     # construct
-    "tspan_end" => 32,
+    "tspan_end" => 33,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
