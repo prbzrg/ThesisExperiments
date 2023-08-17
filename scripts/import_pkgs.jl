@@ -108,7 +108,6 @@ const sol_kwargs = Dict(
     # ),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     :reltol => eps_sq[4],
-    # :reltol => eps_sq[2],
     :abstol => eps_sq[1],
     :maxiters => typemax(Int32),
 )

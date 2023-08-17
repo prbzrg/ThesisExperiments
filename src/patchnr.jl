@@ -110,9 +110,9 @@ end
     first_part(x, y)
 end
 
-@inline function recn_loss_pt2(app_icnf::PatchNR, x, y)
+@inline function recn_loss_pt2(app_icnf::PatchNR, x, y, use_gpu = use_gpu_nn_test)
     new_pts = nr_patchs(app_icnf, x)
-    if use_gpu_nn_test
+    if use_gpu
         new_pts = gdev(new_pts)
     end
     # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(new_pts)))
