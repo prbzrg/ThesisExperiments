@@ -3,23 +3,23 @@
 julia usage
 
 With procs & threads
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes  --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --procs auto --project --heap-size-hint=1G -i
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes  --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --procs auto --project --heap-size-hint=8G -i
 
-With threads & no procs
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project --heap-size-hint=1G -i
+With threads & no procs - selected
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project --heap-size-hint=8G -i
 
 no procs & threads
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=1G -i
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=yes --math-mode=ieee --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=8G -i
 
 
 With procs & threads - exec
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes  --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --procs auto --project --heap-size-hint=1G
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes  --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --procs auto --project --heap-size-hint=8G
 
 With threads & no procs - exec
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project --heap-size-hint=1G
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --threads auto,auto --project --heap-size-hint=8G
 
 no procs & threads - exec
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=1G
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=no --color=no --history-file=yes --depwarn=no --warn-overwrite=no --warn-scope=no --optimize=3 --min-optlevel=3 --debug-info=0 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=8G
 
 
 scripts/import_pkgs.jl train_cpu test_cpu
