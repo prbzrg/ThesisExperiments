@@ -30,7 +30,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 17,
+    "tspan_end" => 12,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
@@ -379,7 +379,9 @@ end
 
     ptchnr = PatchNR(; icnf_f, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
-    if sel_a == "min"
+    if sel_a == "just-train"
+        return fulld
+    elseif sel_a == "min"
         sel_t_img = argmin(vec(std(MLUtils.flatten(gt_x); dims = 1)))
     elseif sel_a == "max"
         sel_t_img = argmax(vec(std(MLUtils.flatten(gt_x); dims = 1)))
