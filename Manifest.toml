@@ -22,9 +22,9 @@ version = "2.38.0+0"
 
 [[deps.AbstractAlgebra]]
 deps = ["GroupsCore", "InteractiveUtils", "LinearAlgebra", "MacroTools", "Preferences", "Random", "RandomExtensions", "SparseArrays", "Test"]
-git-tree-sha1 = "0eb58a9abe767f5813194a2610b5295c2d22ce9d"
+git-tree-sha1 = "41b45260ad00b666558c16f7cd9db0e8af408ea1"
 uuid = "c3fe647b-3220-5bb0-a1ea-a7954cac585d"
-version = "0.31.0"
+version = "0.31.1"
 
 [[deps.AbstractDifferentiation]]
 deps = ["ExprTools", "LinearAlgebra", "Requires"]
@@ -292,9 +292,9 @@ uuid = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
 version = "0.5.1"
 
 [[deps.Cassette]]
-git-tree-sha1 = "a70f220ea09ec61401745ff338f8fb340420165c"
+git-tree-sha1 = "415a5e8101d37582c0d912de8f7665b37e05ea5c"
 uuid = "7057c7e9-c182-5462-911a-8362d720325c"
-version = "0.3.11"
+version = "0.3.12"
 
 [[deps.CatIndices]]
 deps = ["CustomUnitRanges", "OffsetArrays"]
@@ -1734,9 +1734,9 @@ weakdeps = ["CategoricalArrays"]
 
 [[deps.Lux]]
 deps = ["ADTypes", "ChainRulesCore", "ConcreteStructs", "Functors", "LinearAlgebra", "LuxCore", "LuxDeviceUtils", "LuxLib", "Markdown", "Optimisers", "PackageExtensionCompat", "Random", "Reexport", "Setfield", "SparseArrays", "Statistics", "TruncatedStacktraces", "WeightInitializers"]
-git-tree-sha1 = "3fd851ee04cd738f7c9214b3c47dd48bb4b807e5"
+git-tree-sha1 = "882138ec1db47de6fecefd347665cafa25d5da8b"
 uuid = "b2108857-7c20-44ae-9111-449ecde12c47"
-version = "0.5.1"
+version = "0.5.2"
 
     [deps.Lux.extensions]
     LuxComponentArraysExt = "ComponentArrays"
@@ -1760,10 +1760,10 @@ version = "0.5.1"
     Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [[deps.LuxCore]]
-deps = ["Functors", "Random", "Setfield"]
-git-tree-sha1 = "4b030477cb15d6d123ec39473520f1ab086f6ff0"
+deps = ["DocStringExtensions", "Functors", "Random", "Setfield"]
+git-tree-sha1 = "f2dafe0ddcecf06247b40dbf336acd14e0adce6d"
 uuid = "bb33d45b-7691-41d6-9220-0943567d0623"
-version = "0.1.4"
+version = "0.1.5"
 
 [[deps.LuxDeviceUtils]]
 deps = ["Adapt", "ChainRulesCore", "Functors", "LuxCore", "PackageExtensionCompat", "Preferences", "Random", "SparseArrays"]
@@ -1855,9 +1855,9 @@ version = "5.3.1+0"
 
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
-git-tree-sha1 = "42324d08725e200c23d4dfb549e0d5d89dede2d2"
+git-tree-sha1 = "9ee1618cbf5240e6d4e0371d6f24065083f60c48"
 uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
-version = "0.5.10"
+version = "0.5.11"
 
 [[deps.Makie]]
 deps = ["Animations", "Base64", "ColorBrewer", "ColorSchemes", "ColorTypes", "Colors", "Contour", "DelaunayTriangulation", "Distributions", "DocStringExtensions", "Downloads", "FFMPEG", "FileIO", "FixedPointNumbers", "Formatting", "FreeType", "FreeTypeAbstraction", "GeometryBasics", "GridLayoutBase", "ImageIO", "InteractiveUtils", "IntervalSets", "Isoband", "KernelDensity", "LaTeXStrings", "LinearAlgebra", "MacroTools", "MakieCore", "Markdown", "Match", "MathTeXEngine", "Observables", "OffsetArrays", "Packing", "PlotUtils", "PolygonOps", "PrecompileTools", "Printf", "REPL", "Random", "RelocatableFolders", "Setfield", "ShaderAbstractions", "Showoff", "SignedDistanceFields", "SparseArrays", "StableHashTraits", "Statistics", "StatsBase", "StatsFuns", "StructArrays", "TriplotBase", "UnicodeFun"]
@@ -1967,9 +1967,9 @@ version = "0.5.1"
 
 [[deps.MutableArithmetics]]
 deps = ["LinearAlgebra", "SparseArrays", "Test"]
-git-tree-sha1 = "964cb1a7069723727025ae295408747a0b36a854"
+git-tree-sha1 = "5879579adbd9bc3017fe63c766371aace1a1d641"
 uuid = "d8a4904e-b15c-11e9-3269-09a3773c0cb0"
-version = "1.3.0"
+version = "1.3.1"
 
 [[deps.NLSolversBase]]
 deps = ["DiffResults", "Distributed", "FiniteDiff", "ForwardDiff"]
