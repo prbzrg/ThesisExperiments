@@ -5,7 +5,7 @@ include(scriptsdir("import_pkgs.jl"))
 
 const allparams = Dict(
     # test
-    "n_iter_rec" => 600,
+    "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
     "sel_a" => "min",
     # "sel_a" => vcat(["min", "max"], 1:12),
@@ -30,7 +30,7 @@ const allparams = Dict(
     "back" => "Flux",
 
     # construct
-    "tspan_end" => 9,
+    "tspan_end" => 12,
     # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
