@@ -51,10 +51,10 @@ using Base.Threads,
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
-const nthd = nthreads(:default)
-if nthd > 1
-    BLAS.set_num_threads(nthd)
-end
+# const nthd = nthreads(:default)
+# if nthd > 1
+#     BLAS.set_num_threads(nthd)
+# end
 
 # Enzyme.API.runtimeActivity!(true)
 
