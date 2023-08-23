@@ -2146,6 +2146,9 @@ version = "3.17.0"
 [[deps.OptimizationOptimisers]]
 deps = ["Optimisers", "Optimization", "Printf", "ProgressLogging", "Reexport"]
 git-tree-sha1 = "114f427e593602725fe3cb938ea77836c22a0d19"
+repo-rev = "master"
+repo-subdir = "lib/OptimizationOptimisers"
+repo-url = "https://github.com/SciML/Optimization.jl.git"
 uuid = "42dfb2eb-d2b4-4451-abcd-913932933ac1"
 version = "0.1.5"
 
