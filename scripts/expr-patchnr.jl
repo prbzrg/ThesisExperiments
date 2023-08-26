@@ -422,12 +422,17 @@ end
 end
 
 if use_thrds
-    thrd_rns = map(enumerate(dicts)) do (i, d)
-        @spawn produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+    @sync for d in dicts
+        @spawn if use_gpu_nn_train || use_gpu_nn_test
+            CUDA.allowscalar() do
+                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            end
+        else
+            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+        end
     end
-    fetch.(thrd_rns)
 else
-    for (i, d) in enumerate(dicts)
+    for d in dicts
         if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
                 produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
