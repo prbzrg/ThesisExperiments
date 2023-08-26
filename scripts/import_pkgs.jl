@@ -42,8 +42,8 @@ using Base.Threads,
     UnPack,
     Zygote
 
+using ComputationalResources, CUDA, cuDNN, LuxCUDA
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
-# using ComputationalResources, CUDA, cuDNN, LuxCUDA
 # using Optim, OptimizationOptimJL
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
 # using MLDatasets
