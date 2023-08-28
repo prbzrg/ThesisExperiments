@@ -61,7 +61,6 @@ end
 const use_thrds = false
 const n_data_b = 128
 const cdev = cpu_device()
-const gdev = gpu_device()
 const eps_sq = Float32[
     eps(one(Float32)), # 1.1920929f-7
     sqrt(eps(one(Float32))), # 0.00034526698
@@ -120,6 +119,11 @@ else
     @warn "please have `train_cpu test_cpu` as arguments of julia"
     const use_gpu_nn_train = false
     const use_gpu_nn_test = false
+end
+if use_gpu_nn_train || use_gpu_nn_test
+    const gdev = gpu_device()
+else
+    const gdev = cpu_device()
 end
 
 @show (use_gpu_nn_train, use_gpu_nn_test)
