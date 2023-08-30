@@ -2,7 +2,7 @@
 
 julia_version = "1.9.3"
 manifest_format = "2.0"
-project_hash = "b04e94512c1f71c54470d3026cf1915e9eae0e36"
+project_hash = "13d9a687039156c97807c0e72a93c50d0bb221de"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "a4c8e0f8c09d4aa708289c1a5fc23e2d1970017a"
@@ -541,11 +541,11 @@ version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
 deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "DifferentialEquations", "Distributions", "DistributionsAD", "FillArrays", "Flux", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "PackageExtensionCompat", "PrecompileTools", "Preferences", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "fa2ecc5d7127dadb343b7af59a5ef3b5296a40cd"
+git-tree-sha1 = "720375df8603f09bf8d8861727f2c16a23800ee7"
 repo-rev = "main"
 repo-url = "https://github.com/impICNF/ContinuousNormalizingFlows.jl.git"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
-version = "0.11.0"
+version = "0.11.1"
 weakdeps = ["CUDA"]
 
     [deps.ContinuousNormalizingFlows.extensions]
@@ -667,9 +667,9 @@ version = "6.128.2"
 
 [[deps.DiffEqCallbacks]]
 deps = ["DataStructures", "DiffEqBase", "ForwardDiff", "LinearAlgebra", "Markdown", "NLsolve", "Parameters", "RecipesBase", "RecursiveArrayTools", "SciMLBase", "StaticArraysCore"]
-git-tree-sha1 = "b93afdf0f82246e75a5d65750eca6b275df08e1c"
+git-tree-sha1 = "9c7d3a84264d935f6981504388b202a770113faa"
 uuid = "459566f4-90b8-5000-8ac3-15dfb0a30def"
-version = "2.29.0"
+version = "2.29.1"
 weakdeps = ["OrdinaryDiffEq", "Sundials"]
 
 [[deps.DiffEqNoiseProcess]]
@@ -2075,9 +2075,9 @@ version = "1.2.0"
 
 [[deps.NonlinearSolve]]
 deps = ["ArrayInterface", "DiffEqBase", "EnumX", "FiniteDiff", "ForwardDiff", "LinearAlgebra", "LinearSolve", "PrecompileTools", "RecursiveArrayTools", "Reexport", "SciMLBase", "SimpleNonlinearSolve", "SparseArrays", "SparseDiffTools", "StaticArraysCore", "UnPack"]
-git-tree-sha1 = "23dabe80f8ebec9a68b0db4cd02f2d2cdbc4f653"
+git-tree-sha1 = "ee53089df81a6bdf3c06c17cf674e90931b10a73"
 uuid = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
-version = "1.9.0"
+version = "1.10.0"
 
 [[deps.ObjectFile]]
 deps = ["Reexport", "StructIO"]
@@ -2162,7 +2162,7 @@ version = "0.2.20"
 
 [[deps.Optimization]]
 deps = ["ADTypes", "ArrayInterface", "ConsoleProgressMonitor", "DocStringExtensions", "LinearAlgebra", "Logging", "LoggingExtras", "Pkg", "Printf", "ProgressLogging", "Reexport", "Requires", "SciMLBase", "SparseArrays", "Symbolics", "TerminalLoggers"]
-git-tree-sha1 = "0a1e24ad43b867e76d1bd8a30e47e68d6ac14b50"
+git-tree-sha1 = "08a3d8919c287ebce225fcd7239e5b9fa5dba1ab"
 repo-rev = "master"
 repo-url = "https://github.com/SciML/Optimization.jl.git"
 uuid = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
@@ -2292,9 +2292,9 @@ version = "1.9.2"
 
 [[deps.PkgVersion]]
 deps = ["Pkg"]
-git-tree-sha1 = "f6cf8e7944e50901594838951729a1861e668cb8"
+git-tree-sha1 = "f9501cc0430a26bc3d156ae1b5b0c1b47af4d6da"
 uuid = "eebad327-c553-4316-9ea0-9fa01ccd7688"
-version = "0.3.2"
+version = "0.3.3"
 
 [[deps.PlotUtils]]
 deps = ["ColorSchemes", "Colors", "Dates", "PrecompileTools", "Printf", "Random", "Reexport", "Statistics"]
@@ -2633,9 +2633,9 @@ version = "0.3.6"
 
 [[deps.SciMLSensitivity]]
 deps = ["ADTypes", "Adapt", "ArrayInterface", "Cassette", "ChainRulesCore", "DiffEqBase", "DiffEqCallbacks", "DiffEqNoiseProcess", "DiffRules", "Distributions", "EllipsisNotation", "Enzyme", "FiniteDiff", "ForwardDiff", "FunctionWrappersWrappers", "GPUArraysCore", "LinearAlgebra", "LinearSolve", "Markdown", "OrdinaryDiffEq", "Parameters", "PreallocationTools", "QuadGK", "Random", "RandomNumbers", "RecursiveArrayTools", "Reexport", "ReverseDiff", "SciMLBase", "SciMLOperators", "SimpleNonlinearSolve", "SparseDiffTools", "StaticArraysCore", "Statistics", "StochasticDiffEq", "Tracker", "TruncatedStacktraces", "Zygote", "ZygoteRules"]
-git-tree-sha1 = "2887c7e4483009e8d87b27c144cd19b2e1ba2325"
+git-tree-sha1 = "dd225a880a9bcd1a862fb9ea540731a70cccb338"
 uuid = "1ed8b502-d754-442c-8d5d-10ac956f44a1"
-version = "7.37.1"
+version = "7.38.0"
 
 [[deps.ScientificTypes]]
 deps = ["CategoricalArrays", "ColorTypes", "Dates", "Distributions", "PrettyTables", "Reexport", "ScientificTypesBase", "StatisticalTraits", "Tables"]
@@ -2830,10 +2830,10 @@ uuid = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
 version = "0.8.8"
 
 [[deps.StaticArrayInterface]]
-deps = ["ArrayInterface", "Compat", "IfElse", "LinearAlgebra", "Requires", "SnoopPrecompile", "SparseArrays", "Static", "SuiteSparse"]
-git-tree-sha1 = "33040351d2403b84afce74dae2e22d3f5b18edcb"
+deps = ["ArrayInterface", "Compat", "IfElse", "LinearAlgebra", "PrecompileTools", "Requires", "SparseArrays", "Static", "SuiteSparse"]
+git-tree-sha1 = "03fec6800a986d191f64f5c0996b59ed526eda25"
 uuid = "0d7ed370-da01-4f52-bd93-41d350b8b718"
-version = "1.4.0"
+version = "1.4.1"
 weakdeps = ["OffsetArrays", "StaticArrays"]
 
     [deps.StaticArrayInterface.extensions]

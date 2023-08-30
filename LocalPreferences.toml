@@ -1,3 +1,6 @@
 [ContinuousNormalizingFlows]
-doprecompilation = false
 fullprecompilation = false
+precompile_workload = false
+
+[PrecompileTools]
+precompile_workloads = false
