@@ -36,7 +36,7 @@ const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
 const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
 const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
-@inline @fastmath function makesim_gendata(d::Dict)
+@inline function makesim_gendata(d::Dict)
     @unpack p_s, = d
     fulld = copy(d)
 
@@ -52,7 +52,7 @@ const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
     fulld
 end
 
-@inline @fastmath function makesim_genflows(d::Dict)
+@inline function makesim_genflows(d::Dict)
     @unpack p_s, n_epochs, batch_size, arch, back, n_t_imgs, n_hidden_rate = d
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
@@ -83,7 +83,7 @@ end
     fulld["nvars"] = nvars
     fulld["n_hidden"] = n_hidden
 
-    @inline @fastmath function rs_f(x)
+    @inline function rs_f(x)
         reshape(x, (p_s, p_s, 1, :))
     end
 
@@ -186,7 +186,7 @@ end
     fulld
 end
 
-@inline @fastmath function makesim_expr(d::Dict)
+@inline function makesim_expr(d::Dict)
     @unpack p_s,
     n_epochs,
     batch_size,
@@ -230,7 +230,7 @@ end
     fulld["nvars"] = nvars
     fulld["n_hidden"] = n_hidden
 
-    @inline @fastmath function rs_f(x)
+    @inline function rs_f(x)
         reshape(x, (p_s, p_s, 1, :))
     end
 
@@ -295,7 +295,7 @@ end
         icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
 
-    @inline @fastmath function icnf_f(x)
+    @inline function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
     end
 

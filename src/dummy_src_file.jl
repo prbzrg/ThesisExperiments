@@ -8,6 +8,6 @@ Performs operation:
 z = x + y
 ```
 """
-@inline @fastmath function dummy_project_function(x, y)
+@inline function dummy_project_function(x, y)
     return x + y
 end
