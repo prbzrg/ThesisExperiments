@@ -46,7 +46,7 @@ const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
 const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
 const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
 
-@inline function makesim_gendata(d::Dict)
+@inline @fastmath function makesim_gendata(d::Dict)
     @unpack p_s, = d
     fulld = copy(d)
 
@@ -62,7 +62,7 @@ const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
     fulld
 end
 
-@inline function makesim_genflows(d::Dict)
+@inline @fastmath function makesim_genflows(d::Dict)
     @unpack sel_pol,
     n_t_imgs,
     p_s,
@@ -130,7 +130,7 @@ end
     fulld["n_in_out"] = n_in_out
     fulld["n_hidden"] = n_hidden
 
-    @inline function rs_f(x)
+    @inline @fastmath function rs_f(x)
         reshape(x, (p_s, p_s, 1, :))
     end
 
@@ -241,7 +241,7 @@ end
     fulld
 end
 
-@inline function makesim_expr(d::Dict)
+@inline @fastmath function makesim_expr(d::Dict)
     @unpack n_iter_rec,
     sel_a,
     sel_pol,
@@ -296,7 +296,7 @@ end
         st = gdev(st)
     end
 
-    @inline function rs_f(x)
+    @inline @fastmath function rs_f(x)
         reshape(x, (p_s, p_s, 1, :))
     end
 
@@ -373,7 +373,7 @@ end
         )
     end
 
-    @inline function icnf_f(x)
+    @inline @fastmath function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
     end
 

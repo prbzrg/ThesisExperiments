@@ -102,7 +102,7 @@ if use_gpu_nn_test
     st = gdev(st)
 end
 
-@inline function rs_f(x)
+@inline @fastmath function rs_f(x)
     reshape(x, (p_s, p_s, 1, :))
 end
 

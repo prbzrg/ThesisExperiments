@@ -107,7 +107,7 @@ if use_gpu_nn_test
     st = gdev(st)
 end
 
-@inline function rs_f(x)
+@inline @fastmath function rs_f(x)
     reshape(x, (p_s, p_s, 1, :))
 end
 
@@ -200,18 +200,18 @@ smp_f_pn = rand(Float32, 362 * 362)
 # smp_f = vec(smp)
 # smp_f = MLUtils.flatten(smp)
 
-@inline function diff_loss(x)
+@inline @fastmath function diff_loss(x)
     loss(icnf, TrainMode(), x, ps, st)
 end
 
-@inline function icnf_f(x)
+@inline @fastmath function icnf_f(x)
     loss(icnf, TrainMode(), x, ps, st)
 end
 
 ptchnr = PatchNR(; icnf_f, n_pts = size(smp_f_pn, 1), p_s = 6)
 obs_y = rand(Float32, 513, 1000)
 
-@inline function diff_loss_pn(x)
+@inline @fastmath function diff_loss_pn(x)
     recn_loss_pt2(ptchnr, x, obs_y)
 end
 

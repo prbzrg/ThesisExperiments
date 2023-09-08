@@ -32,11 +32,11 @@ const allparams = Dict(
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
-@inline function gen_data(nvars, n, data_dist)
+@inline @fastmath function gen_data(nvars, n, data_dist)
     convert.(Float32, rand(data_dist, nvars, n))
 end
 
-@inline function makesim_gendata(d::Dict)
+@inline @fastmath function makesim_gendata(d::Dict)
     @unpack nvars, n, data_dist = d
     fulld = copy(d)
 
@@ -46,7 +46,7 @@ end
     fulld
 end
 
-@inline function makesim_expr(d::Dict)
+@inline @fastmath function makesim_expr(d::Dict)
     @unpack nvars,
     n,
     data_dist,
