@@ -12,10 +12,14 @@ const allparams = Dict(
 
     # train
     # "sel_pol" => nothing,
+    # "sel_pol" => "total",
+    # "sel_pol" => "random",
+    # "sel_pol" => "one_min",
+    # "sel_pol" => "one_max",
     # "sel_pol" => "equ_d",
     "sel_pol" => "min_max",
+    # "n_t_imgs" => 0,
     "n_t_imgs" => 6,
-    # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "naug_rate" => 1 + (1 / 36),
@@ -31,13 +35,12 @@ const allparams = Dict(
 
     # construct
     "tspan_end" => 12,
-    # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
+    # "n_epochs" => 3,
     "n_epochs" => 50,
-    # "n_epochs" => 2,
+    # "batch_size" => 2^5,
     "batch_size" => 2^12,
-    # "batch_size" => 32,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -108,14 +111,14 @@ end
         sp = [argmin(vec(std(MLUtils.flatten(ptchs); dims = 1)))]
     elseif sel_pol == "random"
         sp = sample(1:n_data_b, n_t_imgs)
+    elseif sel_pol == "total"
+        sp = collect(1:n_data_b)
     else
         error("Not Imp")
     end
     sort!(sp)
-    @show sp
-    # fulld["sp"] = [sel_pc]
+    @info sp
     fulld["sp"] = sp
-    # ptchs = ptchs[:, :, :, :, sel_pc]
     ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
 
     x = MLUtils.flatten(ptchs)
@@ -198,13 +201,6 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
-        model = ICNFModel(
-            icnf;
-            optimizers,
-            n_epochs,
-            batch_size,
-            # adtype = AutoForwardDiff(),
-        )
     else
         icnf = construct(
             RNODE,
@@ -218,15 +214,9 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
-        model = ICNFModel(
-            icnf;
-            optimizers,
-            n_epochs,
-            batch_size,
-            # adtype = AutoForwardDiff(),
-        )
     end
 
+    model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)

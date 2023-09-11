@@ -127,4 +127,4 @@ else
     const gdev = cpu_device()
 end
 
-@show (use_gpu_nn_train, use_gpu_nn_test)
+@info (use_gpu_nn_train, use_gpu_nn_test)
