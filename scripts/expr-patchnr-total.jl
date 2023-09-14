@@ -357,7 +357,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            # sol_kwargs,
+            sol_kwargs,
         )
     else
         icnf = construct(
@@ -367,14 +367,9 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            # sol_kwargs,
+            sol_kwargs,
         )
     end
-    icnf.sol_kwargs[:sensealg] = InterpolatingAdjoint(;
-        autodiff = true,
-        autojacvec = ZygoteVJP(),
-        checkpointing = true,
-    )
 
     @inline function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
