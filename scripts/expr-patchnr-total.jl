@@ -115,10 +115,8 @@ end
         error("Not Imp")
     end
     sort!(sp)
-    @show sp
-    # fulld["sp"] = [sel_pc]
+    @info sp
     fulld["sp"] = sp
-    # ptchs = ptchs[:, :, :, :, sel_pc]
     ptchs = reshape(ptchs[:, :, :, :, sp], (p_s, p_s, 1, :))
 
     x = MLUtils.flatten(ptchs)
@@ -205,13 +203,6 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
-        model = ICNFModel(
-            icnf;
-            optimizers,
-            n_epochs,
-            batch_size,
-            # adtype = AutoForwardDiff(),
-        )
     else
         icnf = construct(
             RNODE,
@@ -225,15 +216,9 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
-        model = ICNFModel(
-            icnf;
-            optimizers,
-            n_epochs,
-            batch_size,
-            # adtype = AutoForwardDiff(),
-        )
     end
 
+    model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
     fit!(mach)
     ps, st = fitted_params(mach)
