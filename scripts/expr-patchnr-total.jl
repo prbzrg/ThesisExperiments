@@ -8,15 +8,18 @@ const allparams = Dict(
     "n_iter_rec" => 300,
     # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
     # "sel_a" => "min",
-    "sel_a" => ["min", "max"],
+    "sel_a" => vcat(["min", "max"], 1:128),
 
     # train
     # "sel_pol" => nothing,
+    "sel_pol" => "total",
+    # "sel_pol" => "random",
+    # "sel_pol" => "one_min",
+    # "sel_pol" => "one_max",
     # "sel_pol" => "equ_d",
     # "sel_pol" => "min_max",
-    "sel_pol" => "total",
     "n_t_imgs" => 0,
-    # "p_s" => 8,
+    # "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "naug_rate" => 1,
@@ -32,13 +35,12 @@ const allparams = Dict(
 
     # construct
     "tspan_end" => 12,
-    # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
     "n_epochs" => 3,
-    # "n_epochs" => 2,
+    # "n_epochs" => 50,
+    # "batch_size" => 2^5,
     "batch_size" => 2^12,
-    # "batch_size" => 32,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -368,6 +370,11 @@ end
             # sol_kwargs,
         )
     end
+    icnf.sol_kwargs[:sensealg] = InterpolatingAdjoint(;
+        autodiff = true,
+        autojacvec = ZygoteVJP(),
+        checkpointing = true,
+    )
 
     @inline function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
