@@ -12,14 +12,14 @@ const allparams = Dict(
 
     # train
     # "sel_pol" => nothing,
-    "sel_pol" => "total",
+    # "sel_pol" => "total",
     # "sel_pol" => "random",
     # "sel_pol" => "one_min",
     # "sel_pol" => "one_max",
     # "sel_pol" => "equ_d",
-    # "sel_pol" => "min_max",
-    "n_t_imgs" => 0,
-    # "n_t_imgs" => 6,
+    "sel_pol" => "min_max",
+    # "n_t_imgs" => 0,
+    "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "naug_rate" => 1,
@@ -27,7 +27,7 @@ const allparams = Dict(
     "steer_reg" => eps_sq[5],
 
     # nn
-    "n_hidden_rate" => 0,
+    "n_hidden_rate" => 10,
     # "arch" => "Dense-ML",
     "arch" => "Dense",
     # "back" => "Lux",
@@ -37,8 +37,8 @@ const allparams = Dict(
     "tspan_end" => 12,
 
     # ICNFModel
-    "n_epochs" => 3,
-    # "n_epochs" => 50,
+    # "n_epochs" => 3,
+    "n_epochs" => 50,
     # "batch_size" => 2^5,
     "batch_size" => 2^12,
 )
@@ -219,6 +219,7 @@ end
             λ₂ = rnode_reg,
         )
     end
+    icnf.sol_kwargs[:reltol] = eps_sq[3]
 
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
