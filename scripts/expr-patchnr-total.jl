@@ -27,7 +27,7 @@ const allparams = Dict(
     "steer_reg" => eps_sq[5],
 
     # nn
-    "n_hidden_rate" => 10,
+    "n_hidden_rate" => 11,
     # "arch" => "Dense-ML",
     "arch" => "Dense",
     # "back" => "Lux",
@@ -219,7 +219,9 @@ end
             λ₂ = rnode_reg,
         )
     end
-    icnf.sol_kwargs[:reltol] = eps_sq[3]
+    icnf.sol_kwargs[:reltol] = eps_sq[1]
+    icnf.sol_kwargs[:sensealg] =
+        QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP())
 
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
@@ -371,7 +373,9 @@ end
             # sol_kwargs,
         )
     end
-    icnf.sol_kwargs[:reltol] = eps_sq[3]
+    icnf.sol_kwargs[:reltol] = eps_sq[1]
+    icnf.sol_kwargs[:sensealg] =
+        QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP())
 
     @inline function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
