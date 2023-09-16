@@ -220,8 +220,6 @@ end
         )
     end
     icnf.sol_kwargs[:reltol] = eps_sq[1]
-    icnf.sol_kwargs[:sensealg] =
-        QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP())
 
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
@@ -374,8 +372,6 @@ end
         )
     end
     icnf.sol_kwargs[:reltol] = eps_sq[1]
-    icnf.sol_kwargs[:sensealg] =
-        QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP())
 
     @inline function icnf_f(x)
         loss(icnf, TrainMode(), x, ps, st)
