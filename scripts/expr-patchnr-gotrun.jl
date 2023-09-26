@@ -38,7 +38,7 @@ const allparams = Dict(
 
     # ICNFModel
     # "n_epochs" => 3,
-    "n_epochs" => 100,
+    "n_epochs" => 50,
     # "batch_size" => 2^5,
     "batch_size" => 2^12,
 )
