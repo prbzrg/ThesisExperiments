@@ -321,7 +321,7 @@ end
             error("Not Imp")
         end
     elseif back == "Flux"
-        if use_gpu_nn_train
+        if use_gpu_nn_test
             if arch == "Dense"
                 nn = FluxCompatLayer(
                     Flux.gpu(
