@@ -32,6 +32,8 @@ const allparams = Dict(
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
+    "have_bias" => nothing,
+    # "have_bias" => true,
 
     # construct
     "tspan_end" => 12,
@@ -75,9 +77,15 @@ end
     n_hidden_rate,
     arch,
     back,
+    have_bias,
     tspan_end,
     n_epochs,
     batch_size = d
+
+    if isnothing(have_bias)
+        have_bias = true
+    end
+
     d2 = Dict{String, Any}("p_s" => p_s)
     fulld = copy(d)
 
@@ -139,11 +147,11 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(n_in_out => n_in_out, tanh)
+            nn = Lux.Dense(n_in_out => n_in_out, tanh; use_bias = have_bias)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(n_in_out => n_hidden, tanh),
-                Lux.Dense(n_hidden => n_in_out, tanh),
+                Lux.Dense(n_in_out => n_hidden, tanh; use_bias = have_bias),
+                Lux.Dense(n_hidden => n_in_out, tanh; use_bias = have_bias),
             )
         else
             error("Not Imp")
@@ -152,15 +160,17 @@ end
         if use_gpu_nn_train
             if arch == "Dense"
                 nn = FluxCompatLayer(
-                    Flux.gpu(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh))),
+                    Flux.gpu(
+                        Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+                    ),
                 )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(n_in_out => n_hidden, tanh),
-                                Flux.Dense(n_hidden => n_in_out, tanh),
+                                Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                                Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                             ),
                         ),
                     ),
@@ -170,13 +180,15 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh)))
+                nn = FluxCompatLayer(
+                    Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+                )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(n_in_out => n_hidden, tanh),
-                            Flux.Dense(n_hidden => n_in_out, tanh),
+                            Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                            Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                         ),
                     ),
                 )
@@ -243,9 +255,15 @@ end
     n_hidden_rate,
     arch,
     back,
+    have_bias,
     tspan_end,
     n_epochs,
     batch_size = d
+
+    if isnothing(have_bias)
+        have_bias = true
+    end
+
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         # train
@@ -260,6 +278,7 @@ end
         "n_hidden_rate" => n_hidden_rate,
         "arch" => arch,
         "back" => back,
+        "have_bias" => have_bias,
 
         # construct
         "tspan_end" => tspan_end,
@@ -292,28 +311,30 @@ end
 
     if back == "Lux"
         if arch == "Dense"
-            nn = Lux.Dense(n_in_out => n_in_out, tanh)
+            nn = Lux.Dense(n_in_out => n_in_out, tanh; use_bias = have_bias)
         elseif arch == "Dense-ML"
             nn = Lux.Chain(
-                Lux.Dense(n_in_out => n_hidden, tanh),
-                Lux.Dense(n_hidden => n_in_out, tanh),
+                Lux.Dense(n_in_out => n_hidden, tanh; use_bias = have_bias),
+                Lux.Dense(n_hidden => n_in_out, tanh; use_bias = have_bias),
             )
         else
             error("Not Imp")
         end
     elseif back == "Flux"
-        if use_gpu_nn_test
+        if use_gpu_nn_train
             if arch == "Dense"
                 nn = FluxCompatLayer(
-                    Flux.gpu(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh))),
+                    Flux.gpu(
+                        Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+                    ),
                 )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.gpu(
                         Flux.f32(
                             Flux.Chain(
-                                Flux.Dense(n_in_out => n_hidden, tanh),
-                                Flux.Dense(n_hidden => n_in_out, tanh),
+                                Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                                Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                             ),
                         ),
                     ),
@@ -323,13 +344,15 @@ end
             end
         else
             if arch == "Dense"
-                nn = FluxCompatLayer(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh)))
+                nn = FluxCompatLayer(
+                    Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+                )
             elseif arch == "Dense-ML"
                 nn = FluxCompatLayer(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(n_in_out => n_hidden, tanh),
-                            Flux.Dense(n_hidden => n_in_out, tanh),
+                            Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                            Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                         ),
                     ),
                 )
