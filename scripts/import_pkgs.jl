@@ -43,7 +43,6 @@ using Base.Threads,
     UnPack,
     Zygote
 
-# using ComputationalResources, CUDA, cuDNN, LuxCUDA
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
 # using Optim, OptimizationOptimJL
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
@@ -113,7 +112,7 @@ const sol_kwargs = Dict(
 )
 const optimizers = Any[Optimisers.Lion(),]
 
-if !isempty(ARGS)
+if !isempty(ARGS) && length(ARGS) >= 2
     const use_gpu_nn_train = ARGS[1] == "train_gpu"
     const use_gpu_nn_test = ARGS[2] == "test_gpu"
 else
@@ -122,6 +121,7 @@ else
     const use_gpu_nn_test = false
 end
 if use_gpu_nn_train || use_gpu_nn_test
+    using ComputationalResources, CUDA, cuDNN, LuxCUDA
     const gdev = gpu_device()
 else
     const gdev = cpu_device()
