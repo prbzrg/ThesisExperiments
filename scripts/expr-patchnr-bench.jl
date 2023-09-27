@@ -186,7 +186,7 @@ if use_gpu_nn_test
         tspan,
         compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
-        sol_kwargs,
+        # sol_kwargs,
     )
 else
     icnf = construct(
@@ -196,7 +196,7 @@ else
         naug_vl;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        sol_kwargs,
+        # sol_kwargs,
     )
 end
 

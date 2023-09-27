@@ -90,7 +90,7 @@ end
         tspan,
         compute_mode = ZygoteMatrixMode,
         steer_rate = steer_reg,
-        sol_kwargs,
+        # sol_kwargs,
         λ₁ = rnode_reg,
         λ₂ = rnode_reg,
     )

@@ -12,10 +12,14 @@ const allparams = Dict(
 
     # train
     # "sel_pol" => nothing,
+    # "sel_pol" => "total",
+    # "sel_pol" => "random",
+    # "sel_pol" => "one_min",
+    # "sel_pol" => "one_max",
     # "sel_pol" => "equ_d",
     "sel_pol" => "min_max",
+    # "n_t_imgs" => 0,
     "n_t_imgs" => 6,
-    # "p_s" => 8,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
     "naug_rate" => 1 + (1 / 36),
@@ -28,16 +32,17 @@ const allparams = Dict(
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
+    "have_bias" => nothing,
+    # "have_bias" => true,
 
     # construct
     "tspan_end" => 12,
-    # "tspan_end" => [1, 4, 8, 32],
 
     # ICNFModel
-    "n_epochs" => 50,
-    # "n_epochs" => 2,
+    # "n_epochs" => 3,
+    "n_epochs" => 100,
+    # "batch_size" => 2^5,
     "batch_size" => 2^12,
-    # "batch_size" => 32,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -59,9 +64,15 @@ steer_reg,
 n_hidden_rate,
 arch,
 back,
+have_bias,
 tspan_end,
 n_epochs,
 batch_size = d
+
+if isnothing(have_bias)
+    have_bias = true
+end
+
 d2 = Dict{String, Any}("p_s" => p_s)
 d3 = Dict{String, Any}(
     # train
@@ -76,6 +87,7 @@ d3 = Dict{String, Any}(
     "n_hidden_rate" => n_hidden_rate,
     "arch" => arch,
     "back" => back,
+    "have_bias" => have_bias,
 
     # construct
     "tspan_end" => tspan_end,
@@ -108,11 +120,11 @@ end
 
 if back == "Lux"
     if arch == "Dense"
-        nn = Lux.Dense(n_in_out => n_in_out, tanh)
+        nn = Lux.Dense(n_in_out => n_in_out, tanh; use_bias = have_bias)
     elseif arch == "Dense-ML"
         nn = Lux.Chain(
-            Lux.Dense(n_in_out => n_hidden, tanh),
-            Lux.Dense(n_hidden => n_in_out, tanh),
+            Lux.Dense(n_in_out => n_hidden, tanh; use_bias = have_bias),
+            Lux.Dense(n_hidden => n_in_out, tanh; use_bias = have_bias),
         )
     else
         error("Not Imp")
@@ -120,14 +132,18 @@ if back == "Lux"
 elseif back == "Flux"
     if use_gpu_nn_test
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.gpu(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh))))
+            nn = FluxCompatLayer(
+                Flux.gpu(
+                    Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+                ),
+            )
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.gpu(
                     Flux.f32(
                         Flux.Chain(
-                            Flux.Dense(n_in_out => n_hidden, tanh),
-                            Flux.Dense(n_hidden => n_in_out, tanh),
+                            Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                            Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                         ),
                     ),
                 ),
@@ -137,13 +153,15 @@ elseif back == "Flux"
         end
     else
         if arch == "Dense"
-            nn = FluxCompatLayer(Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh)))
+            nn = FluxCompatLayer(
+                Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+            )
         elseif arch == "Dense-ML"
             nn = FluxCompatLayer(
                 Flux.f32(
                     Flux.Chain(
-                        Flux.Dense(n_in_out => n_hidden, tanh),
-                        Flux.Dense(n_hidden => n_in_out, tanh),
+                        Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+                        Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
                     ),
                 ),
             )
@@ -163,7 +181,7 @@ if use_gpu_nn_test
         tspan,
         compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
-        sol_kwargs,
+        # sol_kwargs,
     )
 else
     icnf = construct(
@@ -173,7 +191,7 @@ else
         naug_vl;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        sol_kwargs,
+        # sol_kwargs,
     )
 end
 
