@@ -78,7 +78,7 @@ include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
 # defaults
-const sol_kwargs_old = Dict(
+const sol_kwargs = Dict(
     :alg_hints => [:nonstiff, :memorybound],
     :dense => false,
     :save_everystep => false,
