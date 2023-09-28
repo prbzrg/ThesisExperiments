@@ -22,9 +22,10 @@ const allparams = Dict(
     "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8],
+    # "naug_rate" => 1,
     "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[4],
-    "steer_reg" => eps_sq[5],
+    "rnode_reg" => eps_sq[3],
+    "steer_reg" => eps_sq[4],
 
     # nn
     "n_hidden_rate" => 0,
@@ -32,17 +33,17 @@ const allparams = Dict(
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
-    "have_bias" => nothing,
-    # "have_bias" => true,
+    # "have_bias" => nothing,
+    # "have_bias" => false,
+    "have_bias" => true,
 
     # construct
-    "tspan_end" => 12,
+    "tspan_end" => 9,
 
     # ICNFModel
-    # "n_epochs" => 3,
-    "n_epochs" => 100,
+    "n_epochs" => 300,
     # "batch_size" => 2^5,
-    "batch_size" => 2^12,
+    "batch_size" => 2^11,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -386,11 +387,9 @@ end
         )
     end
 
-    @inline function icnf_f(x)
-        loss(icnf, TrainMode(), x, ps, st)
-    end
-
-    ptchnr = PatchNR(; icnf_f, n_pts, p_s)
+    ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
+        x -> loss(icnf, md, x, ps, st)
+    end, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "just-train"
         return fulld

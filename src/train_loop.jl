@@ -63,19 +63,18 @@ end
         false
     end
 
-    @inline function _loss2(ps, θ)
-        _loss(ps, ptchnr, obs_y)
-    end
-
-    @inline function _loss_gd2(ps_i, ps, θ)
-        _loss_gd(ps_i, ps, ptchnr, obs_y)
-    end
-
     # optfunc = OptimizationFunction(_loss2, AutoTracker())
     # optfunc = OptimizationFunction(_loss2, AutoForwardDiff())
     # optfunc = OptimizationFunction(_loss2, AutoReverseDiff())
     # optfunc = OptimizationFunction(_loss2, AutoZygote())
-    optfunc = OptimizationFunction(_loss2; grad = _loss_gd2)
+    optfunc = OptimizationFunction(
+        let ptchnr = ptchnr, obs_y = obs_y
+            (ps, θ) -> _loss(ps, ptchnr, obs_y)
+        end;
+        grad = let ptchnr = ptchnr, obs_y = obs_y
+            (ps_i, ps, θ) -> _loss_gd(ps_i, ps, ptchnr, obs_y)
+        end,
+    )
     # optfunc = OptimizationFunction(_loss2)
     optprob = OptimizationProblem(optfunc, ps)
     res = solve(optprob, opt; callback = _callback, maxiters = n_iter)

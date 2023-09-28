@@ -295,11 +295,9 @@ end
         icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
     end
 
-    @inline function icnf_f(x)
-        loss(icnf, TrainMode(), x, ps, st)
-    end
-
-    ptchnr = PatchNR(; icnf_f, n_pts, p_s)
+    ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
+        x -> loss(icnf, md, x, ps, st)
+    end, n_pts, p_s)
     gt_x = load(gt_test_fn)["data"]
     if sel_a == "min"
         sel_t_img = argmin(vec(std(reshape(gt_x, (:, n_data_b)); dims = 1)))
