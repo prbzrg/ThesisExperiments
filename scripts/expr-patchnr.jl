@@ -6,8 +6,6 @@ include(scriptsdir("import_pkgs.jl"))
 const allparams = Dict(
     # test
     "n_iter_rec" => 300,
-    # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    # "sel_a" => "min",
     "sel_a" => vcat(["min", "max"], 1:128),
 
     # train
@@ -21,7 +19,7 @@ const allparams = Dict(
     # "n_t_imgs" => 0,
     "n_t_imgs" => 6,
     "p_s" => 6,
-    # "p_s" => [4, 6, 8],
+    # "p_s" => [4, 6, 8, 10],
     "naug_rate" => 1,
     # "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[3],
@@ -42,7 +40,6 @@ const allparams = Dict(
 
     # ICNFModel
     "n_epochs" => 50,
-    # "batch_size" => 2^5,
     "batch_size" => 2^10,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
