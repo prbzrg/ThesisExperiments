@@ -41,9 +41,9 @@ const allparams = Dict(
     "tspan_end" => 9,
 
     # ICNFModel
-    "n_epochs" => 300,
+    "n_epochs" => 50,
     # "batch_size" => 2^5,
-    "batch_size" => 2^11,
+    "batch_size" => 2^10,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
