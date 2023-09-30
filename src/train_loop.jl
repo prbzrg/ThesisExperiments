@@ -8,11 +8,14 @@
     pt1 + pt2
 end
 
-@inline function _loss_gd(G, ps, ptchnr, obs_y)
+@inline function _loss_gd_o(ps, ptchnr, obs_y)
     pt1 = recn_loss_pt1_grad(ptchnr, ps, obs_y)
     pt2 = recn_loss_pt2_grad(ptchnr, ps, obs_y)
+    pt1 + pt2
+end
 
-    G .= pt1 + pt2
+@inline function _loss_gd_i(G, ps, ptchnr, obs_y)
+    G .= _loss_gd_o(ps, ptchnr, obs_y)
     nothing
 end
 
@@ -23,7 +26,7 @@ end
     prgr = Progress(n_iter; desc = "Min for CT: ", showspeed = true)
     prev_time = time()
     for i in 1:n_iter
-        _loss_gd(G, ps, ptchnr, obs_y)
+        _loss_gd_i(G, ps, ptchnr, obs_y)
         opt_state, ps = Optimisers.update!(opt_state, ps, G)
         lv = _loss(ps, ptchnr, obs_y)
         new_time = time()
@@ -72,7 +75,7 @@ end
             (ps, θ) -> _loss(ps, ptchnr, obs_y)
         end;
         grad = let ptchnr = ptchnr, obs_y = obs_y
-            (ps_i, ps, θ) -> _loss_gd(ps_i, ps, ptchnr, obs_y)
+            (ps_i, ps, θ) -> _loss_gd_i(ps_i, ps, ptchnr, obs_y)
         end,
     )
     # optfunc = OptimizationFunction(_loss2)
