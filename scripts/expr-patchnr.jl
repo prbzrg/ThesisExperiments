@@ -39,8 +39,8 @@ const allparams = Dict(
     "tspan_end" => 9,
 
     # ICNFModel
-    "n_epochs" => 50,
-    "batch_size" => 2^10,
+    "n_epochs" => 300,
+    "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -208,6 +208,7 @@ end
             resource = CUDALibs(),
             steer_rate = steer_reg,
             sol_kwargs,
+            inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -221,6 +222,7 @@ end
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
             sol_kwargs,
+            inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -371,6 +373,7 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             sol_kwargs,
+            inplace = true,
         )
     else
         icnf = construct(
@@ -381,6 +384,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             sol_kwargs,
+            inplace = true,
         )
     end
 
