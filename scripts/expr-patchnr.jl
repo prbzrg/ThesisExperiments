@@ -20,8 +20,8 @@ const allparams = Dict(
     "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8, 10],
-    "naug_rate" => 1,
-    # "naug_rate" => 1 + (1 / 36),
+    # "naug_rate" => 1,
+    "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[3],
     "steer_reg" => eps_sq[4],
 
@@ -32,8 +32,8 @@ const allparams = Dict(
     # "back" => "Lux",
     "back" => "Flux",
     # "have_bias" => nothing,
-    "have_bias" => false,
-    # "have_bias" => true,
+    # "have_bias" => false,
+    "have_bias" => true,
 
     # construct
     "tspan_end" => 9,
