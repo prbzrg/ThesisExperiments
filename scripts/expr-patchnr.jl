@@ -36,7 +36,7 @@ const allparams = Dict(
     "have_bias" => true,
 
     # construct
-    "tspan_end" => 129,
+    "tspan_end" => 1,
 
     # ICNFModel
     "n_epochs" => 9,
