@@ -82,12 +82,12 @@ end
     n_epochs,
     batch_size = d
 
+    d2 = Dict{String, Any}("p_s" => p_s)
+    fulld = copy(d)
+
     if isnothing(have_bias)
         have_bias = true
     end
-
-    d2 = Dict{String, Any}("p_s" => p_s)
-    fulld = copy(d)
 
     tspan = convert.(Float32, (0, tspan_end))
     fulld["tspan"] = tspan
@@ -262,10 +262,6 @@ end
     n_epochs,
     batch_size = d
 
-    if isnothing(have_bias)
-        have_bias = true
-    end
-
     d2 = Dict{String, Any}("p_s" => p_s)
     d3 = Dict{String, Any}(
         # train
@@ -290,6 +286,10 @@ end
         "batch_size" => batch_size,
     )
     fulld = copy(d)
+
+    if isnothing(have_bias)
+        have_bias = true
+    end
 
     tspan = convert.(Float32, (0, tspan_end))
     fulld["tspan"] = tspan
