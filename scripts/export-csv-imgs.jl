@@ -34,6 +34,7 @@ df2c[!, "res_img"] .= missing
 df2c[!, "fbp_img"] .= missing
 df2c[!, "gt_x"] .= missing
 df2c[!, "time_obj"] .= missing
-# df2c[!, "sel_pol"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "sel_pol"])
+df2c[!, "sel_pol"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "sel_pol"])
+df2c[!, "have_bias"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "have_bias"])
 
 CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df2c)
