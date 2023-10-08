@@ -25,8 +25,8 @@ for i in axes(df, 1)
     )
     image!(ax3, rotr90(df[i, "res_img"]))
     sel_a = df[i, "sel_a"]
-    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_($sel_a).svg"), f)
-    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_($sel_a).png"), f)
+    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_$(sel_a).svg"), f)
+    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_$(sel_a).png"), f)
 end
 
 df2c = copy(df)
