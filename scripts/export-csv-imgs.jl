@@ -24,8 +24,9 @@ for i in axes(df, 1)
         subtitle = "PSNR: $(round(df[i, "a_psnr"]; digits=r_dgt)), SSIM: $(round(df[i, "a_ssim"]; digits=r_dgt)), MSSSIM: $(round(df[i, "a_msssim"]; digits=r_dgt))",
     )
     image!(ax3, rotr90(df[i, "res_img"]))
-    save(plotsdir("patchnr-sims-imgs", "$(i)_plot.svg"), f)
-    save(plotsdir("patchnr-sims-imgs", "$(i)_plot.png"), f)
+    sel_a = df[i, "sel_a"]
+    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_($sel_a).svg"), f)
+    save(plotsdir("patchnr-sims-imgs", "$(i)_plot_($sel_a).png"), f)
 end
 
 df2c = copy(df)
