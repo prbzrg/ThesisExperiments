@@ -708,9 +708,9 @@ version = "0.9.3"
 
 [[deps.Documenter]]
 deps = ["ANSIColoredPrinters", "AbstractTrees", "Base64", "Dates", "DocStringExtensions", "Downloads", "IOCapture", "InteractiveUtils", "JSON", "LibGit2", "Logging", "Markdown", "MarkdownAST", "Pkg", "PrecompileTools", "REPL", "RegistryInstances", "SHA", "Test", "Unicode"]
-git-tree-sha1 = "f667b805e90d643aeb1ca70189827f991a7cc115"
+git-tree-sha1 = "147a3cbb6ddcd9448fe5e6c426b347efc68f9c86"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-version = "1.1.0"
+version = "1.1.1"
 
 [[deps.Downloads]]
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
@@ -748,21 +748,21 @@ version = "1.0.4"
 
 [[deps.Enzyme]]
 deps = ["CEnum", "EnzymeCore", "Enzyme_jll", "GPUCompiler", "LLVM", "Libdl", "LinearAlgebra", "ObjectFile", "Preferences", "Printf", "Random"]
-git-tree-sha1 = "5a9f3fe3cdec4bfa91120a83eb5366d595385c05"
+git-tree-sha1 = "a8a13f3259f59f1738e14296b9191299226ea6b6"
 uuid = "7da242da-08ed-463a-9acd-ee780be4f1d9"
-version = "0.11.8"
+version = "0.11.9"
 
 [[deps.EnzymeCore]]
 deps = ["Adapt"]
-git-tree-sha1 = "3250001c57b9a3e18e1e5a257fb9ec2c012286c6"
+git-tree-sha1 = "d8701002a745c450c03b890f10d53636d1a8a7ea"
 uuid = "f151be2c-9106-41f4-ab19-57ee4f262869"
-version = "0.5.3"
+version = "0.6.2"
 
 [[deps.Enzyme_jll]]
 deps = ["Artifacts", "JLLWrappers", "LazyArtifacts", "Libdl", "TOML"]
-git-tree-sha1 = "d35761b44e1057cbbc94dd8c685b07678eb14053"
+git-tree-sha1 = "6febd718de952cb31717a34f81f98872c065e825"
 uuid = "7cc45869-7501-5eee-bdea-0790c847d4ef"
-version = "0.0.86+0"
+version = "0.0.88+0"
 
 [[deps.EpollShim_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -1436,9 +1436,9 @@ version = "0.4.1"
 
 [[deps.KernelAbstractions]]
 deps = ["Adapt", "Atomix", "InteractiveUtils", "LinearAlgebra", "MacroTools", "PrecompileTools", "Requires", "SparseArrays", "StaticArrays", "UUIDs", "UnsafeAtomics", "UnsafeAtomicsLLVM"]
-git-tree-sha1 = "4c5875e4c228247e1c2b087669846941fb6e0118"
+git-tree-sha1 = "5f1ecfddb6abde48563d08b2cc7e5116ebcd6c27"
 uuid = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
-version = "0.9.8"
+version = "0.9.10"
 weakdeps = ["EnzymeCore"]
 
     [deps.KernelAbstractions.extensions]
