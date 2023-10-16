@@ -11,8 +11,6 @@ Logging.global_logger(debuglogger)
 const allparams = Dict(
     # test
     "n_iter_rec" => 300,
-    # "n_iter_rec" => [4, 8, 16, 128, 256, 300],
-    # "sel_a" => "min",
     "sel_a" => vcat(["min", "max"], 1:128),
 
     # train
@@ -26,7 +24,8 @@ const allparams = Dict(
     # "n_t_imgs" => 0,
     "n_t_imgs" => 6,
     "p_s" => 6,
-    # "p_s" => [4, 6, 8],
+    # "p_s" => [4, 6, 8, 10],
+    # "naug_rate" => 1,
     "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[4],
     "steer_reg" => eps_sq[5],
@@ -38,15 +37,16 @@ const allparams = Dict(
     # "back" => "Lux",
     "back" => "Flux",
     "have_bias" => nothing,
+    # "have_bias" => false,
     # "have_bias" => true,
 
     # construct
     "tspan_end" => 12,
 
     # ICNFModel
-    # "n_epochs" => 3,
-    "n_epochs" => 100,
-    # "batch_size" => 2^5,
+    # "n_epochs" => 9,
+    "n_epochs" => 50,
+    # "batch_size" => 2^10,
     "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
