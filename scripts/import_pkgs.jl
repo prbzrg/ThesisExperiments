@@ -4,8 +4,8 @@ using Pkg
 
 Pkg.precompile(; strict = true)
 
-using JuliaSyntax
-JuliaSyntax.enable_in_core!()
+# using JuliaSyntax
+# JuliaSyntax.enable_in_core!()
 
 using MKL
 
