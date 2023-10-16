@@ -2,7 +2,7 @@
 
 julia_version = "1.9.3"
 manifest_format = "2.0"
-project_hash = "c2f8beeb38be8cb7c8299c8dcea30fd4fc8484e0"
+project_hash = "84ebb3730e99b236a83a669ea96da31b4e621fe5"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "5d2e21d7b0d8c22f67483ef95ebdc39c0e6b6003"
@@ -1411,6 +1411,11 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "af433a10f3942e882d3c671aacb203e006a5808f"
 uuid = "9c1d0b0a-7046-5b2e-a33f-ea22f176ac7e"
 version = "0.2.1+0"
+
+[[deps.JuliaSyntax]]
+git-tree-sha1 = "d080fa670adde72509d03d91bf6ce6da2addb4be"
+uuid = "70703baa-626e-46a2-a12c-08ffd08c73b4"
+version = "0.4.6"
 
 [[deps.JuliaVariables]]
 deps = ["MLStyle", "NameResolution"]
