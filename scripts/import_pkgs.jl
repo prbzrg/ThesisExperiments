@@ -4,6 +4,8 @@ using Pkg
 
 Pkg.precompile(; strict = true)
 
+using MKL
+
 using Base.Threads,
     BenchmarkTools,
     Colors,
