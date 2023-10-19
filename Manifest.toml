@@ -329,9 +329,9 @@ version = "0.10.8"
 
 [[deps.CategoricalDistributions]]
 deps = ["CategoricalArrays", "Distributions", "Missings", "OrderedCollections", "Random", "ScientificTypes"]
-git-tree-sha1 = "ed760a4fde49997ff9360a780abe6e20175162aa"
+git-tree-sha1 = "d4f2e31204e3ce62b9d6407b63df3fad734e9e3f"
 uuid = "af321ab8-2d2e-40a6-b165-3d674595d28e"
-version = "0.1.11"
+version = "0.1.12"
 
     [deps.CategoricalDistributions.extensions]
     UnivariateFiniteDisplayExt = "UnicodePlots"
@@ -509,7 +509,7 @@ version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
 deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "Distributions", "DistributionsAD", "FillArrays", "Flux", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "PackageExtensionCompat", "PrecompileTools", "Preferences", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "7c428c35fd5fb2e60de405e87b488c097d022887"
+git-tree-sha1 = "536d9ca2d351f107568e64302776aa1fcb5f3d78"
 repo-rev = "main"
 repo-url = "https://github.com/impICNF/ContinuousNormalizingFlows.jl.git"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
@@ -1651,11 +1651,12 @@ version = "0.1.12"
 
 [[deps.LinearSolve]]
 deps = ["ArrayInterface", "ConcreteStructs", "DocStringExtensions", "EnumX", "EnzymeCore", "FastLapackInterface", "GPUArraysCore", "InteractiveUtils", "KLU", "Krylov", "Libdl", "LinearAlgebra", "MKL_jll", "PrecompileTools", "Preferences", "RecursiveFactorization", "Reexport", "Requires", "SciMLBase", "SciMLOperators", "Setfield", "SparseArrays", "Sparspak", "SuiteSparse", "UnPack"]
-git-tree-sha1 = "9f27ba34f5821a0495efb09ea3a465c31326495a"
+git-tree-sha1 = "31353ba539d14a342908f765407abffd8db5f3c7"
 uuid = "7ed4a6bd-45f5-4d41-b270-4a48e9bafcae"
-version = "2.10.0"
+version = "2.11.0"
 
     [deps.LinearSolve.extensions]
+    LinearSolveBandedMatricesExt = "BandedMatrices"
     LinearSolveBlockDiagonalsExt = "BlockDiagonals"
     LinearSolveCUDAExt = "CUDA"
     LinearSolveEnzymeExt = "Enzyme"
@@ -1665,8 +1666,10 @@ version = "2.10.0"
     LinearSolveKrylovKitExt = "KrylovKit"
     LinearSolveMetalExt = "Metal"
     LinearSolvePardisoExt = "Pardiso"
+    LinearSolveRecursiveArrayToolsExt = "RecursiveArrayTools"
 
     [deps.LinearSolve.weakdeps]
+    BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
     BlockDiagonals = "0a1fb500-61f7-11e9-3c65-f5ef3456f9f0"
     CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
     Enzyme = "7da242da-08ed-463a-9acd-ee780be4f1d9"
@@ -1676,6 +1679,7 @@ version = "2.10.0"
     KrylovKit = "0b1a1467-8014-51b9-945f-bf0ae24f4b77"
     Metal = "dde4c033-4e86-420c-a63e-0dd931031962"
     Pardiso = "46dd5b70-b6fb-5a00-ae2d-e8fea33afaf2"
+    RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
@@ -1810,9 +1814,9 @@ version = "1.0.1"
 
 [[deps.MLJModelInterface]]
 deps = ["Random", "ScientificTypesBase", "StatisticalTraits"]
-git-tree-sha1 = "03ae109be87f460fe3c96b8a0dbbf9c7bf840bd5"
+git-tree-sha1 = "381d99f0af76d98f50bd5512dcf96a99c13f8223"
 uuid = "e80e1ace-859a-464e-9ed9-23947d8ae3ea"
-version = "1.9.2"
+version = "1.9.3"
 
 [[deps.MLStyle]]
 git-tree-sha1 = "bc38dff0548128765760c79eb7388a4b37fae2c8"
@@ -2027,9 +2031,17 @@ version = "1.2.0"
 
 [[deps.NonlinearSolve]]
 deps = ["ADTypes", "ArrayInterface", "ConcreteStructs", "DiffEqBase", "EnumX", "FiniteDiff", "ForwardDiff", "LineSearches", "LinearAlgebra", "LinearSolve", "PrecompileTools", "RecursiveArrayTools", "Reexport", "SciMLBase", "SimpleNonlinearSolve", "SparseArrays", "SparseDiffTools", "StaticArraysCore", "UnPack"]
-git-tree-sha1 = "a5f1f836da05d513c4143576af8f5d8e51b759f5"
+git-tree-sha1 = "ee92770e0832314ccd424d83a0ab4c75fc6dc91f"
 uuid = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
-version = "2.2.1"
+version = "2.3.0"
+
+    [deps.NonlinearSolve.extensions]
+    NonlinearSolveFastLevenbergMarquardtExt = "FastLevenbergMarquardt"
+    NonlinearSolveLeastSquaresOptimExt = "LeastSquaresOptim"
+
+    [deps.NonlinearSolve.weakdeps]
+    FastLevenbergMarquardt = "7a0df574-e128-4d35-8cbd-3d84502bf7ce"
+    LeastSquaresOptim = "0fc2ff8b-aaa3-5acd-a817-1944a5e08891"
 
 [[deps.ObjectFile]]
 deps = ["Reexport", "StructIO"]

@@ -29,4 +29,4 @@ scripts/expr-patchnr-flow.jl train_cpu test_cpu
 scripts/expr-beta.jl train_cpu test_cpu
 scripts/export-csv-imgs.jl train_cpu test_cpu
 
-julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=1G
+julia --startup-file=yes --handle-signals=yes --sysimage-native-code=yes --compiled-modules=yes --pkgimages=yes --banner=yes --color=yes --history-file=yes --depwarn=yes --warn-overwrite=yes --warn-scope=yes --optimize=3 --min-optlevel=3 --debug-info=2 --inline=yes --check-bounds=no --compile=all --output-incremental=no --code-coverage=none --track-allocation=none --project --heap-size-hint=20G
