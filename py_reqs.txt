@@ -7,8 +7,9 @@ cycler==0.11.0
 dival==0.6.1
 filelock==3.12.2
 fonttools==4.40.0
+fsspec==2023.10.0
 future==0.18.3
-h5py==3.9.0
+h5py==3.10.0
 hyperopt==0.2.7
 idna==3.4
 imageio==2.31.1
@@ -21,10 +22,10 @@ matplotlib==3.7.1
 mpmath==1.3.0
 networkx==3.1
 numpy==1.23.5
-odl==0.7.0
+odl @ https://github.com/odlgroup/odl/archive/refs/heads/master.zip#sha256=b1a849d85a3892ec1ead509ff282b2003a8b9e0e39a003373ba0d074a679caea
 packaging==23.1
 pandas==2.0.2
-Pillow==9.5.0
+Pillow==10.0.1
 pip==23.1.2
 py4j==0.10.9.7
 pyparsing==3.1.0
