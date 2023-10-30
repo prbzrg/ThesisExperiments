@@ -31,9 +31,9 @@ const allparams = Dict(
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
-    # "have_bias" => nothing,
+    "have_bias" => nothing,
     # "have_bias" => false,
-    "have_bias" => true,
+    # "have_bias" => true,
 
     # construct
     "tspan_end" => 12,
