@@ -6,11 +6,11 @@ import dival.util.torch_losses
 import odl.contrib.torch
 
 
-def get_ray_1()
+def get_ray_1():
     ddd = odl.uniform_discr([-0.13, -0.13], [0.13, 0.13], (362, 362), dtype=numpy.float32)
     return odl.tomo.RayTransform(ddd, odl.tomo.parallel_beam_geometry(ddd, num_angles=1000, det_shape=(513,)), impl="skimage")
 
-def get_ray_2()
+def get_ray_2():
     return dival.get_standard_dataset('lodopab', impl='skimage').ray_trafo
 
 def fbp_t(x):
