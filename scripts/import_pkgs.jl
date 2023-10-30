@@ -7,7 +7,7 @@ Pkg.precompile(; strict = true)
 # using JuliaSyntax
 # JuliaSyntax.enable_in_core!()
 
-using MKL
+# using MKL
 
 using Base.Threads,
     BenchmarkTools,
@@ -83,7 +83,7 @@ include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
 # defaults
-const sol_kwargs = Dict(
+const sol_kwargs_2 = Dict(
     :alg_hints => [:nonstiff, :memorybound],
     :dense => false,
     :save_everystep => false,
