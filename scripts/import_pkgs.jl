@@ -100,16 +100,16 @@ const sol_kwargs = Dict(
     # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
     # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
-    :sensealg => BacksolveAdjoint(;
-        autodiff = true,
-        autojacvec = ZygoteVJP(),
-        checkpointing = true,
-    ),
-    # :sensealg => InterpolatingAdjoint(;
+    # :sensealg => BacksolveAdjoint(;
     #     autodiff = true,
     #     autojacvec = ZygoteVJP(),
     #     checkpointing = true,
     # ),
+    :sensealg => InterpolatingAdjoint(;
+        autodiff = true,
+        autojacvec = ZygoteVJP(),
+        checkpointing = true,
+    ),
     # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
     :reltol => eps_sq[2],
     :abstol => eps_sq[1],
