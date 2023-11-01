@@ -13,15 +13,17 @@ def get_ray_1():
 def get_ray_2():
     return dival.get_standard_dataset('lodopab', impl='skimage').ray_trafo
 
+ray_op = get_ray_2()
+
 def fbp_t(x):
     return odl.contrib.torch.OperatorModule(odl.tomo.analytic.filtered_back_projection.fbp_op(
-        get_ray_2(), filter_type = 'Hann', frequency_scaling = 0.641025641025641))(x)
+        ray_op, filter_type = 'Hann', frequency_scaling = 0.641025641025641))(x)
 
 def fbp_t_res(x):
     return fbp_t(torch.tensor(x))
 
 def radon_t(x):
-    return odl.contrib.torch.OperatorModule(get_ray_2())(x)
+    return odl.contrib.torch.OperatorModule(ray_op)(x)
 
 def radon_t_res(x):
     return radon_t(torch.tensor(x))
