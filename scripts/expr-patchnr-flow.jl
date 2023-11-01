@@ -14,16 +14,16 @@ const allparams = Dict(
     # "sel_pol" => "random",
     # "sel_pol" => "one_min",
     # "sel_pol" => "one_max",
-    # "sel_pol" => "equ_d",
-    "sel_pol" => "min_max",
+    "sel_pol" => "equ_d",
+    # "sel_pol" => "min_max",
     # "n_t_imgs" => 0,
     "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8, 10],
     # "naug_rate" => 1,
     "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[4],
-    "steer_reg" => eps_sq[5],
+    "rnode_reg" => eps_sq[3],
+    "steer_reg" => eps_sq[4],
 
     # nn
     "n_hidden_rate" => 0,
@@ -31,18 +31,19 @@ const allparams = Dict(
     "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
-    "have_bias" => nothing,
+    # "have_bias" => nothing,
     # "have_bias" => false,
-    # "have_bias" => true,
+    "have_bias" => true,
 
     # construct
-    "tspan_end" => 12,
+    "tspan_end" => 9,
 
     # ICNFModel
+    "n_epochs" => 17,
     # "n_epochs" => 9,
-    "n_epochs" => 50,
-    # "batch_size" => 2^10,
-    "batch_size" => 2^12,
+    # "n_epochs" => 50,
+    "batch_size" => 2^10,
+    # "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
@@ -69,10 +70,6 @@ tspan_end,
 n_epochs,
 batch_size = d
 
-if isnothing(have_bias)
-    have_bias = true
-end
-
 d2 = Dict{String, Any}("p_s" => p_s)
 d3 = Dict{String, Any}(
     # train
@@ -97,6 +94,10 @@ d3 = Dict{String, Any}(
     "batch_size" => batch_size,
 )
 fulld = copy(d)
+
+if isnothing(have_bias)
+    have_bias = true
+end
 
 tspan = convert.(Float32, (0, tspan_end))
 fulld["tspan"] = tspan
@@ -193,8 +194,10 @@ if use_gpu_nn_test
         nvars,
         naug_vl;
         tspan,
+        compute_mode = ZygoteVectorMode,
         resource = CUDALibs(),
         # sol_kwargs = sl_kw,
+        inplace = true,
     )
 else
     icnf = construct(
@@ -203,9 +206,12 @@ else
         nvars,
         naug_vl;
         tspan,
+        compute_mode = ZygoteVectorMode,
         # sol_kwargs = sl_kw,
+        inplace = true,
     )
 end
+icnf.sol_kwargs[:save_everystep] = true
 
 # way 4
 # smp_f = rand(Float32, 36)
@@ -225,15 +231,13 @@ smp_f = zeros(Float32, 36)
 # smp_f = MLUtils.flatten(smp)
 
 prob = ContinuousNormalizingFlows.inference_prob(icnf, TestMode(), smp_f, ps, st)
-sl = solve(prob, icnf.sol_args...; icnf.sol_kwargs...)
-display(sl.stats)
+n_aug = ContinuousNormalizingFlows.n_augment(icnf, TestMode())
+sol = solve(prob; icnf.sol_kwargs...)
+display(sol.stats)
 f = Figure()
 ax = Makie.Axis(f[1, 1]; title = "Flow")
-broadcast(
-    x -> lines!(ax, sl.t, x),
-    eachrow(sl[1:(end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode()) + 1)), :]),
-)
+broadcast(x -> lines!(ax, sol.t, x), eachrow(sol[begin:(end - n_aug - 1), :]))
 # ax2 = Makie.Axis(f[1, 2]; title = "Log")
-# lines!(ax2, sl.t, sl[end - (ContinuousNormalizingFlows.n_augment(icnf, TestMode())), :])
+# lines!(ax2, sol.t, sol[(end - n_aug), :])
 save(plotsdir("plot-lines", "flow_new.svg"), f)
 save(plotsdir("plot-lines", "flow_new.png"), f)
