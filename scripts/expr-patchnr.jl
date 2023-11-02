@@ -38,12 +38,11 @@ const allparams = Dict(
     # "have_bias" => true,
 
     # ICNFModel
-    "n_epochs" => 300,
+    "n_epochs" => 50,
     # "n_epochs" => 9,
     # "n_epochs" => 50,
-    "batch_size" => 2^11,
     # "batch_size" => 2^10,
-    # "batch_size" => 2^12,
+    "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
