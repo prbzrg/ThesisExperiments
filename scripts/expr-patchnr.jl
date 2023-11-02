@@ -20,10 +20,12 @@ const allparams = Dict(
     "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8, 10],
-    # "naug_rate" => 1,
-    "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[3],
+    "naug_rate" => 1,
+    # "naug_rate" => 1 + (1 / 36),
+    "rnode_reg" => eps_sq[4],
     "steer_reg" => eps_sq[4],
+    "ode_reltol" => eps_sq[3],
+    "tspan_end" => 1,
 
     # nn
     "n_hidden_rate" => 0,
@@ -32,17 +34,15 @@ const allparams = Dict(
     # "back" => "Lux",
     "back" => "Flux",
     # "have_bias" => nothing,
-    # "have_bias" => false,
-    "have_bias" => true,
-
-    # construct
-    "tspan_end" => 9,
+    "have_bias" => false,
+    # "have_bias" => true,
 
     # ICNFModel
-    "n_epochs" => 17,
+    "n_epochs" => 300,
     # "n_epochs" => 9,
     # "n_epochs" => 50,
-    "batch_size" => 2^10,
+    "batch_size" => 2^11,
+    # "batch_size" => 2^10,
     # "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
@@ -75,11 +75,12 @@ end
     naug_rate,
     rnode_reg,
     steer_reg,
+    ode_reltol,
+    tspan_end,
     n_hidden_rate,
     arch,
     back,
     have_bias,
-    tspan_end,
     n_epochs,
     batch_size = d
 
@@ -230,6 +231,7 @@ end
             λ₂ = rnode_reg,
         )
     end
+    icnf.sol_kwargs[:reltol] = ode_reltol
 
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
@@ -255,11 +257,12 @@ end
     naug_rate,
     rnode_reg,
     steer_reg,
+    ode_reltol,
+    tspan_end,
     n_hidden_rate,
     arch,
     back,
     have_bias,
-    tspan_end,
     n_epochs,
     batch_size = d
 
@@ -272,15 +275,14 @@ end
         "naug_rate" => naug_rate,
         "rnode_reg" => rnode_reg,
         "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
 
         # nn
         "n_hidden_rate" => n_hidden_rate,
         "arch" => arch,
         "back" => back,
         "have_bias" => have_bias,
-
-        # construct
-        "tspan_end" => tspan_end,
 
         # ICNFModel
         "n_epochs" => n_epochs,
@@ -390,6 +392,7 @@ end
             inplace = true,
         )
     end
+    icnf.sol_kwargs[:reltol] = ode_reltol
 
     ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
         x -> loss(icnf, md, x, ps, st)
