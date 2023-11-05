@@ -210,6 +210,10 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             steer_rate = steer_reg,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_medium,
+                (reltol = ode_reltol,),
+            ),
             # sol_kwargs,
             inplace = true,
             λ₁ = rnode_reg,
@@ -224,13 +228,16 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_medium,
+                (reltol = ode_reltol,),
+            ),
             # sol_kwargs,
             inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
     end
-    icnf.sol_kwargs[:reltol] = ode_reltol
 
     model = ICNFModel(icnf; optimizers, n_epochs, batch_size)
     mach = machine(model, df)
@@ -376,6 +383,10 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_medium,
+                (reltol = ode_reltol,),
+            ),
             # sol_kwargs,
             inplace = true,
         )
@@ -387,11 +398,14 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_medium,
+                (reltol = ode_reltol,),
+            ),
             # sol_kwargs,
             inplace = true,
         )
     end
-    icnf.sol_kwargs[:reltol] = ode_reltol
 
     ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
         x -> loss(icnf, md, x, ps, st)
