@@ -509,7 +509,7 @@ end
 
     opt = only(optimizers)
     optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
-    optprob = OptimizationProblem(optfunc, one(Float32))
+    optprob = OptimizationProblem(optfunc, ones(Float32, 1))
     res = solve(optprob, opt; maxiters = 600)
     fulld["scl_v"] = only(res.u)
 
