@@ -3,9 +3,9 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-df = collect_results(datadir("patchnr-sims"))
+df = collect_results(datadir("postp-sims"))
 
-res_sz = (362 * 2 * 3, 362 * 2)
+res_sz = (362 * 2 * 4, 362 * 2)
 r_dgt = 4
 
 for i in axes(df, 1)
@@ -24,6 +24,12 @@ for i in axes(df, 1)
         subtitle = "PSNR: $(round(df[i, "a_psnr"]; digits=r_dgt)), SSIM: $(round(df[i, "a_ssim"]; digits=r_dgt)), MSSSIM: $(round(df[i, "a_msssim"]; digits=r_dgt))",
     )
     image!(ax3, rotr90(df[i, "res_img"]))
+    ax4 = Makie.Axis(
+        f[1, 4];
+        title = "Post-Processed",
+        subtitle = "PSNR: $(round(df[i, "pp_psnr"]; digits=r_dgt)), SSIM: $(round(df[i, "pp_ssim"]; digits=r_dgt)), MSSSIM: $(round(df[i, "pp_msssim"]; digits=r_dgt))",
+    )
+    image!(ax4, rotr90(df[i, "postp_img"]))
     sel_a = df[i, "sel_a"]
     save(plotsdir("patchnr-sims-imgs", "$(i)_plot_$(sel_a).svg"), f)
     save(plotsdir("patchnr-sims-imgs", "$(i)_plot_$(sel_a).png"), f)
@@ -31,10 +37,12 @@ end
 
 df2c = copy(df)
 
-df2c[!, "res_img"] .= missing
-df2c[!, "fbp_img"] .= missing
 df2c[!, "gt_x"] .= missing
+df2c[!, "fbp_img"] .= missing
+df2c[!, "res_img"] .= missing
+df2c[!, "postp_img"] .= missing
 df2c[!, "time_obj"] .= missing
+
 df2c[!, "sel_pol"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "sel_pol"])
 df2c[!, "have_bias"] .= map(x -> isnothing(x) ? missing : x, df2c[!, "have_bias"])
 

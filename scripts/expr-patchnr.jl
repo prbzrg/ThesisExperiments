@@ -508,7 +508,7 @@ end
     end
 
     opt = only(optimizers)
-    optfunc = OptimizationFunction(fopt, AutoForwardDiff())
+    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
     optprob = OptimizationProblem(optfunc, one(Float32))
     res = solve(optprob, opt; maxiters = 600)
     fulld["scl_v"] = only(res.u)
@@ -587,6 +587,7 @@ end
     fulld = copy(d)
 
     data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    gx = data2["gt_x"]
     ri = data2["res_img"]
     new_ri = imfilter(ri, Kernel.Laplacian())
 
@@ -596,6 +597,9 @@ end
 
     postp_img = (scl_v * new_ri) + ri
     fulld["postp_img"] = postp_img
+    fulld["pp_psnr"] = assess_psnr(postp_img, gx)
+    fulld["pp_ssim"] = assess_ssim(postp_img, gx)
+    fulld["pp_msssim"] = assess_msssim(postp_img, gx)
 
     fulld
 end
