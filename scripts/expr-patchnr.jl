@@ -504,7 +504,8 @@ end
     new_ri = imfilter(ri, Kernel.Laplacian())
 
     @inline function fopt(x)
-        -assess_ssim((only(x) * new_ri) + ri, gx)
+        -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
+        assess_psnr((only(x) * new_ri) + ri, gx)
     end
 
     opt = only(optimizers)
