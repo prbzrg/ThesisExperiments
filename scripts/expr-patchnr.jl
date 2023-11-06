@@ -503,7 +503,7 @@ end
     ri = data2["res_img"]
     new_ri = imfilter(ri, Kernel.Laplacian())
 
-    function fopt(x)
+    @inline function fopt(x)
         -assess_ssim((only(x) * new_ri) + ri, gx)
     end
 
@@ -592,6 +592,8 @@ end
 
     data3, fn3 = produce_or_load(makesim_findpostp, d3, datadir("findpostp-sims"))
     scl_v = data3["scl_v"]
+    fulld["scl_v"] = scl_v
+
     postp_img = (scl_v * new_ri) + ri
     fulld["postp_img"] = postp_img
 
