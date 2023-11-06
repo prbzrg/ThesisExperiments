@@ -35,8 +35,10 @@ using Base.Threads,
     MLJBase,
     MLUtils,
     Makie,
+    Optim,
     Optimisers,
     Optimization,
+    OptimizationOptimJL,
     OptimizationOptimisers,
     OrdinaryDiffEq,
     PrecompileTools,
@@ -51,17 +53,16 @@ using Base.Threads,
     Zygote
 
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
-# using Optim, OptimizationOptimJL
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
 # using MLDatasets
 
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
 
-const nthd = nthreads(:default)
-if nthd > 1 && nthd > BLAS.get_num_threads()
-    BLAS.set_num_threads(nthd)
-end
+# const nthd = nthreads(:default)
+# if nthd > 1 && nthd > BLAS.get_num_threads()
+#     BLAS.set_num_threads(nthd)
+# end
 
 # Enzyme.API.runtimeActivity!(true)
 
@@ -117,7 +118,7 @@ const sol_kwargs_2 = Dict(
     :abstol => eps_sq[1],
     :maxiters => typemax(Int32),
 )
-const optimizers = Any[Optimisers.Lion(),]
+const optimizers = Any[Lion(),]
 
 if !isempty(ARGS) && length(ARGS) >= 2
     const use_gpu_nn_train = ARGS[1] == "train_gpu"
