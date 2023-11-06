@@ -588,6 +588,7 @@ end
     fulld = copy(d)
 
     data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    merge!(fulld, data2)
     gx = data2["gt_x"]
     ri = data2["res_img"]
     new_ri = imfilter(ri, Kernel.Laplacian())
