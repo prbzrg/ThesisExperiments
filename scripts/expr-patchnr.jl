@@ -453,26 +453,171 @@ end
     fulld
 end
 
+@inline function makesim_findpostp(d::Dict)
+    @unpack n_iter_rec,
+    sel_a,
+    sel_pol,
+    n_t_imgs,
+    p_s,
+    naug_rate,
+    rnode_reg,
+    steer_reg,
+    ode_reltol,
+    tspan_end,
+    n_hidden_rate,
+    arch,
+    back,
+    have_bias,
+    n_epochs,
+    batch_size = d
+
+    d2 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => sel_a,
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    fulld = copy(d)
+
+    data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    gx = data2["gt_x"]
+    ri = data2["res_img"]
+    new_ri = imfilter(ri, Kernel.Laplacian())
+
+    function fopt(x)
+        -assess_ssim((only(x) * new_ri) + ri, gx)
+    end
+
+    opt = only(optimizers)
+    optfunc = OptimizationFunction(fopt, AutoForwardDiff())
+    optprob = OptimizationProblem(optfunc, one(Float32))
+    res = solve(optprob, opt; maxiters = 600)
+    fulld["scl_v"] = only(res.u)
+
+    fulld
+end
+
+@inline function makesim_postp(d::Dict)
+    @unpack n_iter_rec,
+    sel_a,
+    sel_pol,
+    n_t_imgs,
+    p_s,
+    naug_rate,
+    rnode_reg,
+    steer_reg,
+    ode_reltol,
+    tspan_end,
+    n_hidden_rate,
+    arch,
+    back,
+    have_bias,
+    n_epochs,
+    batch_size = d
+
+    d2 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => sel_a,
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    d3 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => "min",
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    fulld = copy(d)
+
+    data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    ri = data2["res_img"]
+    new_ri = imfilter(ri, Kernel.Laplacian())
+
+    data3, fn3 = produce_or_load(makesim_findpostp, d3, datadir("findpostp-sims"))
+    scl_v = data3["scl_v"]
+    postp_img = (scl_v * new_ri) + ri
+    fulld["postp_img"] = postp_img
+
+    fulld
+end
+
 if use_thrds
     @sync for d in dicts
         @spawn if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+                produce_or_load(makesim_postp, d, datadir("postp-sims"))
             end
         else
-            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            produce_or_load(makesim_postp, d, datadir("postp-sims"))
         end
     end
 else
     for d in dicts
         if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+                produce_or_load(makesim_postp, d, datadir("postp-sims"))
             end
         else
-            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            produce_or_load(makesim_postp, d, datadir("postp-sims"))
         end
     end
 end
 
-df = collect_results(datadir("patchnr-sims"))
+df = collect_results(datadir("postp-sims"))
