@@ -22,9 +22,9 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8, 10],
     "naug_rate" => 1,
     # "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[4],
+    "rnode_reg" => eps_sq[3],
     "steer_reg" => eps_sq[4],
-    "ode_reltol" => eps_sq[3],
+    "ode_reltol" => eps_sq[2],
     "tspan_end" => 1,
 
     # nn
@@ -504,16 +504,26 @@ end
     new_ri = imfilter(ri, Kernel.Laplacian())
 
     @inline function fopt(x)
-        -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
-        assess_psnr((only(x) * new_ri) + ri, gx)
+        -assess_ssim((only(x) * new_ri) + ri, gx)
     end
+
+    # @inline function fopt(x)
+    #     -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
+    #     assess_psnr((only(x) * new_ri) + ri, gx)
+    # end
 
     opt = NewtonTrustRegion()
     # opt = only(optimizers)
     optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
     optprob = OptimizationProblem(optfunc, ones(Float32, 1))
-    res = solve(optprob, opt; maxiters = 600)
-    fulld["scl_v"] = only(res.u)
+    res = solve(optprob, opt; maxiters = 10000)
+
+    opt2 = Newton()
+    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
+    optprob = OptimizationProblem(optfunc, res.u)
+    res2 = solve(optprob, opt2; maxiters = 10000)
+
+    fulld["scl_v"] = only(res2.u)
 
     fulld
 end
