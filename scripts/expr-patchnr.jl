@@ -6,7 +6,8 @@ include(scriptsdir("import_pkgs.jl"))
 const allparams = Dict(
     # test
     "n_iter_rec" => 300,
-    "sel_a" => vcat(["min", "max"], 1:128),
+    "sel_a" => "min",
+    # "sel_a" => vcat(["min", "max"], 1:128),
 
     # train
     # "sel_pol" => nothing,
@@ -22,9 +23,9 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8, 10],
     "naug_rate" => 1,
     # "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[5],
-    "steer_reg" => eps_sq[5],
-    "ode_reltol" => eps_sq[2],
+    "rnode_reg" => eps_sq[4:5],
+    "steer_reg" => eps_sq[4:5],
+    "ode_reltol" => eps_sq[3],
     "tspan_end" => 1,
 
     # nn
