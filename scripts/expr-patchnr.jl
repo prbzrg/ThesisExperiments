@@ -212,7 +212,7 @@ end
             resource = CUDALibs(),
             steer_rate = steer_reg,
             sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_medium,
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
                 (reltol = ode_reltol,),
             ),
             # sol_kwargs,
@@ -230,7 +230,7 @@ end
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
             sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_medium,
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
                 (reltol = ode_reltol,),
             ),
             # sol_kwargs,
@@ -385,7 +385,7 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_medium,
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
                 (reltol = ode_reltol,),
             ),
             # sol_kwargs,
@@ -400,7 +400,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_medium,
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
                 (reltol = ode_reltol,),
             ),
             # sol_kwargs,
