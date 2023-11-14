@@ -23,8 +23,8 @@ const allparams = Dict(
     # "p_s" => [4, 6, 8, 10],
     "naug_rate" => 1,
     # "naug_rate" => 1 + (1 / 36),
-    "rnode_reg" => eps_sq[4:5],
-    "steer_reg" => eps_sq[4:5],
+    "rnode_reg" => eps_sq[4],
+    "steer_reg" => eps_sq[5],
     "ode_reltol" => eps_sq[3],
     "tspan_end" => 1,
 
@@ -39,11 +39,11 @@ const allparams = Dict(
     # "have_bias" => true,
 
     # ICNFModel
-    "n_epochs" => 50,
-    # "n_epochs" => 9,
     # "n_epochs" => 50,
-    # "batch_size" => 2^10,
-    "batch_size" => 2^12,
+    "n_epochs" => 9,
+    # "n_epochs" => 50,
+    "batch_size" => 2^10,
+    # "batch_size" => 2^12,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
