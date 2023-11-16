@@ -29,9 +29,9 @@ const allparams = Dict(
     "tspan_end" => 1,
 
     # nn
-    "n_hidden_rate" => 0,
-    # "arch" => "Dense-ML",
-    "arch" => "Dense",
+    "n_hidden_rate" => 2,
+    "arch" => "Dense-ML",
+    # "arch" => "Dense",
     # "back" => "Lux",
     "back" => "Flux",
     # "have_bias" => nothing,
