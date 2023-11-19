@@ -521,7 +521,7 @@ version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
 deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "Distributions", "DistributionsAD", "FillArrays", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "PackageExtensionCompat", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "6ddb28cd6d5d4055658af14afb616964b8e63db6"
+git-tree-sha1 = "761ca7a9b6a9668288da8d482ad7f1cb5500de58"
 repo-rev = "main"
 repo-url = "https://github.com/impICNF/ContinuousNormalizingFlows.jl.git"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
@@ -529,7 +529,7 @@ version = "0.15.1"
 weakdeps = ["CUDA"]
 
     [deps.ContinuousNormalizingFlows.extensions]
-    CUDAExtICNF = "CUDA"
+    ContinuousNormalizingFlowsCUDAExt = "CUDA"
 
 [[deps.Contour]]
 git-tree-sha1 = "d05d9e7b7aedff4e5b51a029dced05cfb6125781"
@@ -1686,9 +1686,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LinearAlgebraX]]
 deps = ["LinearAlgebra", "Mods", "Permutations", "Primes", "SimplePolynomials"]
-git-tree-sha1 = "558a338f1eeabe933f9c2d4052aa7c2c707c3d52"
+git-tree-sha1 = "4ef47ebed04355b50836d4844eabb9d357c1cc8f"
 uuid = "9b3f67b0-2d00-526e-9884-9e4938f8fb88"
-version = "0.1.12"
+version = "0.1.13"
 
 [[deps.LinearSolve]]
 deps = ["ArrayInterface", "ConcreteStructs", "DocStringExtensions", "EnumX", "EnzymeCore", "FastLapackInterface", "GPUArraysCore", "InteractiveUtils", "KLU", "Krylov", "Libdl", "LinearAlgebra", "MKL_jll", "PrecompileTools", "Preferences", "RecursiveFactorization", "Reexport", "Requires", "SciMLBase", "SciMLOperators", "Setfield", "SparseArrays", "Sparspak", "UnPack"]
