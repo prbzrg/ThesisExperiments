@@ -504,14 +504,14 @@ end
     ri = data2["res_img"]
     new_ri = imfilter(ri, Kernel.Laplacian())
 
-    @inline function fopt(x)
-        -assess_ssim((only(x) * new_ri) + ri, gx)
-    end
-
     # @inline function fopt(x)
-    #     -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
-    #     assess_psnr((only(x) * new_ri) + ri, gx)
+    #     -assess_ssim((only(x) * new_ri) + ri, gx)
     # end
+
+    @inline function fopt(x)
+        -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
+        assess_psnr((only(x) * new_ri) + ri, gx)
+    end
 
     opt = NewtonTrustRegion()
     # opt = only(optimizers)
