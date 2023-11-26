@@ -7,7 +7,7 @@ const allparams = Dict(
     # test
     "n_iter_rec" => 300,
     # "sel_a" => "min",
-    "sel_a" => vcat(["min", "max"], 1:128),
+    "sel_a" => vcat(["min", "max"], 1:24),
 
     # train
     # "sel_pol" => nothing,
