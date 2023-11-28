@@ -454,81 +454,6 @@ end
     fulld
 end
 
-@inline function makesim_findpostp(d::Dict)
-    @unpack n_iter_rec,
-    sel_a,
-    sel_pol,
-    n_t_imgs,
-    p_s,
-    naug_rate,
-    rnode_reg,
-    steer_reg,
-    ode_reltol,
-    tspan_end,
-    n_hidden_rate,
-    arch,
-    back,
-    have_bias,
-    n_epochs,
-    batch_size = d
-
-    d2 = Dict{String, Any}(
-        # test
-        "n_iter_rec" => n_iter_rec,
-        "sel_a" => sel_a,
-
-        # train
-        "sel_pol" => sel_pol,
-        "n_t_imgs" => n_t_imgs,
-        "p_s" => p_s,
-        "naug_rate" => naug_rate,
-        "rnode_reg" => rnode_reg,
-        "steer_reg" => steer_reg,
-        "ode_reltol" => ode_reltol,
-        "tspan_end" => tspan_end,
-
-        # nn
-        "n_hidden_rate" => n_hidden_rate,
-        "arch" => arch,
-        "back" => back,
-        "have_bias" => have_bias,
-
-        # ICNFModel
-        "n_epochs" => n_epochs,
-        "batch_size" => batch_size,
-    )
-    fulld = copy(d)
-
-    data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
-    gx = data2["gt_x"]
-    ri = data2["res_img"]
-    new_ri = imfilter(ri, Kernel.Laplacian())
-
-    @inline function fopt(x)
-        -assess_ssim((only(x) * new_ri) + ri, gx)
-    end
-
-    # @inline function fopt(x)
-    #     -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
-    #     assess_psnr((only(x) * new_ri) + ri, gx)
-    # end
-
-    opt = NewtonTrustRegion()
-    # opt = only(optimizers)
-    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
-    optprob = OptimizationProblem(optfunc, ones(Float32, 1))
-    res = solve(optprob, opt; maxiters = 10000)
-
-    opt2 = Newton()
-    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
-    optprob = OptimizationProblem(optfunc, res.u)
-    res2 = solve(optprob, opt2; maxiters = 10000)
-
-    fulld["scl_v"] = only(res2.u)
-
-    fulld
-end
-
 @inline function makesim_postp(d::Dict)
     @unpack n_iter_rec,
     sel_a,
@@ -572,48 +497,45 @@ end
         "n_epochs" => n_epochs,
         "batch_size" => batch_size,
     )
-    d3 = Dict{String, Any}(
-        # test
-        "n_iter_rec" => n_iter_rec,
-        "sel_a" => "min",
-
-        # train
-        "sel_pol" => sel_pol,
-        "n_t_imgs" => n_t_imgs,
-        "p_s" => p_s,
-        "naug_rate" => naug_rate,
-        "rnode_reg" => rnode_reg,
-        "steer_reg" => steer_reg,
-        "ode_reltol" => ode_reltol,
-        "tspan_end" => tspan_end,
-
-        # nn
-        "n_hidden_rate" => n_hidden_rate,
-        "arch" => arch,
-        "back" => back,
-        "have_bias" => have_bias,
-
-        # ICNFModel
-        "n_epochs" => n_epochs,
-        "batch_size" => batch_size,
-    )
     fulld = copy(d)
 
     data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
     merge!(fulld, data2)
     gx = data2["gt_x"]
     ri = data2["res_img"]
-    new_ri = imfilter(ri, Kernel.Laplacian())
+    fbp_ = data2["fbp_img"]
 
-    data3, fn3 = produce_or_load(makesim_findpostp, d3, datadir("findpostp-sims"))
-    scl_v = data3["scl_v"]
-    fulld["scl_v"] = scl_v
+    function fcap(x, mx, mn)
+        if x > one(x)
+            x > 1.1 && @show x
+            mx
+        elseif x < zero(x)
+            x < -0.1 && @show x
+            mn
+        else
+            x
+        end
+    end
 
-    postp_img = (scl_v * new_ri) + ri
-    fulld["postp_img"] = postp_img
-    fulld["pp_psnr"] = assess_psnr(postp_img, gx)
-    fulld["pp_ssim"] = assess_ssim(postp_img, gx)
-    fulld["pp_msssim"] = assess_msssim(postp_img, gx)
+    gx2 = convert.(Gray, fcap.(gx, maximum(filter(<(1), gx)), minimum(filter(>(0), gx))))
+    ri2 = convert.(Gray, fcap.(ri, maximum(filter(<(1), ri)), minimum(filter(>(0), ri))))
+    fbp2_ =
+        convert.(
+            Gray,
+            fcap.(fbp_, maximum(filter(<(1), fbp_)), minimum(filter(>(0), fbp_))),
+        )
+
+    fulld["post_gt_x"] = gx2
+    fulld["post_res_img"] = ri2
+    fulld["post_fbp_img"] = fbp2_
+
+    fulld["post_a_psnr"] = assess_psnr(ri2, gx2)
+    fulld["post_a_ssim"] = assess_ssim(ri2, gx2)
+    fulld["post_a_msssim"] = assess_msssim(ri2, gx2)
+
+    fulld["post_fbp_a_psnr"] = assess_psnr(fbp2_, gx2)
+    fulld["post_fbp_a_ssim"] = assess_ssim(fbp2_, gx2)
+    fulld["post_fbp_a_msssim"] = assess_msssim(fbp2_, gx2)
 
     fulld
 end

@@ -6,7 +6,8 @@ include(scriptsdir("import_pkgs.jl"))
 const allparams = Dict(
     # test
     "n_iter_rec" => 300,
-    "sel_a" => vcat(["min", "max"], 1:128),
+    # "sel_a" => "min",
+    "sel_a" => vcat(["min", "max"], 1:24),
 
     # train
     # "sel_pol" => nothing,
@@ -20,27 +21,27 @@ const allparams = Dict(
     "n_t_imgs" => 6,
     "p_s" => 6,
     # "p_s" => [4, 6, 8, 10],
-    # "naug_rate" => 1,
-    "naug_rate" => 1 + (1 / 36),
+    "naug_rate" => 1,
+    # "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[4],
     "steer_reg" => eps_sq[5],
+    "ode_reltol" => eps_sq[3],
+    "tspan_end" => 1,
 
     # nn
     "n_hidden_rate" => 0,
     # "arch" => "Dense-ML",
     "arch" => "Dense",
-    # "back" => "Lux",
-    "back" => "Flux",
-    "have_bias" => nothing,
-    # "have_bias" => false,
+    "back" => "Lux",
+    # "back" => "Flux",
+    # "have_bias" => nothing,
+    "have_bias" => false,
     # "have_bias" => true,
 
-    # construct
-    "tspan_end" => 12,
-
     # ICNFModel
-    # "n_epochs" => 9,
     "n_epochs" => 50,
+    # "n_epochs" => 9,
+    # "n_epochs" => 50,
     # "batch_size" => 2^10,
     "batch_size" => 2^12,
 )
@@ -74,11 +75,12 @@ end
     naug_rate,
     rnode_reg,
     steer_reg,
+    ode_reltol,
+    tspan_end,
     n_hidden_rate,
     arch,
     back,
     have_bias,
-    tspan_end,
     n_epochs,
     batch_size = d
 
@@ -209,8 +211,12 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             steer_rate = steer_reg,
-            sol_kwargs,
-            inplace = true,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
+                (reltol = ode_reltol,),
+            ),
+            # sol_kwargs,
+            # inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -223,8 +229,12 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
-            sol_kwargs,
-            inplace = true,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
+                (reltol = ode_reltol,),
+            ),
+            # sol_kwargs,
+            # inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -254,11 +264,12 @@ end
     naug_rate,
     rnode_reg,
     steer_reg,
+    ode_reltol,
+    tspan_end,
     n_hidden_rate,
     arch,
     back,
     have_bias,
-    tspan_end,
     n_epochs,
     batch_size = d
 
@@ -271,15 +282,14 @@ end
         "naug_rate" => naug_rate,
         "rnode_reg" => rnode_reg,
         "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
 
         # nn
         "n_hidden_rate" => n_hidden_rate,
         "arch" => arch,
         "back" => back,
         "have_bias" => have_bias,
-
-        # construct
-        "tspan_end" => tspan_end,
 
         # ICNFModel
         "n_epochs" => n_epochs,
@@ -374,8 +384,12 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs,
-            inplace = true,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
+                (reltol = ode_reltol,),
+            ),
+            # sol_kwargs,
+            # inplace = true,
         )
     else
         icnf = construct(
@@ -385,8 +399,12 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs,
-            inplace = true,
+            sol_kwargs = merge(
+                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
+                (reltol = ode_reltol,),
+            ),
+            # sol_kwargs,
+            # inplace = true,
         )
     end
 
@@ -436,26 +454,190 @@ end
     fulld
 end
 
+@inline function makesim_findpostp(d::Dict)
+    @unpack n_iter_rec,
+    sel_a,
+    sel_pol,
+    n_t_imgs,
+    p_s,
+    naug_rate,
+    rnode_reg,
+    steer_reg,
+    ode_reltol,
+    tspan_end,
+    n_hidden_rate,
+    arch,
+    back,
+    have_bias,
+    n_epochs,
+    batch_size = d
+
+    d2 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => sel_a,
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    fulld = copy(d)
+
+    data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    gx = data2["gt_x"]
+    ri = data2["res_img"]
+    new_ri = imfilter(ri, Kernel.Laplacian())
+
+    @inline function fopt(x)
+        -assess_ssim((only(x) * new_ri) + ri, gx)
+    end
+
+    # @inline function fopt(x)
+    #     -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
+    #     assess_psnr((only(x) * new_ri) + ri, gx)
+    # end
+
+    opt = NewtonTrustRegion()
+    # opt = only(optimizers)
+    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
+    optprob = OptimizationProblem(optfunc, ones(Float32, 1))
+    res = solve(optprob, opt; maxiters = 10000)
+
+    opt2 = Newton()
+    optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
+    optprob = OptimizationProblem(optfunc, res.u)
+    res2 = solve(optprob, opt2; maxiters = 10000)
+
+    fulld["scl_v"] = only(res2.u)
+
+    fulld
+end
+
+@inline function makesim_postp(d::Dict)
+    @unpack n_iter_rec,
+    sel_a,
+    sel_pol,
+    n_t_imgs,
+    p_s,
+    naug_rate,
+    rnode_reg,
+    steer_reg,
+    ode_reltol,
+    tspan_end,
+    n_hidden_rate,
+    arch,
+    back,
+    have_bias,
+    n_epochs,
+    batch_size = d
+
+    d2 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => sel_a,
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    d3 = Dict{String, Any}(
+        # test
+        "n_iter_rec" => n_iter_rec,
+        "sel_a" => "min",
+
+        # train
+        "sel_pol" => sel_pol,
+        "n_t_imgs" => n_t_imgs,
+        "p_s" => p_s,
+        "naug_rate" => naug_rate,
+        "rnode_reg" => rnode_reg,
+        "steer_reg" => steer_reg,
+        "ode_reltol" => ode_reltol,
+        "tspan_end" => tspan_end,
+
+        # nn
+        "n_hidden_rate" => n_hidden_rate,
+        "arch" => arch,
+        "back" => back,
+        "have_bias" => have_bias,
+
+        # ICNFModel
+        "n_epochs" => n_epochs,
+        "batch_size" => batch_size,
+    )
+    fulld = copy(d)
+
+    data2, fn2 = produce_or_load(makesim_expr, d2, datadir("patchnr-sims"))
+    merge!(fulld, data2)
+    gx = data2["gt_x"]
+    ri = data2["res_img"]
+    new_ri = imfilter(ri, Kernel.Laplacian())
+
+    data3, fn3 = produce_or_load(makesim_findpostp, d3, datadir("findpostp-sims"))
+    scl_v = data3["scl_v"]
+    fulld["scl_v"] = scl_v
+
+    postp_img = (scl_v * new_ri) + ri
+    fulld["postp_img"] = postp_img
+    fulld["pp_psnr"] = assess_psnr(postp_img, gx)
+    fulld["pp_ssim"] = assess_ssim(postp_img, gx)
+    fulld["pp_msssim"] = assess_msssim(postp_img, gx)
+
+    fulld
+end
+
 if use_thrds
     @sync for d in dicts
         @spawn if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+                produce_or_load(makesim_postp, d, datadir("postp-sims"))
             end
         else
-            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            produce_or_load(makesim_postp, d, datadir("postp-sims"))
         end
     end
 else
     for d in dicts
         if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+                produce_or_load(makesim_postp, d, datadir("postp-sims"))
             end
         else
-            produce_or_load(makesim_expr, d, datadir("patchnr-sims"))
+            produce_or_load(makesim_postp, d, datadir("postp-sims"))
         end
     end
 end
 
-df = collect_results(datadir("patchnr-sims"))
+df = collect_results(datadir("postp-sims"))
