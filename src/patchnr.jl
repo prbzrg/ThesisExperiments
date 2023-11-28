@@ -19,7 +19,7 @@ const lmbd_ps = Dict(4 => 1600.0f0, 6 => 700.0f0, 8 => 400.0f0, 10 => 250.0f0)
     radon_transform_new(prep_img_radon(x), range(0, π; length = 38), -256:256)
 end
 
-mutable struct PatchNR
+@concrete struct PatchNR
     icnf_f::Function
     n_pts::Integer
     p_s::Integer

@@ -12,6 +12,7 @@ using MKL
 using Base.Threads,
     BenchmarkTools,
     Colors,
+    ConcreteStructs,
     ContinuousNormalizingFlows,
     CSV,
     CairoMakie,
