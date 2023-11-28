@@ -158,46 +158,46 @@ end
         else
             error("Not Imp")
         end
-    elseif back == "Flux"
-        if use_gpu_nn_train
-            if arch == "Dense"
-                nn = FluxCompatLayer(
-                    Flux.gpu(
-                        Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
-                    ),
-                )
-            elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
-                    Flux.gpu(
-                        Flux.f32(
-                            Flux.Chain(
-                                Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
-                                Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
-                            ),
-                        ),
-                    ),
-                )
-            else
-                error("Not Imp")
-            end
-        else
-            if arch == "Dense"
-                nn = FluxCompatLayer(
-                    Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
-                )
-            elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
-                    Flux.f32(
-                        Flux.Chain(
-                            Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
-                            Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
-                        ),
-                    ),
-                )
-            else
-                error("Not Imp")
-            end
-        end
+        # elseif back == "Flux"
+        #     if use_gpu_nn_train
+        #         if arch == "Dense"
+        #             nn = FluxCompatLayer(
+        #                 Flux.gpu(
+        #                     Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+        #                 ),
+        #             )
+        #         elseif arch == "Dense-ML"
+        #             nn = FluxCompatLayer(
+        #                 Flux.gpu(
+        #                     Flux.f32(
+        #                         Flux.Chain(
+        #                             Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+        #                             Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
+        #                         ),
+        #                     ),
+        #                 ),
+        #             )
+        #         else
+        #             error("Not Imp")
+        #         end
+        #     else
+        #         if arch == "Dense"
+        #             nn = FluxCompatLayer(
+        #                 Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+        #             )
+        #         elseif arch == "Dense-ML"
+        #             nn = FluxCompatLayer(
+        #                 Flux.f32(
+        #                     Flux.Chain(
+        #                         Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+        #                         Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
+        #                     ),
+        #                 ),
+        #             )
+        #         else
+        #             error("Not Imp")
+        #         end
+        #     end
     else
         error("Not Imp")
     end
@@ -332,46 +332,46 @@ end
         else
             error("Not Imp")
         end
-    elseif back == "Flux"
-        if use_gpu_nn_test
-            if arch == "Dense"
-                nn = FluxCompatLayer(
-                    Flux.gpu(
-                        Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
-                    ),
-                )
-            elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
-                    Flux.gpu(
-                        Flux.f32(
-                            Flux.Chain(
-                                Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
-                                Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
-                            ),
-                        ),
-                    ),
-                )
-            else
-                error("Not Imp")
-            end
-        else
-            if arch == "Dense"
-                nn = FluxCompatLayer(
-                    Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
-                )
-            elseif arch == "Dense-ML"
-                nn = FluxCompatLayer(
-                    Flux.f32(
-                        Flux.Chain(
-                            Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
-                            Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
-                        ),
-                    ),
-                )
-            else
-                error("Not Imp")
-            end
-        end
+        # elseif back == "Flux"
+        #     if use_gpu_nn_test
+        #         if arch == "Dense"
+        #             nn = FluxCompatLayer(
+        #                 Flux.gpu(
+        #                     Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+        #                 ),
+        #             )
+        #         elseif arch == "Dense-ML"
+        #             nn = FluxCompatLayer(
+        #                 Flux.gpu(
+        #                     Flux.f32(
+        #                         Flux.Chain(
+        #                             Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+        #                             Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
+        #                         ),
+        #                     ),
+        #                 ),
+        #             )
+        #         else
+        #             error("Not Imp")
+        #         end
+        #     else
+        #         if arch == "Dense"
+        #             nn = FluxCompatLayer(
+        #                 Flux.f32(Flux.Dense(n_in_out => n_in_out, tanh; bias = have_bias)),
+        #             )
+        #         elseif arch == "Dense-ML"
+        #             nn = FluxCompatLayer(
+        #                 Flux.f32(
+        #                     Flux.Chain(
+        #                         Flux.Dense(n_in_out => n_hidden, tanh; bias = have_bias),
+        #                         Flux.Dense(n_hidden => n_in_out, tanh; bias = have_bias),
+        #                     ),
+        #                 ),
+        #             )
+        #         else
+        #             error("Not Imp")
+        #         end
+        #     end
     else
         error("Not Imp")
     end
