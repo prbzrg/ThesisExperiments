@@ -540,26 +540,81 @@ end
     fulld
 end
 
+@inline function makesim_export_imgs(d::Dict)
+    fulld = copy(d)
+    d2 = copy(d)
+
+    data2, fn2 = produce_or_load(makesim_postp, d2, datadir("postp-sims"))
+    merge!(fulld, data2)
+
+    res_sz = (362 * 2 * 3, 362 * 2 * 2)
+    r_dgt = 4
+    nb = 512
+
+    f = Figure(; resolution = res_sz)
+
+    ax1 = Makie.Axis(
+        f[1, 1];
+        title = "Filtered Back-projection",
+        subtitle = "PSNR: $(round(data2["post_fbp_a_psnr"]; digits=r_dgt)), SSIM: $(round(data2["post_fbp_a_ssim"]; digits=r_dgt)), MSSSIM: $(round(data2["post_fbp_a_msssim"]; digits=r_dgt))",
+    )
+    image!(ax1, rotr90(data2["post_fbp_img"]))
+
+    ax21 = Makie.Axis(f[2, 1]; title = "Histogram of Filtered Back-projection")
+    hist!(ax21, convert.(Float32, vec(rotr90(data2["post_fbp_img"]))); bins = nb)
+
+    ax2 = Makie.Axis(f[1, 2]; title = "Ground Truth")
+    image!(ax2, rotr90(data2["post_gt_x"]))
+
+    ax22 = Makie.Axis(f[2, 2]; title = "Histogram of Ground Truth")
+    hist!(ax22, convert.(Float32, vec(rotr90(data2["post_gt_x"]))); bins = nb)
+
+    ax3 = Makie.Axis(
+        f[1, 3];
+        title = "Result",
+        subtitle = "PSNR: $(round(data2["post_a_psnr"]; digits=r_dgt)), SSIM: $(round(data2["post_a_ssim"]; digits=r_dgt)), MSSSIM: $(round(data2["post_a_msssim"]; digits=r_dgt))",
+    )
+    image!(ax3, rotr90(data2["post_res_img"]))
+
+    ax23 = Makie.Axis(f[2, 3]; title = "Histogram of Result")
+    hist!(ax23, convert.(Float32, vec(rotr90(data2["post_res_img"]))); bins = nb)
+
+    save(plotsdir("patchnr-sims-imgs", savename(d, "svg")), f)
+    save(plotsdir("patchnr-sims-imgs", savename(d, "png")), f)
+
+    delete!(fulld, "gt_x")
+    delete!(fulld, "fbp_img")
+    delete!(fulld, "res_img")
+    delete!(fulld, "post_gt_x")
+    delete!(fulld, "post_fbp_img")
+    delete!(fulld, "post_res_img")
+
+    delete!(fulld, "time_obj")
+
+    fulld
+end
+
 if use_thrds
     @sync for d in dicts
         @spawn if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_postp, d, datadir("postp-sims"))
+                produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
             end
         else
-            produce_or_load(makesim_postp, d, datadir("postp-sims"))
+            produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
         end
     end
 else
     for d in dicts
         if use_gpu_nn_train || use_gpu_nn_test
             CUDA.allowscalar() do
-                produce_or_load(makesim_postp, d, datadir("postp-sims"))
+                produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
             end
         else
-            produce_or_load(makesim_postp, d, datadir("postp-sims"))
+            produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
         end
     end
 end
 
-df = collect_results(datadir("postp-sims"))
+df = collect_results(datadir("export-imgs-sims"))
+CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
