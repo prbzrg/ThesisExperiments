@@ -25,7 +25,7 @@ const allparams = Dict(
     # "naug_rate" => 1 + (1 / 36),
     "rnode_reg" => eps_sq[3],
     "steer_reg" => eps_sq[4],
-    "ode_reltol" => eps_sq[2],
+    "ode_reltol" => eps_sq[3],
     "tspan_end" => 13,
 
     # nn
