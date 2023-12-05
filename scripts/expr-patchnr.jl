@@ -594,27 +594,34 @@ end
     fulld
 end
 
-if use_thrds
-    @sync for d in dicts
-        @spawn if use_gpu_nn_train || use_gpu_nn_test
-            CUDA.allowscalar() do
+function main()
+    if use_thrds
+        @sync for d in dicts
+            @spawn if use_gpu_nn_train || use_gpu_nn_test
+                CUDA.allowscalar() do
+                    produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
+                end
+            else
                 produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
             end
-        else
-            produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
         end
-    end
-else
-    for d in dicts
-        if use_gpu_nn_train || use_gpu_nn_test
-            CUDA.allowscalar() do
+    else
+        for d in dicts
+            if use_gpu_nn_train || use_gpu_nn_test
+                CUDA.allowscalar() do
+                    produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
+                    df = collect_results(datadir("export-imgs-sims"))
+                    CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
+                end
+            else
                 produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
+                df = collect_results(datadir("export-imgs-sims"))
+                CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
             end
-        else
-            produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
         end
     end
+    df = collect_results(datadir("export-imgs-sims"))
+    CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
 end
 
-df = collect_results(datadir("export-imgs-sims"))
-CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
+main()
