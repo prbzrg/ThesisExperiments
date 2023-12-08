@@ -440,6 +440,9 @@ end
     s_point_c = copy(s_point)
     u_init = vec(s_point_c)
     # u_init = rand(Float32, 362*362)
+    if use_gpu_nn_test
+        u_init = gdev(u_init)
+    end
 
     opt = only(optimizers)
 

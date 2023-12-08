@@ -104,17 +104,17 @@ end
 #     pt_1st
 # end
 
-@inline function recn_loss_pt1(app_icnf::PatchNR, x, y)
+@inline function recn_loss_pt1(app_icnf::PatchNR, x, y, use_gpu = use_gpu_nn_test)
+    if use_gpu
+        x = cdev(x)
+    end
     x = reshape(rotl90(reshape(x, (362, 362))), (1, 1, 362, 362))
     y = reshape(rotl90(y), (1, 1, 1000, 513))
     first_part(x, y)
 end
 
-@inline function recn_loss_pt2(app_icnf::PatchNR, x, y, use_gpu = use_gpu_nn_test)
+@inline function recn_loss_pt2(app_icnf::PatchNR, x, y)
     new_pts = nr_patchs(app_icnf, x)
-    if use_gpu
-        new_pts = gdev(new_pts)
-    end
     # app_icnf.λ * mean(app_icnf.icnf_f.(eachcol(new_pts)))
     app_icnf.λ * app_icnf.icnf_f(new_pts)
 end
@@ -151,10 +151,17 @@ end
 #     ReverseDiff.gradient(x -> recn_loss_pt1(ptchnr, x, obs_y), ps)
 # end
 
-@inline function recn_loss_pt1_grad(ptchnr, ps, obs_y)
+@inline function recn_loss_pt1_grad(ptchnr, ps, obs_y, use_gpu = use_gpu_nn_test)
+    if use_gpu
+        ps = cdev(ps)
+    end
     ps = reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362))
     obs_y = reshape(rotl90(obs_y), (1, 1, 1000, 513))
-    vec(rotr90(grad_first_part(ps, obs_y)[1, 1, :, :]))
+    res = vec(rotr90(grad_first_part(ps, obs_y)[1, 1, :, :]))
+    if use_gpu
+        res = gdev(res)
+    end
+    res
 end
 
 @inline function recn_loss_pt2_grad(ptchnr, ps, obs_y)
