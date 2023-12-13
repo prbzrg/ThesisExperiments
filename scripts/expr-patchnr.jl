@@ -3,7 +3,7 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
-const allparams = Dict(
+const allparams1 = Dict(
     # test
     "n_iter_rec" => 300,
     # "sel_a" => "min",
@@ -45,7 +45,52 @@ const allparams = Dict(
     # "batch_size" => 2^10,
     "batch_size" => 2^12,
 )
-const dicts = convert.(Dict{String, Any}, dict_list(allparams))
+const dicts1 = convert.(Dict{String, Any}, dict_list(allparams1))
+
+const allparams2 = Dict(
+    # test
+    "n_iter_rec" => 300,
+    # "sel_a" => "min",
+    "sel_a" => vcat(["min", "max"], 1:24),
+
+    # train
+    # "sel_pol" => nothing,
+    # "sel_pol" => "total",
+    # "sel_pol" => "random",
+    # "sel_pol" => "one_min",
+    # "sel_pol" => "one_max",
+    # "sel_pol" => "equ_d",
+    "sel_pol" => "min_max",
+    # "n_t_imgs" => 0,
+    "n_t_imgs" => 6,
+    "p_s" => 6,
+    # "p_s" => [4, 6, 8, 10],
+    "naug_rate" => 1,
+    # "naug_rate" => 1 + (1 / 36),
+    "rnode_reg" => eps_sq[4],
+    "steer_reg" => eps_sq[5],
+    "ode_reltol" => eps_sq[3],
+    "tspan_end" => 1,
+
+    # nn
+    "n_hidden_rate" => 0,
+    # "arch" => "Dense-ML",
+    "arch" => "Dense",
+    "back" => "Lux",
+    # "back" => "Flux",
+    # "have_bias" => nothing,
+    "have_bias" => false,
+    # "have_bias" => true,
+
+    # ICNFModel
+    "n_epochs" => 50,
+    # "n_epochs" => 9,
+    # "n_epochs" => 50,
+    # "batch_size" => 2^10,
+    "batch_size" => 2^12,
+)
+const dicts2 = convert.(Dict{String, Any}, dict_list(allparams2))
+const dicts = vcat(dicts1, dicts2)
 
 const gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
 const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
@@ -554,7 +599,7 @@ end
     r_dgt = 4
     nb = 512
 
-    f = Figure(; resolution = res_sz)
+    f = Figure(; size = res_sz)
 
     ax1 = Makie.Axis(
         f[1, 1];
@@ -613,13 +658,13 @@ function main()
             if use_gpu_nn_train || use_gpu_nn_test
                 CUDA.allowscalar() do
                     produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
-                    df = collect_results(datadir("export-imgs-sims"))
-                    CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
+                    # df = collect_results(datadir("export-imgs-sims"))
+                    # CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
                 end
             else
                 produce_or_load(makesim_export_imgs, d, datadir("export-imgs-sims"))
-                df = collect_results(datadir("export-imgs-sims"))
-                CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
+                # df = collect_results(datadir("export-imgs-sims"))
+                # CSV.write(plotsdir("patchnr-sims-csv", "patchnr-sims.csv"), df)
             end
         end
     end
