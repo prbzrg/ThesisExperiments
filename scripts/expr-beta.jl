@@ -12,8 +12,8 @@ const allparams = Dict(
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
     # train
-    "rnode_reg" => eps_sq[4],
-    "steer_reg" => eps_sq[5],
+    "rnode_reg" => eps_sq[3],
+    "steer_reg" => eps_sq[4],
     "nvld" => collect(1:3),
 
     # nn
@@ -21,9 +21,10 @@ const allparams = Dict(
     # "n_hidden_rate" => 2 .^ (0:3),
     "arch" => "Dense",
     # "arch" => ["Dense", "Dense-ML"],
+    "have_bias" => false,
 
     # construct
-    "tspan_end" => 12,
+    "tspan_end" => 13,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
@@ -54,6 +55,7 @@ end
     steer_reg,
     n_hidden_rate,
     arch,
+    have_bias,
     tspan_end,
     batch_size,
     n_epochs = d
@@ -69,15 +71,11 @@ end
     r = data["r"]
 
     if arch == "Dense"
-        nn = FluxCompatLayer(Flux.f32(Flux.Dense(nvars * 2 => nvars * 2, tanh)))
+        nn = Lux.Dense(nvars * 2 => nvars * 2, tanh; use_bias = have_bias)
     elseif arch == "Dense-ML"
-        nn = FluxCompatLayer(
-            Flux.f32(
-                Flux.Chain(
-                    Flux.Dense(nvars * 2 => n_hidden * 2, tanh),
-                    Flux.Dense(n_hidden * 2 => nvars * 2, tanh),
-                ),
-            ),
+        nn = Lux.Chain(
+            Lux.Dense(nvars * 2 => n_hidden * 2, tanh; use_bias = have_bias),
+            Lux.Dense(n_hidden * 2 => nvars * 2, tanh; use_bias = have_bias),
         )
     else
         error("Not Imp")
