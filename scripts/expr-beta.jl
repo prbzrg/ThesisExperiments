@@ -21,7 +21,7 @@ const allparams = Dict(
     # "n_hidden_rate" => 2 .^ (0:3),
     "arch" => "Dense",
     # "arch" => ["Dense", "Dense-ML"],
-    "have_bias" => false,
+    "have_bias" => true,
 
     # construct
     "tspan_end" => 13,
