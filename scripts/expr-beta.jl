@@ -7,7 +7,7 @@ const allparams = Dict(
     # data
     "nvars" => 1,
     # "nvars" => 2 .^ (0:3),
-    "n" => 2^10,
+    "n" => 2^12,
     # "n" => 2 .^ (7, 10, 13),
     "data_dist" => Beta{Float32}(2.0f0, 4.0f0),
 
@@ -28,8 +28,8 @@ const allparams = Dict(
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
-    "n_epochs" => 2^10,
-    "batch_size" => 2^7,
+    "n_epochs" => 2^9,
+    "batch_size" => 2^9,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
