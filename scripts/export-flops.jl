@@ -228,14 +228,28 @@ end
 
 opt = only(optimizers)
 
-recn_loss_pt2(ptchnr, u_init, obs_y)
-res1 = @count_ops recn_loss_pt2(ptchnr, u_init, obs_y)
-@show res1
-res2 = @gflops recn_loss_pt2(ptchnr, u_init, obs_y)
-@show res2
+my_cpu = 467.5 * 1.0e9
 
-recn_loss_pt2_grad(ptchnr, u_init, obs_y)
-res3 = @count_ops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
-@show res3
-res4 = @gflops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
-@show res4
+@belapsed _loss(u_init, ptchnr, obs_y)
+t_direct = @belapsed _loss(u_init, ptchnr, obs_y)
+@show t_direct
+t_direct_r = round((t_direct * my_cpu * 300) / 1.0e15; digits = 2)
+@show t_direct_r
+
+@belapsed _loss_gd_o(u_init, ptchnr, obs_y)
+t_direct_g = @belapsed _loss_gd_o(u_init, ptchnr, obs_y)
+@show t_direct_g
+t_direct_g_r = round((t_direct_g * my_cpu * 300) / 1.0e15; digits = 2)
+@show t_direct_g_r
+
+# recn_loss_pt2(ptchnr, u_init, obs_y)
+# res1 = @count_ops recn_loss_pt2(ptchnr, u_init, obs_y)
+# @show res1
+# res2 = @gflops recn_loss_pt2(ptchnr, u_init, obs_y)
+# @show res2
+
+# recn_loss_pt2_grad(ptchnr, u_init, obs_y)
+# res3 = @count_ops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
+# @show res3
+# res4 = @gflops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
+# @show res4
