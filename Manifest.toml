@@ -2,7 +2,7 @@
 
 julia_version = "1.9.4"
 manifest_format = "2.0"
-project_hash = "f14487b2b79feaf0cd8a51b1ebd524731c61e7cb"
+project_hash = "d4e9d0fe379b9583f7c2a3d16a8a485d6d563aac"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "332e5d7baeff8497b923b730b994fa480601efc7"
@@ -1013,6 +1013,12 @@ version = "0.4.5"
 [[deps.Future]]
 deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
+
+[[deps.GFlops]]
+deps = ["BenchmarkTools", "Cassette", "InteractiveUtils", "PrettyTables", "Printf", "Statistics"]
+git-tree-sha1 = "a54afbb533ad1929d5af11b74f6e34f542abb5bd"
+uuid = "2ea8233c-34d4-5acc-88b4-02f326385bcc"
+version = "0.1.7"
 
 [[deps.GPUArrays]]
 deps = ["Adapt", "GPUArraysCore", "LLVM", "LinearAlgebra", "Printf", "Random", "Reexport", "Serialization", "Statistics"]

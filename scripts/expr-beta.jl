@@ -21,15 +21,15 @@ const allparams = Dict(
     # "n_hidden_rate" => 2 .^ (0:3),
     "arch" => "Dense",
     # "arch" => ["Dense", "Dense-ML"],
-    "have_bias" => true,
+    "have_bias" => false,
 
     # construct
     "tspan_end" => 13,
     # "tspan_end" => 2 .^ (0:4),
 
     # ICNFModel
-    "n_epochs" => 2^9,
-    "batch_size" => 2^9,
+    "n_epochs" => 2^10,
+    "batch_size" => 2^7,
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
