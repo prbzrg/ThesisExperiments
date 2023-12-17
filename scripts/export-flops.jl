@@ -253,3 +253,9 @@ t_direct_g_r = round((t_direct_g * my_cpu * 300) / 1.0e15; digits = 2)
 # @show res3
 # res4 = @gflops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
 # @show res4
+
+# @belapsed cstm_fbp_2(obs_y)
+# t_direct = @belapsed cstm_fbp_2(obs_y)
+# @show t_direct
+# t_direct_r = round((t_direct * my_cpu * 300) / 1.0e15; digits = 2)
+# @show t_direct_r
