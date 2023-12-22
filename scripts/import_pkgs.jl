@@ -7,7 +7,7 @@ Pkg.precompile(; strict = true)
 # using JuliaSyntax
 # JuliaSyntax.enable_in_core!()
 
-using MKL
+# using MKL
 
 using Base.Threads,
     BenchmarkTools,
