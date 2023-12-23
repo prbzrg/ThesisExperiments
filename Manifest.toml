@@ -535,9 +535,7 @@ version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
 deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "Distributions", "DistributionsAD", "FillArrays", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "PackageExtensionCompat", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "addbda76b1611e80db23accc3d0e2260fadf382b"
-repo-rev = "main"
-repo-url = "https://github.com/impICNF/ContinuousNormalizingFlows.jl.git"
+git-tree-sha1 = "258ab4e10c8decd5e6e19561e11c7211d7618c16"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
 version = "0.16.0"
 weakdeps = ["CUDA"]
@@ -623,9 +621,9 @@ version = "1.9.1"
 
 [[deps.DiffEqBase]]
 deps = ["ArrayInterface", "DataStructures", "DocStringExtensions", "EnumX", "EnzymeCore", "FastBroadcast", "ForwardDiff", "FunctionWrappers", "FunctionWrappersWrappers", "LinearAlgebra", "Logging", "Markdown", "MuladdMacro", "Parameters", "PreallocationTools", "PrecompileTools", "Printf", "RecursiveArrayTools", "Reexport", "SciMLBase", "SciMLOperators", "Setfield", "SparseArrays", "Static", "StaticArraysCore", "Statistics", "Tricks", "TruncatedStacktraces"]
-git-tree-sha1 = "83114bb5158ca74ac9dee3d01edf87cc0363b5db"
+git-tree-sha1 = "af462abaa25b9b9c6cae5730ca387afb4d65382d"
 uuid = "2b5f629d-d688-5b77-993f-72d75c75574e"
-version = "6.144.1"
+version = "6.144.2"
 
     [deps.DiffEqBase.extensions]
     DiffEqBaseChainRulesCoreExt = "ChainRulesCore"
@@ -1718,9 +1716,9 @@ version = "0.2.5"
 
 [[deps.LinearSolve]]
 deps = ["ArrayInterface", "ConcreteStructs", "DocStringExtensions", "EnumX", "FastLapackInterface", "GPUArraysCore", "InteractiveUtils", "KLU", "Krylov", "Libdl", "LinearAlgebra", "MKL_jll", "PrecompileTools", "Preferences", "RecursiveFactorization", "Reexport", "Requires", "SciMLBase", "SciMLOperators", "Setfield", "SparseArrays", "Sparspak", "StaticArraysCore", "UnPack"]
-git-tree-sha1 = "b1148a6596c5cd9b2d848c26b500c79d102ffc5d"
+git-tree-sha1 = "ebdc72aa2f1ccbb9f9dd1e85698145024b762ac3"
 uuid = "7ed4a6bd-45f5-4d41-b270-4a48e9bafcae"
-version = "2.21.1"
+version = "2.21.2"
 
     [deps.LinearSolve.extensions]
     LinearSolveBandedMatricesExt = "BandedMatrices"
@@ -1880,9 +1878,9 @@ version = "1.0.1"
 
 [[deps.MLJModelInterface]]
 deps = ["Random", "ScientificTypesBase", "StatisticalTraits"]
-git-tree-sha1 = "381d99f0af76d98f50bd5512dcf96a99c13f8223"
+git-tree-sha1 = "0cd3514d865b928e6a36f03497f65b5b1dee38c1"
 uuid = "e80e1ace-859a-464e-9ed9-23947d8ae3ea"
-version = "1.9.3"
+version = "1.9.4"
 
 [[deps.MLStyle]]
 git-tree-sha1 = "bc38dff0548128765760c79eb7388a4b37fae2c8"
@@ -1909,9 +1907,9 @@ version = "0.1.10"
 
 [[deps.MPItrampoline_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "MPIPreferences", "TOML"]
-git-tree-sha1 = "6979eccb6a9edbbb62681e158443e79ecc0d056a"
+git-tree-sha1 = "8eeb3c73bbc0ca203d0dc8dad4008350bbe5797b"
 uuid = "f1f71cc9-e9ae-5b93-9b94-4fe0e1ad3748"
-version = "5.3.1+0"
+version = "5.3.1+1"
 
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
@@ -2176,9 +2174,9 @@ version = "0.8.1+0"
 
 [[deps.OpenMPI_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Hwloc_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "MPIPreferences", "PMIx_jll", "TOML", "Zlib_jll", "libevent_jll", "prrte_jll"]
-git-tree-sha1 = "694458ae803b684f09c07f90459cb79655fb377d"
+git-tree-sha1 = "1d1421618bab0e820bdc7ae1a2b46ce576981273"
 uuid = "fe0851c0-eecd-5654-98d4-656369965a5c"
-version = "5.0.0+0"
+version = "5.0.1+0"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
