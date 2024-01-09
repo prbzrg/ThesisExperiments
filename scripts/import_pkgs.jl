@@ -4,9 +4,6 @@ using Pkg
 
 Pkg.precompile(; strict = true)
 
-# using JuliaSyntax
-# JuliaSyntax.enable_in_core!()
-
 # using MKL
 
 using Base.Threads,
@@ -22,7 +19,6 @@ using Base.Threads,
     Distributions,
     Documenter,
     DrWatson,
-    GFlops,
     HDF5,
     ImageFiltering,
     ImageQualityIndexes,
@@ -40,8 +36,6 @@ using Base.Threads,
     OptimizationOptimJL,
     OptimizationOptimisers,
     OrdinaryDiffEq,
-    PrecompileTools,
-    Preferences,
     ProgressMeter,
     PyCall,
     Random,
@@ -51,6 +45,7 @@ using Base.Threads,
     UnPack,
     Zygote
 
+# using GFlops
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
 # using MLDatasets
