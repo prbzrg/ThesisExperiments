@@ -6,15 +6,19 @@ to make a reproducible scientific project named
 
 > ThesisExperiments
 
-It is authored by Hossein Pourbozorg.
+It is authored by Hossein Pourbozorg. the version of this repo that been used in my thesis is tagged as `BaseVersion` and all experiments executed with Julia 1.9.
+
+The main script that can generate the results is named `expr-patchnr.jl`.
 
 To (locally) reproduce this project, do the following:
 
- 0. Download this code base. Notice that raw data are typically not included in the
+ 1. Download and install Julia. see https://julialang.org/downloads/
+
+ 2. Download this code base. Notice that raw data are typically not included in the
     git-history and may need to be downloaded independently.
 
- 1. Open a Julia console and do:
-    
+ 3. Open a Julia console and do:
+
     ```
     julia> using Pkg
     julia> Pkg.add("DrWatson") # install globally, for using `quickactivate`
