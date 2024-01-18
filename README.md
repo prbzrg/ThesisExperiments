@@ -17,7 +17,9 @@ To (locally) reproduce this project, do the following:
  2. Download this code base. Notice that raw data are typically not included in the
     git-history and may need to be downloaded independently.
 
- 3. Open a Julia console and do:
+ 3. Download LoDoPaB-CT dataset and put it in `data/lodoct`. see https://zenodo.org/records/3384092
+
+ 4. Open a Julia console and do:
 
     ```
     julia> using Pkg
