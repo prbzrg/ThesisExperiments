@@ -6,7 +6,7 @@ to make a reproducible scientific project named
 
 > ThesisExperiments
 
-It is authored by Hossein Pourbozorg. the version of this repo that been used in my thesis is tagged as `BaseVersion` and all experiments executed with Julia 1.9.
+It is authored by Hossein Pourbozorg. the version of this repo that been used in my thesis is tagged as `BaseVersion` and all experiments executed with Julia 1.9.4 and Python 3.9.13.
 
 The main script that can generate the results is named `expr-patchnr.jl`.
 
@@ -14,12 +14,14 @@ To (locally) reproduce this project, do the following:
 
  1. Download and install Julia. see https://julialang.org/downloads/
 
- 2. Download this code base. Notice that raw data are typically not included in the
+ 2. Download and install Python. see https://www.python.org/downloads/
+
+ 3. Download this code base. Notice that raw data are typically not included in the
     git-history and may need to be downloaded independently.
 
- 3. Download LoDoPaB-CT dataset and put it in `data/lodoct`. see https://zenodo.org/records/3384092
+ 4. Download LoDoPaB-CT dataset and put it in `data/lodoct`. see https://zenodo.org/records/3384092
 
- 4. Open a Julia console and do:
+ 5. Open a Julia console and do:
 
     ```
     julia> using Pkg
@@ -28,7 +30,13 @@ To (locally) reproduce this project, do the following:
     julia> Pkg.instantiate()
     ```
 
-This will install all necessary packages for you to be able to run the scripts and
+ 6. Open a Shell console and do:
+
+   ```
+   python -m pip install -r path/to/this/project/py_reqs.txt
+   ```
+
+This will install all necessary tools and packages for you to be able to run the scripts and
 everything should work out of the box, including correctly finding local paths.
 
 You may notice that most scripts start with the commands:
@@ -39,6 +47,12 @@ using DrWatson
 ```
 
 which auto-activate the project and enable local path handling from DrWatson.
+
+To run a script do:
+
+```
+julia path/to/this/project/scripts/script_name.jl
+```
 
 Some documentation has been set up for this project. It can be viewed by
 running the file `docs/make.jl`, and then launching the generated file
