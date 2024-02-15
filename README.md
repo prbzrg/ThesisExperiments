@@ -15,26 +15,22 @@ To (locally) reproduce this project, do the following:
  1. Download and install Julia. see https://julialang.org/downloads/
 
  2. Download and install Python. see https://www.python.org/downloads/
-
  3. Download this code base. Notice that raw data are typically not included in the
     git-history and may need to be downloaded independently.
-
  4. Download LoDoPaB-CT dataset and put it in `data/lodoct`. see https://zenodo.org/records/3384092
-
  5. Open a Julia console and do:
-
+    
     ```
     julia> using Pkg
     julia> Pkg.add("DrWatson") # install globally, for using `quickactivate`
     julia> Pkg.activate("path/to/this/project")
     julia> Pkg.instantiate()
     ```
-
  6. Open a Shell console and do:
-
-   ```
-   python -m pip install -r path/to/this/project/py_reqs.txt
-   ```
+    
+    ```
+    python -m pip install -r path/to/this/project/py_reqs.txt
+    ```
 
 This will install all necessary tools and packages for you to be able to run the scripts and
 everything should work out of the box, including correctly finding local paths.
