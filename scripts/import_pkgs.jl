@@ -9,6 +9,7 @@ Pkg.precompile(; strict = true)
 using Base.Threads,
     BenchmarkTools,
     Colors,
+    ComponentArrays,
     ConcreteStructs,
     ContinuousNormalizingFlows,
     CSV,

@@ -3,6 +3,8 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
+const old_expr = true
+
 const allparams1 = Dict(
     # test
     "n_iter_rec" => 300,
@@ -258,7 +260,7 @@ end
             steer_rate = steer_reg,
             sol_kwargs = merge(
                 ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
+                (reltol = ode_reltol, alg = VCABM()),
             ),
             # sol_kwargs,
             # inplace = true,
@@ -276,7 +278,7 @@ end
             steer_rate = steer_reg,
             sol_kwargs = merge(
                 ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
+                (reltol = ode_reltol, alg = VCABM()),
             ),
             # sol_kwargs,
             # inplace = true,
@@ -431,7 +433,7 @@ end
             resource = CUDALibs(),
             sol_kwargs = merge(
                 ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
+                (reltol = ode_reltol, alg = VCABM()),
             ),
             # sol_kwargs,
             # inplace = true,
@@ -446,11 +448,18 @@ end
             compute_mode = ZygoteMatrixMode,
             sol_kwargs = merge(
                 ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
+                (reltol = ode_reltol, alg = VCABM()),
             ),
             # sol_kwargs,
             # inplace = true,
         )
+    end
+
+    if old_expr
+        ps2, st2 = Lux.setup(icnf.rng, icnf)
+        ps2 = ComponentArray(ps2)
+        ps2 .= ps.data
+        ps = ps2
     end
 
     ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
