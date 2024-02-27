@@ -360,7 +360,9 @@ end
     @unpack nvars, naug_vl, n_in_out, n_hidden = data
     @unpack ps, st = data
     if use_gpu_nn_test
-        ps = gdev(ps)
+        if !old_expr
+            ps = gdev(ps)
+        end
         st = gdev(st)
     end
 
@@ -458,8 +460,12 @@ end
     if old_expr
         ps2, st2 = Lux.setup(icnf.rng, icnf)
         ps2 = ComponentArray(ps2)
+        ps2 = cdev(ps2)
         ps2 .= ps.data
         ps = ps2
+        if use_gpu_nn_test
+            ps = gdev(ps)
+        end
     end
 
     ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st
