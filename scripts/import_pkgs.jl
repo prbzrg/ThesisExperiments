@@ -81,38 +81,37 @@ include(srcdir("frst_prt.jl"))
 # include(srcdir("mrcnf.jl"))
 
 # defaults
-const sol_kwargs_2 = Dict(
-    :alg_hints => [:nonstiff, :memorybound],
-    :dense => false,
-    :save_everystep => false,
-    :save_on => false,
-    :calck => false,
-    :alias_u0 => true,
-    :verbose => true,
-    :merge_callbacks => true,
-    :wrap => Val(true),
-    :alg => VCABM(),
-    # :alg => VCABM3(),
-    # :alg => BS3(; thread = OrdinaryDiffEq.True()),
-    # :alg => BS5(; thread = OrdinaryDiffEq.True()),
-    # :alg => Tsit5(; thread = OrdinaryDiffEq.True()),
-    # :alg => Vern6(; thread = OrdinaryDiffEq.True()),
-    # :alg => Vern9(; thread = OrdinaryDiffEq.True()),
-    :sensealg => BacksolveAdjoint(;
-        autodiff = true,
-        autojacvec = ZygoteVJP(),
-        checkpointing = true,
-    ),
-    # :sensealg => InterpolatingAdjoint(;
+const sol_kwargs_base = (
+    save_everystep = false,
+    # alg = VCABM3(),
+    # alg = Vern6(; thread = OrdinaryDiffEq.True()),
+    # alg = BS5(; thread = OrdinaryDiffEq.True()),
+    # alg = BS3(; thread = OrdinaryDiffEq.True()),
+    # alg = Tsit5(; thread = OrdinaryDiffEq.True()),
+    alg = VCABM(),
+    # sensealg = BacksolveAdjoint(;
     #     autodiff = true,
     #     autojacvec = ZygoteVJP(),
     #     checkpointing = true,
     # ),
-    # :sensealg => QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    :reltol => eps_sq[2],
-    :abstol => eps_sq[1],
-    :maxiters => typemax(Int32),
-)
+    # sensealg = QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    sensealg = InterpolatingAdjoint(;
+        autodiff = true,
+        autojacvec = ZygoteVJP(),
+        checkpointing = true,
+    ),
+    reltol = eps_sq[2],
+    abstol = eps_sq[1],
+    maxiters = typemax(Int32),
+    alg_hints = [:nonstiff, :memorybound],
+    dense = false,
+    save_on = false,
+    calck = false,
+    alias_u0 = true,
+    verbose = true,
+    merge_callbacks = true,
+    wrap = Val(true),
+),
 const optimizers = Any[Lion(),]
 
 if !isempty(ARGS) && length(ARGS) >= 2

@@ -178,10 +178,7 @@ if use_gpu_nn_test
         tspan,
         compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
-        sol_kwargs = merge(
-            ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-            (reltol = ode_reltol,),
-        ),
+        sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
         # sol_kwargs,
         # inplace = true,
     )
@@ -193,10 +190,7 @@ else
         naug_vl;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        sol_kwargs = merge(
-            ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-            (reltol = ode_reltol,),
-        ),
+        sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
         # sol_kwargs,
         # inplace = true,
     )
