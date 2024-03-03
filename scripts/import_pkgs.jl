@@ -111,7 +111,7 @@ const sol_kwargs_base = (
     verbose = true,
     merge_callbacks = true,
     wrap = Val(true),
-),
+)
 const optimizers = Any[Lion(),]
 
 if !isempty(ARGS) && length(ARGS) >= 2
