@@ -8,12 +8,12 @@ Pkg.precompile(; strict = true)
 
 using Base.Threads,
     BenchmarkTools,
+    CairoMakie,
     Colors,
     ComponentArrays,
     ConcreteStructs,
     ContinuousNormalizingFlows,
     CSV,
-    CairoMakie,
     DataFrames,
     Dates,
     Distances,
@@ -28,14 +28,14 @@ using Base.Threads,
     LinearAlgebra,
     Logging,
     Lux,
+    Makie,
     MLJBase,
     MLUtils,
-    Makie,
     Optim,
     Optimisers,
     Optimization,
-    OptimizationOptimJL,
     OptimizationOptimisers,
+    OptimizationOptimJL,
     OrdinaryDiffEq,
     ProgressMeter,
     PyCall,
@@ -46,10 +46,10 @@ using Base.Threads,
     UnPack,
     Zygote
 
-# using GFlops
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
 # using MLDatasets
+# using GFlops
 
 # const debuglogger = Logging.ConsoleLogger(Logging.Debug)
 # Logging.global_logger(debuglogger)
