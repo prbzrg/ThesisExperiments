@@ -197,7 +197,7 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             steer_rate = steer_reg,
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -210,7 +210,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -349,7 +349,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
         )
     else
         icnf = construct(
@@ -359,7 +359,7 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
         )
     end
 

@@ -172,20 +172,6 @@ elseif back == "Flux"
 else
     error("Not Imp")
 end
-# sl_kw = deepcopy(sol_kwargs)
-# for i in [
-#     :alg_hints,
-#     :dense,
-#     :save_everystep,
-#     :save_on,
-#     :calck,
-#     :alias_u0,
-#     :verbose,
-#     :merge_callbacks,
-#     :wrap,
-# ]
-#     delete!(sl_kw, i)
-# end
 if use_gpu_nn_test
     icnf = construct(
         FFJORD,
@@ -195,23 +181,10 @@ if use_gpu_nn_test
         tspan,
         compute_mode = ZygoteVectorMode,
         resource = CUDALibs(),
-        # sol_kwargs = sl_kw,
-        inplace = true,
     )
 else
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars,
-        naug_vl;
-        tspan,
-        compute_mode = ZygoteVectorMode,
-        # sol_kwargs = sl_kw,
-        inplace = true,
-    )
+    icnf = construct(FFJORD, nn, nvars, naug_vl; tspan, compute_mode = ZygoteVectorMode)
 end
-icnf.sol_kwargs[:reltol] = ode_reltol
-icnf.sol_kwargs[:save_everystep] = true
 
 # way 4
 # smp_f = rand(Float32, 36)

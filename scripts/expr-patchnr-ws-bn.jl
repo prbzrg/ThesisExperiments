@@ -181,18 +181,9 @@ if use_gpu_nn_test
         tspan,
         compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
-        # sol_kwargs,
     )
 else
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars,
-        naug_vl;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-        # sol_kwargs,
-    )
+    icnf = construct(FFJORD, nn, nvars, naug_vl; tspan, compute_mode = ZygoteMatrixMode)
 end
 
 # way 4
@@ -241,8 +232,6 @@ slvs = Any[VCABM]
 # JVODE_Adams
 
 for slv in slvs
-    sl_kw = deepcopy(sol_kwargs)
-    sl_kw[:alg] = slv()
     icnf = construct(
         FFJORD,
         nn,
@@ -250,7 +239,7 @@ for slv in slvs
         naug_vl;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        sol_kwargs = sl_kw,
+        sol_kwargs = merge(sol_kwargs_base, (alg = slv(),)),
     )
     display(icnf.sol_kwargs)
     l_bench = @benchmark loss(icnf, TrainMode(), smp_f, ps, st)
@@ -264,10 +253,6 @@ slvs2 = Any[QNDF]
 # MEBDF2
 
 for slv2 in slvs2
-    sl_kw = deepcopy(sol_kwargs)
-    sl_kw[:alg] = slv2()
-    sl_kw[:alg_hints] = [:stiff, :memorybound]
-
     icnf = construct(
         FFJORD,
         nn,
@@ -275,7 +260,10 @@ for slv2 in slvs2
         naug_vl;
         tspan,
         compute_mode = ZygoteMatrixMode,
-        sol_kwargs = sl_kw,
+        sol_kwargs = merge(
+            sol_kwargs_base,
+            (alg = slv(), alg_hints = [:stiff, :memorybound]),
+        ),
     )
     display(icnf.sol_kwargs)
     l_bench = @benchmark loss(icnf, TrainMode(), smp_f, ps, st)

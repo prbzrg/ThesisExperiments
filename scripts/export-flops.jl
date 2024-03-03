@@ -179,8 +179,6 @@ if use_gpu_nn_test
         compute_mode = ZygoteMatrixMode,
         resource = CUDALibs(),
         sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-        # sol_kwargs,
-        # inplace = true,
     )
 else
     icnf = construct(
@@ -191,8 +189,6 @@ else
         tspan,
         compute_mode = ZygoteMatrixMode,
         sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-        # sol_kwargs,
-        # inplace = true,
     )
 end
 

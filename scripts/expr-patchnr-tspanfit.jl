@@ -142,7 +142,7 @@ end
             nvars;
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
             λ₁ = 1.0f-1,
             λ₂ = 1.0f-1,
         )
@@ -160,7 +160,7 @@ end
             nn,
             nvars;
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
             λ₁ = 1.0f-1,
             λ₂ = 1.0f-1,
         )
@@ -289,10 +289,16 @@ end
             nvars;
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs,
+            sol_kwargs = sol_kwargs_base,
         )
     else
-        icnf = construct(FFJORD, nn, nvars; compute_mode = ZygoteMatrixMode, sol_kwargs)
+        icnf = construct(
+            FFJORD,
+            nn,
+            nvars;
+            compute_mode = ZygoteMatrixMode,
+            sol_kwargs = sol_kwargs_base,
+        )
     end
 
     ptchnr = PatchNR(; icnf_f = let icnf = icnf, md = TrainMode(), ps = ps, st = st

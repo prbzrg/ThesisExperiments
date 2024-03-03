@@ -211,12 +211,7 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             steer_rate = steer_reg,
-            sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
-            ),
-            # sol_kwargs,
-            # inplace = true,
+            sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -229,12 +224,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
-            sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
-            ),
-            # sol_kwargs,
-            # inplace = true,
+            sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -384,12 +374,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
-            ),
-            # sol_kwargs,
-            # inplace = true,
+            sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
         )
     else
         icnf = construct(
@@ -399,12 +384,7 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs = merge(
-                ContinuousNormalizingFlows.sol_kwargs_defaults.medium,
-                (reltol = ode_reltol,),
-            ),
-            # sol_kwargs,
-            # inplace = true,
+            sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
         )
     end
 

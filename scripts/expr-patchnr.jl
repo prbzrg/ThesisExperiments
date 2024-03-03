@@ -259,8 +259,6 @@ end
             resource = CUDALibs(),
             steer_rate = steer_reg,
             sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-            # sol_kwargs,
-            # inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -274,8 +272,6 @@ end
             compute_mode = ZygoteMatrixMode,
             steer_rate = steer_reg,
             sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-            # sol_kwargs,
-            # inplace = true,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
         )
@@ -428,8 +424,6 @@ end
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
             sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-            # sol_kwargs,
-            # inplace = true,
         )
     else
         icnf = construct(
@@ -440,8 +434,6 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             sol_kwargs = merge(sol_kwargs_base, (reltol = ode_reltol,)),
-            # sol_kwargs,
-            # inplace = true,
         )
     end
 
