@@ -1,5 +1,3 @@
-ENV["PYTHON"] = raw"C:\Program Files\Python39\python.exe"
-
 using Pkg
 
 Pkg.precompile(; strict = true)
@@ -12,6 +10,7 @@ using Base.Threads,
     Colors,
     ComponentArrays,
     ConcreteStructs,
+    Conda,
     ContinuousNormalizingFlows,
     CSV,
     DataFrames,

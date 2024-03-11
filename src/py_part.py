@@ -1,9 +1,9 @@
 import numpy
 import torch
-import dival
 import odl
-import dival.util.torch_losses
 import odl.contrib.torch
+import dival
+import dival.util.torch_losses
 
 
 def get_ray_1():

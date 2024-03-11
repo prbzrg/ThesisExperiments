@@ -1,4 +1,4 @@
-# run on Julia 1.10.1
+# run on Julia 1.10.2
 
 Julia Usage
 
