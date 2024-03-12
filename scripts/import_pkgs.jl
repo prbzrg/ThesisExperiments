@@ -88,17 +88,18 @@ const sol_kwargs_base = (
     # alg = BS3(; thread = OrdinaryDiffEq.True()),
     # alg = Tsit5(; thread = OrdinaryDiffEq.True()),
     alg = VCABM(),
-    # sensealg = BacksolveAdjoint(;
-    #     autodiff = true,
-    #     autojacvec = ZygoteVJP(),
-    #     checkpointing = true,
-    # ),
-    # sensealg = QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
-    sensealg = InterpolatingAdjoint(;
+    # sensealg = GaussAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    sensealg = BacksolveAdjoint(;
         autodiff = true,
         autojacvec = ZygoteVJP(),
         checkpointing = true,
     ),
+    # sensealg = QuadratureAdjoint(; autodiff = true, autojacvec = ZygoteVJP()),
+    # sensealg = InterpolatingAdjoint(;
+    #     autodiff = true,
+    #     autojacvec = ZygoteVJP(),
+    #     checkpointing = true,
+    # ),
     reltol = eps_sq[2],
     abstol = eps_sq[1],
     maxiters = typemax(Int32),
