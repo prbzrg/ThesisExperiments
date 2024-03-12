@@ -94,11 +94,6 @@ const allparams2 = Dict(
 const dicts2 = convert.(Dict{String, Any}, dict_list(allparams2))
 const dicts = vcat(dicts1, dicts2)
 
-const gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
-const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
-const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
-const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
-
 @inline function makesim_gendata(d::Dict)
     @unpack p_s, = d
     fulld = copy(d)

@@ -51,11 +51,6 @@ const allparams = Dict(
 )
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 
-const gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
-const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
-const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
-const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
-
 d = first(dicts)
 
 @unpack n_iter_rec,
@@ -188,14 +183,7 @@ if use_gpu_nn_test
         resource = CUDALibs(),
     )
 else
-    icnf = construct(
-        FFJORD,
-        nn,
-        nvars,
-        naug_vl;
-        tspan,
-        compute_mode = ZygoteMatrixMode,
-    )
+    icnf = construct(FFJORD, nn, nvars, naug_vl; tspan, compute_mode = ZygoteMatrixMode)
 end
 
 # way 4

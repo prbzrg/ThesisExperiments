@@ -49,11 +49,3 @@ To run a script do:
 ```
 julia path/to/this/project/scripts/script_name.jl
 ```
-
-Some documentation has been set up for this project. It can be viewed by
-running the file `docs/make.jl`, and then launching the generated file
-`docs/build/index.html`.
-Alternatively, the documentation may be already hosted online.
-If this is the case it should be at:
-
-https://prbzrg.github.io/ThesisExperiments/dev/

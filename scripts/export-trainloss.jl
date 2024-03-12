@@ -48,11 +48,6 @@ const allparams = Dict(
 const dicts = convert.(Dict{String, Any}, dict_list(allparams))
 d = first(dicts)
 
-const gt_train_fn = datadir("lodoct", "ground_truth_train_000.hdf5")
-const gt_test_fn = datadir("lodoct", "ground_truth_test_000.hdf5")
-const obs_train_fn = datadir("lodoct", "observation_train_000.hdf5")
-const obs_test_fn = datadir("lodoct", "observation_test_000.hdf5")
-
 @unpack n_iter_rec,
 sel_a,
 sel_pol,
