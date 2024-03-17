@@ -545,10 +545,14 @@ end
 
     function fcap(x, mx, mn)
         if x > one(x)
-            x > 1.1 && @show x
+            if x > 1.1
+                @show x
+            end
             mx
         elseif x < zero(x)
-            x < -0.1 && @show x
+            if x < -0.1
+                @show x
+            end
             mn
         else
             x

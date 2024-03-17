@@ -47,6 +47,7 @@ using Base.Threads,
 
 # using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
+# using SimpleChains
 # using MLDatasets
 # using GFlops
 
@@ -131,7 +132,7 @@ end
 
 @info (use_gpu_nn_train, use_gpu_nn_test)
 
-const gt_train_fn = datadir("lodoct", "data",  "ground_truth_train_000.hdf5")
-const gt_test_fn = datadir("lodoct", "data",  "ground_truth_test_000.hdf5")
-const obs_train_fn = datadir("lodoct", "data",  "observation_train_000.hdf5")
-const obs_test_fn = datadir("lodoct", "data",  "observation_test_000.hdf5")
+const gt_train_fn = datadir("lodoct", "data", "ground_truth_train_000.hdf5")
+const gt_test_fn = datadir("lodoct", "data", "ground_truth_test_000.hdf5")
+const obs_train_fn = datadir("lodoct", "data", "observation_train_000.hdf5")
+const obs_test_fn = datadir("lodoct", "data", "observation_test_000.hdf5")
