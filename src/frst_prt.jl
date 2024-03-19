@@ -1,19 +1,19 @@
 @pyinclude(srcdir("py_part.py"))
 
 @inline function fbp_t(x)
-    convert.(Float32, py"fbp_t_res"(x).tolist())
+    convert.(Float32, py"my_fbp_jl"(x).tolist())
 end
 
 @inline function radon_t(x)
-    convert.(Float32, py"radon_t_res"(x).tolist())
+    convert.(Float32, py"my_radon_jl"(x).tolist())
 end
 
 @inline function first_part(x, y)
-    convert.(Float32, py"first_part_res"(x, y).tolist())
+    convert.(Float32, py"my_first_part_jl"(x, y).tolist())
 end
 
 @inline function grad_first_part(x, y)
-    convert.(Float32, py"grad_first_part"(x, y).tolist())
+    convert.(Float32, py"my_first_part_grad_jl"(x, y).tolist())
 end
 
 # r2 = rand(Float32, 1, 1, 362, 362)

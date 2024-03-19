@@ -1,40 +1,42 @@
 import numpy
 import torch
 import odl
+import odl.contrib
 import odl.contrib.torch
 import dival
+import dival.reference_reconstructors
+import dival.util
 import dival.util.torch_losses
 
-
-def get_ray_1():
-    ddd = odl.uniform_discr([-0.13, -0.13], [0.13, 0.13], (362, 362), dtype=numpy.float32)
-    return odl.tomo.RayTransform(ddd, odl.tomo.parallel_beam_geometry(ddd, num_angles=1000, det_shape=(513,)), impl="skimage")
-
-def get_ray_2():
+def getmy_ray_trafo():
     return dival.get_standard_dataset('lodopab', impl='skimage').ray_trafo
 
-ray_op = get_ray_2()
+def getmy_fbp_op():
+    return dival.reference_reconstructors.get_reference_reconstructor('fbp', 'lodopab', impl='skimage').fbp_op
 
-def fbp_t(x):
-    return odl.contrib.torch.OperatorModule(odl.tomo.analytic.filtered_back_projection.fbp_op(
-        ray_op, filter_type = 'Hann', frequency_scaling = 0.641025641025641))(x)
+def my_fbp(x):
+    return my_fbp_op(x)
 
-def fbp_t_res(x):
-    return fbp_t(torch.tensor(x))
+def my_radon(x):
+    return my_ray_trafo_om(x)
 
-def radon_t(x):
-    return odl.contrib.torch.OperatorModule(ray_op)(x)
+def my_first_part(x, y):
+    return dival.util.torch_losses.poisson_loss(my_radon(x), y)
 
-def radon_t_res(x):
-    return radon_t(torch.tensor(x))
+def my_fbp_jl(x):
+    return my_fbp(torch.tensor(x))
 
-def first_part(x, y_t):
-    return dival.util.torch_losses.poisson_loss(radon_t(x), y_t)
+def my_radon_jl(x):
+    return my_radon_jl(torch.tensor(x))
 
-def first_part_res(x, y_t):
-    return first_part(torch.tensor(x), torch.tensor(y_t))
+def my_first_part_jl(x, y):
+    return my_first_part(torch.tensor(x), torch.tensor(y))
 
-def grad_first_part(x, y_t):
+def my_first_part_grad_jl(x, y):
     x2 = torch.tensor(x, requires_grad = True)
-    first_part(x2, torch.tensor(y_t)).backward()
+    my_first_part(x2, torch.tensor(y)).backward()
     return x2.grad
+
+my_ray_trafo = getmy_ray_trafo()
+my_ray_trafo_om = odl.contrib.torch.OperatorModule(my_ray_trafo)
+my_fbp_op = getmy_fbp_op()
