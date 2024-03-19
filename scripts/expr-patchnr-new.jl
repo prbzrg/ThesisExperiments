@@ -182,7 +182,12 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
             λ₃ = rnode_reg,
-            sol_kwargs = (save_everystep = false, alg = VCABM(), reltol = 1.0f-2),
+            sol_kwargs = (
+                save_everystep = false,
+                alg = VCABM(),
+                reltol = 1.0f-2,
+                sensealg = BacksolveAdjoint(),
+            ),
         )
     else
         icnf = construct(
@@ -196,7 +201,12 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
             λ₃ = rnode_reg,
-            sol_kwargs = (save_everystep = false, alg = VCABM(), reltol = 1.0f-2),
+            sol_kwargs = (
+                save_everystep = false,
+                alg = VCABM(),
+                reltol = 1.0f-2,
+                sensealg = BacksolveAdjoint(),
+            ),
         )
     end
 
@@ -318,7 +328,12 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs = (save_everystep = false, alg = VCABM(), reltol = 1.0f-2),
+            sol_kwargs = (
+                save_everystep = false,
+                alg = VCABM(),
+                reltol = 1.0f-2,
+                sensealg = BacksolveAdjoint(),
+            ),
         )
     else
         icnf = construct(
@@ -328,7 +343,12 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs = (save_everystep = false, alg = VCABM(), reltol = 1.0f-2),
+            sol_kwargs = (
+                save_everystep = false,
+                alg = VCABM(),
+                reltol = 1.0f-2,
+                sensealg = BacksolveAdjoint(),
+            ),
         )
     end
 
