@@ -15,7 +15,9 @@ end
 end
 
 @inline function _loss_gd_i(G, ps, ptchnr, obs_y)
-    G .= _loss_gd_o(ps, ptchnr, obs_y)
+    fill!(G, zero(eltype(ps)))
+    G .+= recn_loss_pt1_grad(ptchnr, ps, obs_y)
+    G .+= recn_loss_pt2_grad(ptchnr, ps, obs_y)
     nothing
 end
 

@@ -145,12 +145,12 @@ end
 end
 
 # main
-# @inline function recn_loss_pt1_grad(app_icnf, ps, obs_y)
+# @inline function recn_loss_pt1_grad(app_icnf::PatchNR, ps, obs_y)
 #     # ForwardDiff.gradient(x -> recn_loss_pt1(app_icnf, x, obs_y), ps)
 #     ReverseDiff.gradient(x -> recn_loss_pt1(app_icnf, x, obs_y), ps)
 # end
 
-@inline function recn_loss_pt1_grad(app_icnf, ps, obs_y, use_gpu = use_gpu_nn_test)
+@inline function recn_loss_pt1_grad(app_icnf::PatchNR, ps, obs_y, use_gpu = use_gpu_nn_test)
     w_d = app_icnf.w_d
     if use_gpu
         ps = cdev(ps)
@@ -162,7 +162,7 @@ end
     res
 end
 
-@inline function recn_loss_pt2_grad(app_icnf, ps, obs_y)
+@inline function recn_loss_pt2_grad(app_icnf::PatchNR, ps, obs_y)
     # ForwardDiff.gradient(x -> recn_loss_pt2(app_icnf, x, obs_y), ps)
 
     only(Zygote.gradient(let app_icnf = app_icnf, obs_y = obs_y
