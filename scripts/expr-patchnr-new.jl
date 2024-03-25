@@ -5,7 +5,8 @@ include(scriptsdir("import_pkgs.jl"))
 
 const sol_kwargs_new = (
     save_everystep = false,
-    alg = BS3(; thread = OrdinaryDiffEq.True()),
+    # alg = BS3(; thread = OrdinaryDiffEq.True()),
+    alg = VCABM(),
     reltol = 1.0f-2,
     sensealg = BacksolveAdjoint(;
         autodiff = true,
