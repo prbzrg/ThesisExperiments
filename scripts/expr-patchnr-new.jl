@@ -3,6 +3,17 @@ using DrWatson
 
 include(scriptsdir("import_pkgs.jl"))
 
+const sol_kwargs_new = (
+    save_everystep = false,
+    alg = BS3(; thread = OrdinaryDiffEq.True()),
+    reltol = 1.0f-2,
+    sensealg = BacksolveAdjoint(;
+        autodiff = true,
+        autojacvec = ZygoteVJP(),
+        checkpointing = true,
+    ),
+)
+
 const allparams = Dict(
     # test
     :n_iter_rec => 300,
@@ -182,12 +193,7 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
             λ₃ = rnode_reg,
-            sol_kwargs = (
-                save_everystep = false,
-                alg = VCABM(),
-                reltol = 1.0f-2,
-                sensealg = BacksolveAdjoint(),
-            ),
+            sol_kwargs = sol_kwargs_new,
         )
     else
         icnf = construct(
@@ -201,12 +207,7 @@ end
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
             λ₃ = rnode_reg,
-            sol_kwargs = (
-                save_everystep = false,
-                alg = VCABM(),
-                reltol = 1.0f-2,
-                sensealg = BacksolveAdjoint(),
-            ),
+            sol_kwargs = sol_kwargs_new,
         )
     end
 
@@ -328,12 +329,7 @@ end
             tspan,
             compute_mode = ZygoteMatrixMode,
             resource = CUDALibs(),
-            sol_kwargs = (
-                save_everystep = false,
-                alg = VCABM(),
-                reltol = 1.0f-2,
-                sensealg = BacksolveAdjoint(),
-            ),
+            sol_kwargs = sol_kwargs_new,
         )
     else
         icnf = construct(
@@ -343,12 +339,7 @@ end
             naug_vl;
             tspan,
             compute_mode = ZygoteMatrixMode,
-            sol_kwargs = (
-                save_everystep = false,
-                alg = VCABM(),
-                reltol = 1.0f-2,
-                sensealg = BacksolveAdjoint(),
-            ),
+            sol_kwargs = sol_kwargs_new,
         )
     end
 
