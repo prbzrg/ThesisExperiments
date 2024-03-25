@@ -403,7 +403,7 @@ end
 
     fulld["gt_x"] = gt_x
 
-    s_point = cstm_fbp_2(obs_y)
+    s_point = main_fbp(obs_y)
 
     fulld["fbp_img"] = s_point
     fulld["fbp_a_psnr"] = assess_psnr(s_point, gt_x)

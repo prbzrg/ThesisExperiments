@@ -27,7 +27,7 @@ def my_fbp_jl(x):
     return my_fbp(torch.tensor(x))
 
 def my_radon_jl(x):
-    return my_radon_jl(torch.tensor(x))
+    return my_radon(torch.tensor(x))
 
 def my_first_part_jl(x, y):
     return my_first_part(torch.tensor(x), torch.tensor(y))

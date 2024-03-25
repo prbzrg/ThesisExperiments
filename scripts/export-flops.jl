@@ -204,7 +204,7 @@ gt_x = gt_x[:, :, sel_t_img]
 obs_y = load(obs_test_fn)["data"]
 obs_y = obs_y[:, :, sel_t_img]
 
-s_point = cstm_fbp_2(obs_y)
+s_point = main_fbp(obs_y)
 s_point_c = copy(s_point)
 u_init = vec(s_point_c)
 if use_gpu_nn_test
@@ -239,8 +239,8 @@ t_direct_g_r = round((t_direct_g * my_cpu * 300) / 1.0e15; digits = 2)
 # res4 = @gflops recn_loss_pt2_grad(ptchnr, u_init, obs_y)
 # @show res4
 
-# @belapsed cstm_fbp_2(obs_y)
-# t_direct = @belapsed cstm_fbp_2(obs_y)
+# @belapsed main_fbp(obs_y)
+# t_direct = @belapsed main_fbp(obs_y)
 # @show t_direct
 # t_direct_r = round((t_direct * my_cpu * 300) / 1.0e15; digits = 2)
 # @show t_direct_r

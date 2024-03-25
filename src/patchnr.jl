@@ -108,9 +108,7 @@ end
     if use_gpu
         x = cdev(x)
     end
-    x = reshape(rotl90(reshape(x, (362, 362))), (1, 1, 362, 362))
-    y = reshape(rotl90(y), (1, 1, 1000, 513))
-    first_part(x, y)
+    main_first_part(reshape(x, (362, 362)), y)
 end
 
 @inline function recn_loss_pt2(app_icnf::PatchNR, x, y)
@@ -155,9 +153,7 @@ end
     if use_gpu
         ps = cdev(ps)
     end
-    ps = reshape(rotl90(reshape(ps, (362, 362))), (1, 1, 362, 362))
-    obs_y = reshape(rotl90(obs_y), (1, 1, 1000, 513))
-    res = vec(rotr90(grad_first_part(ps, obs_y)[1, 1, :, :]))
+    res = vec(main_first_part_grad(reshape(ps, (362, 362)), obs_y))
     if use_gpu
         res = gdev(res)
     end
