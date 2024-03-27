@@ -511,10 +511,10 @@ uuid = "6add18c4-b38d-439d-96f6-d6bc489c04c5"
 version = "0.1.3"
 
 [[deps.ContinuousNormalizingFlows]]
-deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "Distributions", "DistributionsAD", "FillArrays", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
-git-tree-sha1 = "fbcd60214a50ddd229818fbe8dc7aa6f4d182e11"
+deps = ["ADTypes", "AbstractDifferentiation", "ChainRulesCore", "ComponentArrays", "ComputationalResources", "DataFrames", "Dates", "Distributions", "DistributionsAD", "FillArrays", "LinearAlgebra", "Lux", "LuxCore", "MLJBase", "MLJModelInterface", "MLUtils", "NNlib", "Octavian", "Optimisers", "Optimization", "OptimizationOptimisers", "OrdinaryDiffEq", "ProgressMeter", "Random", "SciMLBase", "SciMLSensitivity", "ScientificTypes", "SparseDiffTools", "Statistics", "Zygote"]
+git-tree-sha1 = "9698d50482dd26b2a1567138d91c5b7521acdfd0"
 uuid = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
-version = "0.19.2"
+version = "0.20.0"
 weakdeps = ["CUDA"]
 
     [deps.ContinuousNormalizingFlows.extensions]
@@ -2069,6 +2069,20 @@ git-tree-sha1 = "7438a59546cf62428fc9d1bc94729146d37a7225"
 uuid = "510215fc-4207-5dde-b226-833fc4488ee2"
 version = "0.5.5"
 
+[[deps.Octavian]]
+deps = ["CPUSummary", "IfElse", "LoopVectorization", "ManualMemory", "PolyesterWeave", "PrecompileTools", "Static", "StaticArrayInterface", "ThreadingUtilities", "VectorizationBase"]
+git-tree-sha1 = "e046e337d567faf13634161c44d3d4223ccdadb8"
+uuid = "6fd5a793-0b7e-452c-907f-f8bfe9c57db4"
+version = "0.3.27"
+
+    [deps.Octavian.extensions]
+    ForwardDiffExt = "ForwardDiff"
+    HyperDualNumbersExt = "HyperDualNumbers"
+
+    [deps.Octavian.weakdeps]
+    ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+    HyperDualNumbers = "50ceba7f-c3ee-5a84-a6e8-3ad40456ec97"
+
 [[deps.OffsetArrays]]
 git-tree-sha1 = "6a731f2b5c03157418a20c12195eb4b74c8f8621"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
@@ -3086,9 +3100,9 @@ version = "0.4.80"
 
 [[deps.TriangularSolve]]
 deps = ["CloseOpenIntervals", "IfElse", "LayoutPointers", "LinearAlgebra", "LoopVectorization", "Polyester", "Static", "VectorizationBase"]
-git-tree-sha1 = "fadebab77bf3ae041f77346dd1c290173da5a443"
+git-tree-sha1 = "7ee8ed8904e7dd5d31bb46294ef5644d9e2e44e4"
 uuid = "d5829a12-d9aa-46ab-831f-fb7c9ab06edf"
-version = "0.1.20"
+version = "0.1.21"
 
 [[deps.Tricks]]
 git-tree-sha1 = "eae1bb484cd63b36999ee58be2de6c178105112f"
