@@ -186,7 +186,7 @@ end
 # imgs_1 = reshape(imgs_1, (362, 362, 1, n_data_b))
 # ptchs_1 = extract_patch(imgs_1, p_s, p_s)
 # ptchs_1_n = Any[]
-# @showprogress for i in vcat([25, 115], 1:24)
+# @progress for i in vcat([25, 115], 1:24)
 #     push!(
 #         ptchs_1_n,
 #         loss(icnf, TrainMode(), MLUtils.flatten(selectdim(ptchs_1, 5, i)), ps, st),
@@ -205,7 +205,7 @@ imgs_2 = load(gt_test_fn)["data"]
 imgs_2 = reshape(imgs_2, (362, 362, 1, n_data_b))
 ptchs_2 = extract_patch(imgs_2, p_s, p_s)
 ptchs_2_n = Any[]
-@showprogress for i in vcat([25, 115], 1:24)
+@progress for i in vcat([25, 115], 1:24)
     push!(
         ptchs_2_n,
         loss(icnf, TrainMode(), MLUtils.flatten(selectdim(ptchs_2, 5, i)), ps, st),

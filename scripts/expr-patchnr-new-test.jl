@@ -208,7 +208,7 @@ if use_gpu_nn_test
     u_init = gdev(u_init)
 end
 
-tst_one = @timed new_ps = train_loop_optpkg(u_init, ptchnr, obs_y, Lion(), n_iter_rec)
+new_ps, tst_one = train_loop(u_init, ptchnr, obs_y, Lion(), n_iter_rec)
 new_img = reshape(new_ps, (362, 362))
 fulld[:res_img] = new_img
 fulld[:a_psnr] = assess_psnr(new_img, gt_x)

@@ -15,6 +15,7 @@ using Base.Threads,
     CSV,
     DataFrames,
     Dates,
+    DifferentialEquations,
     Distances,
     Distributions,
     Documenter,
@@ -35,13 +36,13 @@ using Base.Threads,
     Optimization,
     OptimizationOptimisers,
     OptimizationOptimJL,
-    OrdinaryDiffEq,
-    ProgressMeter,
+    ProgressLogging,
     PyCall,
     Random,
     SciMLSensitivity,
     Statistics,
     StatsBase,
+    TerminalLoggers,
     UnPack,
     Zygote
 
@@ -51,7 +52,9 @@ using Base.Threads,
 # using MLDatasets
 # using GFlops
 
-# const debuglogger = Logging.ConsoleLogger(Logging.Debug)
+global_logger(TerminalLogger())
+
+# const debuglogger = TerminalLoggers.TerminalLogger(stderr, Logging.Debug)
 # Logging.global_logger(debuglogger)
 
 # const nthd = nthreads(:default)
@@ -113,7 +116,7 @@ const sol_kwargs_base = (
     merge_callbacks = true,
     wrap = Val(true),
 )
-const optimizers = Any[Lion(),]
+const optimizers = (Lion(),)
 
 if !isempty(ARGS) && length(ARGS) >= 2
     const use_gpu_nn_train = ARGS[1] == "train_gpu"

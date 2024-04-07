@@ -418,7 +418,7 @@ end
 
     opt = only(optimizers)
 
-    tst_one = @timed new_ps = train_loop_optpkg(u_init, ptchnr, obs_y, opt, n_iter_rec)
+    new_ps, tst_one = train_loop(u_init, ptchnr, obs_y, opt, n_iter_rec)
     new_img = reshape(new_ps, (362, 362))
     fulld["res_img"] = new_img
     fulld["a_psnr"] = assess_psnr(new_img, gt_x)
@@ -480,24 +480,21 @@ end
     new_ri = imfilter(ri, Kernel.Laplacian())
 
     @inline function fopt(x)
+        # -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
+        # assess_psnr((only(x) * new_ri) + ri, gx)
         -assess_ssim((only(x) * new_ri) + ri, gx)
     end
-
-    # @inline function fopt(x)
-    #     -50 * assess_ssim((only(x) * new_ri) + ri, gx) -
-    #     assess_psnr((only(x) * new_ri) + ri, gx)
-    # end
 
     opt = NewtonTrustRegion()
     # opt = only(optimizers)
     optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
     optprob = OptimizationProblem(optfunc, ones(Float32, 1))
-    res = solve(optprob, opt; maxiters = 10000)
+    res = solve(optprob, opt; maxiters = 10000, progress = true)
 
     opt2 = Newton()
     optfunc = OptimizationFunction((ps, θ) -> fopt(ps), AutoForwardDiff())
     optprob = OptimizationProblem(optfunc, res.u)
-    res2 = solve(optprob, opt2; maxiters = 10000)
+    res2 = solve(optprob, opt2; maxiters = 10000, progress = true)
 
     fulld["scl_v"] = only(res2.u)
 
