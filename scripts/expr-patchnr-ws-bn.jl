@@ -205,21 +205,9 @@ end
 l_bench = @benchmark diff_loss(smp_f)
 @info "diff_loss"
 display(l_bench)
-# l_bench_ad11 = @benchmark Zygote.gradient(diff_loss, smp_f)
-# @info "Zygote.gradient"
+# l_bench_ad11 = @benchmark DifferentiationInterface.gradient(diff_loss, AutoZygote(), smp_f)
+# @info "gradient"
 # display(l_bench_ad11)
-# l_bench_ad12 = @benchmark Zygote.jacobian(diff_loss, smp_f)
-# @info "Zygote.jacobian"
-# display(l_bench_ad12)
-# l_bench_ad21 = @benchmark Zygote.diaghessian(diff_loss, smp_f)
-# @info "Zygote.diaghessian"
-# display(l_bench_ad21)
-# l_bench_ad22 = @benchmark Zygote.hessian(diff_loss, smp_f)
-# @info "Zygote.hessian"
-# display(l_bench_ad22)
-# l_bench_ad23 = @benchmark Zygote.hessian_reverse(diff_loss, smp_f)
-# @info "Zygote.hessian_reverse"
-# display(l_bench_ad23)
 
 @info "non-stiff"
 slvs = Any[VCABM]

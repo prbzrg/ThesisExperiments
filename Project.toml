@@ -2,6 +2,7 @@ name = "ThesisExperiments"
 authors = ["Hossein Pourbozorg"]
 
 [deps]
+ADTypes = "47edcb42-4c32-4615-8424-f2b9edc5f35b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
@@ -15,6 +16,7 @@ ContinuousNormalizingFlows = "00b1973d-5b2e-40bf-8604-5c9c1d8f50ac"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+DifferentiationInterface = "a0c0ee7d-e4b9-4e03-894e-1c5f64a51d63"
 Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"

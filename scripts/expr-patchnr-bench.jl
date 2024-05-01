@@ -228,37 +228,10 @@ l_bench_pn = @benchmark diff_loss_pn(smp_f_pn)
 @info "diff_loss_pn"
 display(l_bench_pn)
 
-l_bench_ad11 = @benchmark Zygote.gradient(diff_loss, smp_f)
-@info "Zygote.gradient"
+l_bench_ad11 = @benchmark DifferentiationInterface.gradient(diff_loss, AutoZygote(), smp_f)
+@info "gradient"
 display(l_bench_ad11)
-l_bench_ad11_pn = @benchmark Zygote.gradient(diff_loss_pn, smp_f_pn)
-@info "Zygote.gradient_pn"
+l_bench_ad11_pn =
+    @benchmark DifferentiationInterface.gradient(diff_loss_pn, AutoZygote(), smp_f_pn)
+@info "gradient_pn"
 display(l_bench_ad11_pn)
-
-l_bench_ad12 = @benchmark Zygote.jacobian(diff_loss, smp_f)
-@info "Zygote.jacobian"
-display(l_bench_ad12)
-l_bench_ad12_pn = @benchmark Zygote.jacobian(diff_loss_pn, smp_f_pn)
-@info "Zygote.jacobian_pn"
-display(l_bench_ad12_pn)
-
-l_bench_ad21 = @benchmark Zygote.diaghessian(diff_loss, smp_f)
-@info "Zygote.diaghessian"
-display(l_bench_ad21)
-l_bench_ad21_pn = @benchmark Zygote.diaghessian(diff_loss_pn, smp_f_pn)
-@info "Zygote.diaghessian_pn"
-display(l_bench_ad21_pn)
-
-l_bench_ad22 = @benchmark Zygote.hessian(diff_loss, smp_f)
-@info "Zygote.hessian"
-display(l_bench_ad22)
-l_bench_ad22_pn = @benchmark Zygote.hessian(diff_loss_pn, smp_f_pn)
-@info "Zygote.hessian_pn"
-display(l_bench_ad22_pn)
-
-l_bench_ad23 = @benchmark Zygote.hessian_reverse(diff_loss, smp_f)
-@info "Zygote.hessian_reverse"
-display(l_bench_ad23)
-l_bench_ad23_pn = @benchmark Zygote.hessian_reverse(diff_loss_pn, smp_f_pn)
-@info "Zygote.hessian_reverse_pn"
-display(l_bench_ad23_pn)

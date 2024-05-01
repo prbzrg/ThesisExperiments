@@ -5,6 +5,7 @@ Pkg.precompile(; strict = true)
 using MKL
 
 using Base.Threads,
+    ADTypes,
     BenchmarkTools,
     CairoMakie,
     Colors,
@@ -16,6 +17,7 @@ using Base.Threads,
     DataFrames,
     Dates,
     DifferentialEquations,
+    DifferentiationInterface,
     Distances,
     Distributions,
     Documenter,
@@ -46,7 +48,7 @@ using Base.Threads,
     UnPack,
     Zygote
 
-# using AbstractDifferentiation, ADTypes, Enzyme, ForwardDiff, ReverseDiff, Tracker
+# using AbstractDifferentiation, Enzyme, ForwardDiff, ReverseDiff, Tracker
 # using Base.Iterators, ImageGeoms, ImageTransformations, Sinograms
 # using SimpleChains
 # using MLDatasets

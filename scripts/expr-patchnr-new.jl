@@ -187,7 +187,7 @@ end
             nvars,
             naug_vl;
             tspan,
-            compute_mode = ZygoteMatrixMode,
+            compute_mode = DIVecJacMatrixMode,
             resource = CUDALibs(),
             steer_rate = steer_reg,
             λ₁ = rnode_reg,
@@ -202,7 +202,7 @@ end
             nvars,
             naug_vl;
             tspan,
-            compute_mode = ZygoteMatrixMode,
+            compute_mode = DIVecJacMatrixMode,
             steer_rate = steer_reg,
             λ₁ = rnode_reg,
             λ₂ = rnode_reg,
@@ -327,7 +327,7 @@ end
             nvars,
             naug_vl;
             tspan,
-            compute_mode = ZygoteMatrixMode,
+            compute_mode = DIVecJacMatrixMode,
             resource = CUDALibs(),
             sol_kwargs = sol_kwargs_new,
         )
@@ -338,7 +338,7 @@ end
             nvars,
             naug_vl;
             tspan,
-            compute_mode = ZygoteMatrixMode,
+            compute_mode = DIVecJacMatrixMode,
             sol_kwargs = sol_kwargs_new,
         )
     end
