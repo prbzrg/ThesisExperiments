@@ -1,4 +1,4 @@
-# ThesisExperiments
+# Thesis Experiments for "Image Reconstruction in Low-dose Computed Tomography Scan Using Infinitesimal Continuous Normalizing Flows"
 
 This code base is using the [Julia Language](https://julialang.org/) and
 [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/)
