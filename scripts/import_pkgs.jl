@@ -2,7 +2,7 @@ using Pkg
 
 Pkg.precompile(; strict = true)
 
-using MKL
+# using MKL
 
 using Base.Threads,
     ADTypes,
@@ -16,7 +16,6 @@ using Base.Threads,
     CSV,
     DataFrames,
     Dates,
-    DifferentialEquations,
     DifferentiationInterface,
     Distances,
     Distributions,
@@ -38,6 +37,7 @@ using Base.Threads,
     Optimization,
     OptimizationOptimisers,
     OptimizationOptimJL,
+    OrdinaryDiffEq,
     ProgressLogging,
     PyCall,
     Random,
